@@ -28,18 +28,13 @@ public class ToDoList extends Activity {
 		ArrayList<HashMap<String, Object>> myList = new ArrayList<HashMap<String,Object>>();
 		for (int i = 0; i < 20; i++)
 		{
-			myList.add(addItem("Entry Item "+i, ""+i+"m", Color.RED));
-			//valueList1.add("value 1");
-			//valueList2.add(i);
+			// todo ADD CONTENT HERE!
+			myList.add(addItem("Entry Item "+i, ""+i+"m", (i%2 == 0? Color.RED : Color.BLUE)));
 		}
 		//ListAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, valueList);
 		ListView lv = (ListView)findViewById(R.id.todolist);
 		
-		SimpleAdapter adapter = new SimpleAdapter(this, myList, 
-                R.layout.layout_todo_listentry,
-                new String[]{"ToDoName", "distance"}, 
-                new int[]{R.id.tododesc, R.id.distance}
-            );
+		ArrayAdapter adapter = new ArrayAdapterToDoList(this, myList);
 		
 		lv.setAdapter(adapter);
 	}
@@ -51,11 +46,18 @@ public class ToDoList extends Activity {
 		return true;
 	}
 	
-    public HashMap<String, Object> addItem(String value1, String value2, int bgColor){
+	/**
+	 * Creates a HashMap for configuring list items.
+	 * @param desc Content of the description field.
+	 * @param dist Content of the distance field.
+	 * @param bgColor Background color of the fields.
+	 * @return Created hash map.
+	 */
+    public HashMap<String, Object> addItem(String desc, String dist, int bgColor){
         HashMap<String, Object> item = new HashMap<String, Object>();
         
-        item.put("ToDoName", value1);
-        item.put("distance", value2);
+        item.put("ToDoName", desc);
+        item.put("distance", dist);
         item.put("color", bgColor);
         
         return item;
