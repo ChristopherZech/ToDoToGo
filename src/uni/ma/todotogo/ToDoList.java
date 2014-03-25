@@ -6,6 +6,8 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.view.Menu;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -26,7 +28,7 @@ public class ToDoList extends Activity {
 		ArrayList<HashMap<String, Object>> myList = new ArrayList<HashMap<String,Object>>();
 		for (int i = 0; i < 20; i++)
 		{
-			myList.add(addItem("ToDoName", "Entry Item "+i, "distance", ""+i+"m"));
+			myList.add(addItem("Entry Item "+i, ""+i+"m", Color.RED));
 			//valueList1.add("value 1");
 			//valueList2.add(i);
 		}
@@ -49,11 +51,12 @@ public class ToDoList extends Activity {
 		return true;
 	}
 	
-    public HashMap<String, Object> addItem(String key1, String value1, String key2, String value2){
+    public HashMap<String, Object> addItem(String value1, String value2, int bgColor){
         HashMap<String, Object> item = new HashMap<String, Object>();
         
-        item.put(key1, value1);
-        item.put(key2, value2);
+        item.put("ToDoName", value1);
+        item.put("distance", value2);
+        item.put("color", bgColor);
         
         return item;
     }
