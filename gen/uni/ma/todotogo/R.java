@@ -26,15 +26,21 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
-        public static final int action_add=0x7f080004;
-        public static final int action_settings=0x7f080003;
-        public static final int distance=0x7f080002;
-        public static final int tododesc=0x7f080001;
-        public static final int todolist=0x7f080000;
+        public static final int action_add=0x7f080009;
+        public static final int action_settings=0x7f080008;
+        public static final int button1=0x7f080003;
+        public static final int button2=0x7f080004;
+        public static final int distance=0x7f080007;
+        public static final int multiAutoCompleteTextView1=0x7f080000;
+        public static final int multiAutoCompleteTextView2=0x7f080001;
+        public static final int multiAutoCompleteTextView3=0x7f080002;
+        public static final int tododesc=0x7f080006;
+        public static final int todolist=0x7f080005;
     }
     public static final class layout {
-        public static final int activity_to_do_list=0x7f030000;
-        public static final int layout_todo_listentry=0x7f030001;
+        public static final int activity_task_creator=0x7f030000;
+        public static final int activity_to_do_list=0x7f030001;
+        public static final int layout_todo_listentry=0x7f030002;
     }
     public static final class menu {
         public static final int to_do_list=0x7f070000;
