@@ -24,7 +24,7 @@ public class ToDoList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_to_do_list);
+		setContentView(R.layout.todo_list_layout);
 		
 		// fill the test list with content
 		ArrayList<HashMap<String, Object>> myList = new ArrayList<HashMap<String,Object>>();
@@ -44,7 +44,7 @@ public class ToDoList extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.to_do_list, menu);
+		getMenuInflater().inflate(R.menu.to_do_list_menu, menu);
 		return true;
 	}
 	

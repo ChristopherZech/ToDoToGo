@@ -16,7 +16,7 @@ public class ArrayAdapterToDoList extends ArrayAdapter<HashMap<String, Object>> 
 	  private final ArrayList<HashMap<String, Object>> values;
 
 	  public ArrayAdapterToDoList(Context context, ArrayList<HashMap<String, Object>> values) {
-	    super(context, R.layout.layout_todo_listentry, values);
+	    super(context, R.layout.todo_list_entry_layout, values);
 	    this.context = context;
 	    this.values = values;
 	  }
@@ -25,7 +25,7 @@ public class ArrayAdapterToDoList extends ArrayAdapter<HashMap<String, Object>> 
 	  public View getView(int position, View convertView, ViewGroup parent) {
 	    LayoutInflater inflater = (LayoutInflater) context
 	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	    View rowView = inflater.inflate(R.layout.layout_todo_listentry, parent, false);
+	    View rowView = inflater.inflate(R.layout.todo_list_entry_layout, parent, false);
 	    
 	    // get fields
 	    TextView textViewDesc = (TextView) rowView.findViewById(R.id.tododesc);
