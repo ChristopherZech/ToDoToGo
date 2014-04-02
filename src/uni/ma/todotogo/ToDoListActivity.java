@@ -62,6 +62,9 @@ public class ToDoListActivity extends Activity {
 	        		      AddActivity.class);
 	        		      startActivity(intentAdd);
 	            return true;
+	        case R.id.action_place:	        	
+	            return true;    
+	        
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }

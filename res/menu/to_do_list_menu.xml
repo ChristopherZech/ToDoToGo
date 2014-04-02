@@ -1,15 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_place"
         android:orderInCategory="100"
+        android:icon="@drawable/ic_action_place"
+        android:showAsAction="always|collapseActionView"
+        android:title="@string/action_place"/>
+	    
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="200"
           android:icon="@drawable/ic_action_settings"
         android:showAsAction="always|collapseActionView"
         android:title="@string/action_settings"/>
 
  
     <item android:id="@+id/action_add"
-        android:orderInCategory="200"
+        android:orderInCategory="300"
           android:icon="@drawable/ic_action_new"
           android:showAsAction="always|collapseActionView"
           android:actionViewClass="android.widget.add"/>
