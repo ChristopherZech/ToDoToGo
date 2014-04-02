@@ -4,5 +4,10 @@
     <string name="app_name">ToDoToGo</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    
+    <string name="pref_sync">Get informed</string>
+    <string name="pref_sync_summ">You will receive push messages based on your location</string>
+    <string name="pref_syncConnectionType">Location check intervals</string>
+  
 
 </resources>
