@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ArrayAdapterToDoList extends ArrayAdapter<HashMap<String, Object>> {
@@ -30,14 +31,14 @@ public class ArrayAdapterToDoList extends ArrayAdapter<HashMap<String, Object>> 
 	    // get fields
 	    TextView textViewDesc = (TextView) rowView.findViewById(R.id.tododesc);
 	    TextView textViewDist = (TextView) rowView.findViewById(R.id.distance);
+	    View categoryView = (View) rowView.findViewById(R.id.category_colorblock);
 	    
 	    // set text of description and distance field
 	    textViewDesc.setText((String)values.get(position).get("ToDoName"));
 	    textViewDist.setText((String)values.get(position).get("distance"));
 
 	    // set background color of description and distance field
-	    textViewDesc.setBackgroundColor((Integer)values.get(position).get("color"));
-	    textViewDist.setBackgroundColor((Integer)values.get(position).get("color"));
+	    categoryView.setBackgroundColor((Integer)values.get(position).get("color"));
 
 	    return rowView;
 	  }

@@ -8,6 +8,9 @@
     <string name="pref_sync">Get informed</string>
     <string name="pref_sync_summ">You will receive push messages based on your location</string>
     <string name="pref_syncConnectionType">Location check intervals</string>
+    
+    <color name="white">#FFFFFF</color>
+    <color name="blue">#3340CC</color>
   
 
 </resources>

@@ -19,7 +19,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-public class ToDoList extends Activity {
+public class ToDoListActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class ToDoList extends Activity {
 		for (int i = 0; i < 20; i++)
 		{
 			// todo ADD CONTENT HERE!
-			myList.add(addItem("Entry Item "+i, ""+i+"m", (i%2 == 0? Color.RED : Color.BLUE)));
+			myList.add(addItem("Entry Item "+i, ""+i+"m", (i%2 == 0? Color.RED : Color.BLUE)));//rgb(255,253,211)  : Color.rgb(211, 224, 255))));
 		}
 		//ListAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, valueList);
 		ListView lv = (ListView)findViewById(R.id.todolist);
@@ -53,7 +53,7 @@ public class ToDoList extends Activity {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_settings:
-	        	Intent intentSettings = new Intent(ToDoList.this,
+	        	Intent intentSettings = new Intent(ToDoListActivity.this,
 	        		      SettingsActivity.class);
 	        		      startActivity(intentSettings);
 	            return true;

@@ -14,6 +14,10 @@ public final class R {
     }
     public static final class attr {
     }
+    public static final class color {
+        public static final int blue=0x7f080001;
+        public static final int white=0x7f080000;
+    }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
@@ -31,16 +35,17 @@ public final class R {
         public static final int ic_launcher=0x7f020003;
     }
     public static final class id {
-        public static final int action_add=0x7f0a0009;
-        public static final int action_settings=0x7f0a0008;
-        public static final int button1=0x7f0a0003;
-        public static final int button2=0x7f0a0004;
-        public static final int distance=0x7f0a0006;
-        public static final int multiAutoCompleteTextView1=0x7f0a0000;
-        public static final int multiAutoCompleteTextView2=0x7f0a0001;
-        public static final int multiAutoCompleteTextView3=0x7f0a0002;
-        public static final int tododesc=0x7f0a0005;
-        public static final int todolist=0x7f0a0007;
+        public static final int action_add=0x7f0b000a;
+        public static final int action_settings=0x7f0b0009;
+        public static final int button1=0x7f0b0003;
+        public static final int button2=0x7f0b0004;
+        public static final int category_colorblock=0x7f0b0007;
+        public static final int distance=0x7f0b0006;
+        public static final int multiAutoCompleteTextView1=0x7f0b0000;
+        public static final int multiAutoCompleteTextView2=0x7f0b0001;
+        public static final int multiAutoCompleteTextView3=0x7f0b0002;
+        public static final int tododesc=0x7f0b0005;
+        public static final int todolist=0x7f0b0008;
     }
     public static final class layout {
         public static final int add_task_layout=0x7f030000;
@@ -48,7 +53,7 @@ public final class R {
         public static final int todo_list_layout=0x7f030002;
     }
     public static final class menu {
-        public static final int to_do_list_menu=0x7f090000;
+        public static final int to_do_list_menu=0x7f0a0000;
     }
     public static final class string {
         public static final int action_settings=0x7f070001;
@@ -80,11 +85,11 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f080000;
+        public static final int AppBaseTheme=0x7f090000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f080001;
+        public static final int AppTheme=0x7f090001;
     }
     public static final class xml {
         public static final int preferences=0x7f040000;
