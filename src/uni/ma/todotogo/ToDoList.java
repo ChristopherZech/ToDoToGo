@@ -53,11 +53,14 @@ public class ToDoList extends Activity {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_settings:
-	        	Intent intent = new Intent(ToDoList.this,
+	        	Intent intentSettings = new Intent(ToDoList.this,
 	        		      SettingsActivity.class);
-	        		      startActivity(intent);
+	        		      startActivity(intentSettings);
 	            return true;
 	        case R.id.action_add:
+	        	Intent intentAdd = new Intent(this,
+	        		      AddActivity.class);
+	        		      startActivity(intentAdd);
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
