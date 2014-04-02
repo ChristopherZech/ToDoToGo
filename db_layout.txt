@@ -1,0 +1,16 @@
+3 farben: ROT, GELB, GRÜN
+
+tasks:
+- taskId
+- name
+- category
+- date
+
+taskPlaces
+- taskId
+- placeId
+
+places:
+- placeId
+- latitude
+- longitude
