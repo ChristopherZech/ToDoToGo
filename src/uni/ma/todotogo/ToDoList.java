@@ -53,6 +53,9 @@ public class ToDoList extends Activity {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_settings:
+	        	Intent intent = new Intent(ToDoList.this,
+	        		      SettingsActivity.class);
+	        		      startActivity(intent);
 	            return true;
 	        case R.id.action_add:
 	            return true;
