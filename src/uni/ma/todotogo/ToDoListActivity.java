@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import uni.ma.todotogo.ToDoContract.ToDoEntry;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.Menu;
@@ -26,17 +30,47 @@ public class ToDoListActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.todo_list_layout);
 		
-		// fill the test list with content
-		ArrayList<HashMap<String, Object>> myList = new ArrayList<HashMap<String,Object>>();
-		for (int i = 0; i < 20; i++)
-		{
-			// todo ADD CONTENT HERE!
-			myList.add(addItem("Entry Item "+i, ""+i+"m", (i%2 == 0? Color.RED : Color.BLUE)));//rgb(255,253,211)  : Color.rgb(211, 224, 255))));
+		// create list which will be filled with data
+		ArrayList<HashMap<String, Object>> toDoList = new ArrayList<HashMap<String,Object>>();
+		
+		// initialize DB
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		
+		// fill list with content
+		String[] projection = {ToDoEntry._ID,
+				ToDoEntry.COLUMN_NAME_TODO_ID,
+				ToDoEntry.COLUMN_NAME_NAME,
+				ToDoEntry.COLUMN_NAME_CATEGORY,
+				ToDoEntry.COLUMN_NAME_DATE
+		};
+		Cursor cursor = db.query(
+			    ToDoEntry.TABLE_NAME,  // The table to query
+			    projection,                               // The columns to return
+			    null,                                // The columns for the WHERE clause
+			    null,                            // The values for the WHERE clause
+			    null,                                     // don't group the rows
+			    null,                                     // don't filter by row groups
+			    null                                // The sort order
+			    );
+		cursor.moveToFirst();
+		while(true) {
+			String name = cursor.getString(cursor.getColumnIndexOrThrow(ToDoEntry.COLUMN_NAME_NAME));
+			
+			// TODO implement distance
+			// TODO implement categories/colors here
+			toDoList.add(addItem(name, "111m", Color.RED));
+			cursor.moveToNext();
+			if(!cursor.moveToNext()) {
+				// we are at last entry already
+				break;
+			}
 		}
-		//ListAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, valueList);
+		
 		ListView lv = (ListView)findViewById(R.id.todolist);
 		
-		ArrayAdapter adapter = new ArrayAdapterToDoList(this, myList);
+		ArrayAdapter adapter = new ArrayAdapterToDoList(this, toDoList);
 		
 		lv.setAdapter(adapter);
 	}
