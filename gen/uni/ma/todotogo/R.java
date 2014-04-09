@@ -67,9 +67,14 @@ public final class R {
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
         public static final int hello_world=0x7f070005;
+        public static final int pref_mute=0x7f07000c;
+        public static final int pref_mute_summ=0x7f07000d;
         public static final int pref_sync=0x7f070006;
         public static final int pref_syncConnectionType=0x7f070008;
         public static final int pref_sync_summ=0x7f070007;
+        public static final int pref_tone=0x7f07000b;
+        public static final int pref_track=0x7f070009;
+        public static final int pref_track_summ=0x7f07000a;
     }
     public static final class style {
         /** 
