@@ -7,6 +7,7 @@ import java.util.List;
 import uni.ma.todotogo.ToDoContract.ToDoEntry;
 
 import android.os.Bundle;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -24,12 +25,15 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 public class ToDoListActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.todo_list_layout);
-		
+		ActionBar actionBar = getActionBar();
+	    //actionBar.setHomeButtonEnabled(true);
+	    actionBar.setDisplayUseLogoEnabled(false);
+	    actionBar.setDisplayHomeAsUpEnabled(true);
 		// create list which will be filled with data
 		ArrayList<HashMap<String, Object>> toDoList = new ArrayList<HashMap<String,Object>>();
 		
@@ -88,13 +92,14 @@ public class ToDoListActivity extends Activity {
 	    switch (item.getItemId()) {
 	        case R.id.action_settings:
 	        	Intent intentSettings = new Intent(ToDoListActivity.this,
-	        		      SettingsActivity.class);
-	        		      startActivity(intentSettings);
+	        			SettingsActivity.class);
+	        			startActivity(intentSettings);
+	        			
 	            return true;
 	        case R.id.action_add:
 	        	Intent intentAdd = new Intent(this,
-	        		      AddActivity.class);
-	        		      startActivity(intentAdd);
+	        		    AddActivity.class);
+	        			startActivityForResult(intentAdd, RESULT_OK);
 	            return true;
 	        case R.id.action_place:	        	
 	            return true;    

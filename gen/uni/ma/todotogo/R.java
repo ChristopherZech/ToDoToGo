@@ -39,17 +39,17 @@ public final class R {
     }
     public static final class id {
         public static final int action_add=0x7f0b000b;
+        public static final int action_add_backward=0x7f0b0007;
+        public static final int action_add_forward=0x7f0b0008;
         public static final int action_place=0x7f0b0009;
         public static final int action_settings=0x7f0b000a;
-        public static final int button1=0x7f0b0003;
-        public static final int button2=0x7f0b0004;
-        public static final int category_colorblock=0x7f0b0007;
-        public static final int distance=0x7f0b0006;
-        public static final int multiAutoCompleteTextView1=0x7f0b0000;
-        public static final int multiAutoCompleteTextView2=0x7f0b0001;
-        public static final int multiAutoCompleteTextView3=0x7f0b0002;
-        public static final int tododesc=0x7f0b0005;
-        public static final int todolist=0x7f0b0008;
+        public static final int add_text_what=0x7f0b0000;
+        public static final int add_text_when=0x7f0b0001;
+        public static final int add_text_where=0x7f0b0002;
+        public static final int category_colorblock=0x7f0b0005;
+        public static final int distance=0x7f0b0004;
+        public static final int tododesc=0x7f0b0003;
+        public static final int todolist=0x7f0b0006;
     }
     public static final class layout {
         public static final int add_task_layout=0x7f030000;
@@ -57,16 +57,19 @@ public final class R {
         public static final int todo_list_layout=0x7f030002;
     }
     public static final class menu {
-        public static final int to_do_list_menu=0x7f0a0000;
+        public static final int add_menu=0x7f0a0000;
+        public static final int to_do_list_menu=0x7f0a0001;
     }
     public static final class string {
+        public static final int action_add_backward=0x7f070004;
+        public static final int action_add_forward=0x7f070003;
         public static final int action_place=0x7f070002;
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
-        public static final int hello_world=0x7f070003;
-        public static final int pref_sync=0x7f070004;
-        public static final int pref_syncConnectionType=0x7f070006;
-        public static final int pref_sync_summ=0x7f070005;
+        public static final int hello_world=0x7f070005;
+        public static final int pref_sync=0x7f070006;
+        public static final int pref_syncConnectionType=0x7f070008;
+        public static final int pref_sync_summ=0x7f070007;
     }
     public static final class style {
         /** 

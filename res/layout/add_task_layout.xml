@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <MultiAutoCompleteTextView
-        android:id="@+id/multiAutoCompleteTextView1"
+        android:id="@+id/add_text_what"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -19,7 +19,7 @@
     </MultiAutoCompleteTextView>
 
     <MultiAutoCompleteTextView
-        android:id="@+id/multiAutoCompleteTextView2"
+        android:id="@+id/add_text_when"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,27 +30,12 @@
     </MultiAutoCompleteTextView>
 
     <MultiAutoCompleteTextView
-        android:id="@+id/multiAutoCompleteTextView3"
+        android:id="@+id/add_text_where"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:ems="10"
         android:hint="Where" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:text="Go for it !" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Cancel" />
 
 </LinearLayout>
