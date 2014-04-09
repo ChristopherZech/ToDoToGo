@@ -81,13 +81,8 @@ public class AddActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
-	        case R.id.action_add_forward:
-	        	Intent intentSettings = new Intent(AddActivity.this,
-	        		      SettingsActivity.class);
-	        		      startActivity(intentSettings);
-	            return true;
-	        case R.id.action_add_backward:
-	        	
+	        case R.id.action_add_ok:
+	        	finish();
 	            return true;
 	        
 	        default:

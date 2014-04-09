@@ -25,11 +25,21 @@
         <activity
 			android:name="uni.ma.todotogo.SettingsActivity"
             android:parentActivityName = "uni.ma.todotogo.ToDoListActivity"
-        ></activity>
+        >
+        <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="uni.ma.todotogo.ToDoListActivity" />    
+        </activity>
         <activity
 			android:name="uni.ma.todotogo.AddActivity"
 			android:parentActivityName = "uni.ma.todotogo.ToDoListActivity"
-        ></activity>
+        >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+	        <meta-data
+	            android:name="android.support.PARENT_ACTIVITY"
+	            android:value="uni.ma.todotogo.ToDoListActivity" /> 
+        </activity>
     </application>
 
 </manifest>

@@ -33,16 +33,16 @@ public final class R {
         public static final int ic_action_forward=0x7f020001;
         public static final int ic_action_name=0x7f020002;
         public static final int ic_action_new=0x7f020003;
-        public static final int ic_action_place=0x7f020004;
-        public static final int ic_action_settings=0x7f020005;
-        public static final int ic_launcher=0x7f020006;
+        public static final int ic_action_ok=0x7f020004;
+        public static final int ic_action_place=0x7f020005;
+        public static final int ic_action_settings=0x7f020006;
+        public static final int ic_launcher=0x7f020007;
     }
     public static final class id {
-        public static final int action_add=0x7f0b000b;
-        public static final int action_add_backward=0x7f0b0007;
-        public static final int action_add_forward=0x7f0b0008;
-        public static final int action_place=0x7f0b0009;
-        public static final int action_settings=0x7f0b000a;
+        public static final int action_add=0x7f0b000a;
+        public static final int action_add_ok=0x7f0b0007;
+        public static final int action_place=0x7f0b0008;
+        public static final int action_settings=0x7f0b0009;
         public static final int add_text_what=0x7f0b0000;
         public static final int add_text_when=0x7f0b0001;
         public static final int add_text_where=0x7f0b0002;
@@ -62,7 +62,7 @@ public final class R {
     }
     public static final class string {
         public static final int action_add_backward=0x7f070004;
-        public static final int action_add_forward=0x7f070003;
+        public static final int action_add_ok=0x7f070003;
         public static final int action_place=0x7f070002;
         public static final int action_settings=0x7f070001;
         public static final int app_name=0x7f070000;
