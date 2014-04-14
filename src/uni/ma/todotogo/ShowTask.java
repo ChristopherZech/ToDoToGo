@@ -39,7 +39,7 @@ public class ShowTask extends Activity {
         }
  
         //sets the adapter that provides data to the list.
-        mExpandableList.setAdapter(new ExpandableListAdapter(ShowTask.this,arrayParents));
+        //mExpandableList.setAdapter(new ExpandableListAdapter(ShowTask.this,arrayParents));
  
     }
 }
