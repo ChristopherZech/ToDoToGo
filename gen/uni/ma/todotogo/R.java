@@ -234,31 +234,43 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f020023;
     }
     public static final class id {
-        public static final int action_add=0x7f060010;
-        public static final int action_add_ok=0x7f06000d;
-        public static final int action_place=0x7f06000e;
-        public static final int action_settings=0x7f06000f;
+        public static final int action_add=0x7f060019;
+        public static final int action_add_ok=0x7f060016;
+        public static final int action_place=0x7f060017;
+        public static final int action_settings=0x7f060018;
         public static final int add_text_what=0x7f060005;
         public static final int add_text_when=0x7f060006;
         public static final int add_text_where=0x7f060007;
-        public static final int category_colorblock=0x7f06000b;
-        public static final int distance=0x7f06000a;
+        public static final int button=0x7f06000d;
+        public static final int category_colorblock=0x7f060010;
+        public static final int checkBox1=0x7f060012;
+        public static final int distance=0x7f06000f;
+        public static final int expandableListView1=0x7f060014;
         public static final int hybrid=0x7f060004;
+        public static final int list_item=0x7f06000b;
+        public static final int list_item_child=0x7f060009;
+        public static final int list_item_text_child=0x7f06000a;
+        public static final int list_item_text_view=0x7f06000c;
         public static final int map=0x7f060008;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
         public static final int satellite=0x7f060002;
+        public static final int scrollView1=0x7f060013;
         public static final int terrain=0x7f060003;
-        public static final int tododesc=0x7f060009;
-        public static final int todolist=0x7f06000c;
+        public static final int textView2=0x7f060015;
+        public static final int tododesc=0x7f06000e;
+        public static final int todolist=0x7f060011;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f080000;
     }
     public static final class layout {
         public static final int add_task_layout=0x7f030000;
-        public static final int todo_list_entry_layout=0x7f030001;
-        public static final int todo_list_layout=0x7f030002;
+        public static final int list_item_child=0x7f030001;
+        public static final int list_item_parent=0x7f030002;
+        public static final int todo_list_entry_layout=0x7f030003;
+        public static final int todo_list_layout=0x7f030004;
+        public static final int todo_show_task=0x7f030005;
     }
     public static final class menu {
         public static final int add_menu=0x7f0c0000;
