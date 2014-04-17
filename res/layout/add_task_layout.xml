@@ -39,6 +39,14 @@
         android:ems="10"
         android:hint="Where" /> -->
 
+    <Spinner
+        android:id="@+id/add_spinner_categories"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:ems="10"
+        android:layout_gravity="center" />
+
     <EditText
         android:id="@+id/add_text_where"
         android:layout_width="wrap_content"

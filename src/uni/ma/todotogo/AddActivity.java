@@ -1,9 +1,11 @@
 package uni.ma.todotogo;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -17,8 +19,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.Spinner;
 
 public class AddActivity extends Activity {
 	
@@ -68,6 +72,15 @@ public class AddActivity extends Activity {
 		                    myCalendar.get(Calendar.DAY_OF_MONTH)).show();
 				}
 		});
+		
+		// fill dropdown menu for colors with content
+		Spinner spinnerDropdown = (Spinner) findViewById(R.id.add_spinner_categories);
+		ArrayAdapter<CharSequence> spinnerDropdownAdapter = new ArrayAdapter(this,
+				android.R.layout.simple_spinner_item, AvailableColors.values());
+		// Specify the layout to use when the list of choices appears
+		spinnerDropdownAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinnerDropdown.setAdapter(spinnerDropdownAdapter);
 	}
 	
 	@Override
