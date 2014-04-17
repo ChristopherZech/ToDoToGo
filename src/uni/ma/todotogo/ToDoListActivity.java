@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+
 public class ToDoListActivity extends Activity {
 	
 	@Override
@@ -61,13 +62,13 @@ public class ToDoListActivity extends Activity {
 		cursor.moveToFirst();
 		while(true) {
 			String name = cursor.getString(cursor.getColumnIndexOrThrow(ToDoEntry.COLUMN_NAME_NAME));
-			
+
 			// TODO implement distance
 			// TODO implement categories/colors here
-			toDoList.add(addItem(name, "111m", Color.RED));
+			toDoList.add(addItem(name, "111m", AvailableColors.RED.getColor()));
 			cursor.moveToNext();
 			if(!cursor.moveToNext()) {
-				// we are at last entry already
+				// we have reached last entry
 				break;
 			}
 		}
