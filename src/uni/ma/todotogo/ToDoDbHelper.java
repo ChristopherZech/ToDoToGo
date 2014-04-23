@@ -16,7 +16,7 @@ import uni.ma.todotogo.ToDoContract.ToDoPlacesEntry;
  * 
  */
 public class ToDoDbHelper extends SQLiteOpenHelper {
-	public static final int DATABASE_VERSION = 6;
+	public static final int DATABASE_VERSION = 7;
     public static final String DATABASE_NAME = "ToDoToGo.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -33,6 +33,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
 		    "CREATE TABLE " + PlacesEntry.TABLE_NAME + " (" +
 		    PlacesEntry._ID + " INTEGER PRIMARY KEY," +
 		    PlacesEntry.COLUMN_NAME_PLACE_ID + " INTEGER " + COMMA_SEP +
+		    PlacesEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
 		    PlacesEntry.COLUMN_NAME_LATITUDE + " REAL " + COMMA_SEP +
 		    PlacesEntry.COLUMN_NAME_LONGDITUDE + " REAL " +
 		    " )";
@@ -77,7 +78,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_TODOS);
+        onDelete(db);
         onCreate(db);
     }
 }

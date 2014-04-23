@@ -11,10 +11,6 @@ import android.provider.BaseColumns;
  */
 public final class ToDoContract {
 
-	public ToDoContract() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public static abstract class ToDoEntry implements BaseColumns {
         public static final String TABLE_NAME = "todos";
         public static final String COLUMN_NAME_TODO_ID = "todo_id";
@@ -26,6 +22,7 @@ public final class ToDoContract {
 	public static abstract class PlacesEntry implements BaseColumns {
         public static final String TABLE_NAME = "places";
         public static final String COLUMN_NAME_PLACE_ID = "place_id";
+        public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_LATITUDE = "latitude";
         public static final String COLUMN_NAME_LONGDITUDE = "longditude";
     }
