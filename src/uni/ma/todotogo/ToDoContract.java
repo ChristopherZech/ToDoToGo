@@ -1,5 +1,6 @@
 /**
- * for Database
+ * Contract for Database
+ * @author Chris
  */
 package uni.ma.todotogo;
 import android.provider.BaseColumns;
@@ -11,7 +12,12 @@ import android.provider.BaseColumns;
  */
 public final class ToDoContract {
 
-	public static abstract class ToDoEntry implements BaseColumns {
+	/**
+	 * Stores the Entrys of the ToDo list
+	 * @author Chris
+	 *
+	 */
+	public static abstract class DBToDoEntry implements BaseColumns {
         public static final String TABLE_NAME = "todos";
         public static final String COLUMN_NAME_TODO_ID = "todo_id";
         public static final String COLUMN_NAME_NAME = "name";
@@ -19,7 +25,12 @@ public final class ToDoContract {
         public static final String COLUMN_NAME_DATE = "date";
     }
 	
-	public static abstract class PlacesEntry implements BaseColumns {
+	/**
+	 * Stores the available places.
+	 * @author Chris
+	 *
+	 */
+	public static abstract class DBPlacesEntry implements BaseColumns {
         public static final String TABLE_NAME = "places";
         public static final String COLUMN_NAME_PLACE_ID = "place_id";
         public static final String COLUMN_NAME_NAME = "name";
@@ -27,9 +38,14 @@ public final class ToDoContract {
         public static final String COLUMN_NAME_LONGDITUDE = "longditude";
     }
 
-	public static abstract class ToDoPlacesEntry implements BaseColumns {
+	/**
+	 * Maps ToDos and places m:n.
+	 * @author Chris
+	 *
+	 */
+	public static abstract class DBToDoPlacesEntry implements BaseColumns {
         public static final String TABLE_NAME = "todoplaces";
-        public static final String COLUMN_NAME_TODO_ID = ToDoEntry.COLUMN_NAME_TODO_ID;
-        public static final String COLUMN_NAME_PLACE_ID = PlacesEntry.COLUMN_NAME_PLACE_ID;
+        public static final String COLUMN_NAME_TODO_ID = DBToDoEntry.COLUMN_NAME_TODO_ID;
+        public static final String COLUMN_NAME_PLACE_ID = DBPlacesEntry.COLUMN_NAME_PLACE_ID;
     }
 }

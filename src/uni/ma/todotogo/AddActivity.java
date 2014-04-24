@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -29,7 +30,7 @@ public class AddActivity extends Activity {
 	String name = "";
 	Set<Location> locations = new HashSet<Location>();
 	MultiAutoCompleteTextView myEditText;
-	Calendar myCalendar;
+	GregorianCalendar myCalendar;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class AddActivity extends Activity {
 		setContentView(R.layout.add_task_layout);
 		this.myEditText = (MultiAutoCompleteTextView)findViewById(R.id.add_text_when);
 		
-		this.myCalendar = Calendar.getInstance();
+		this.myCalendar = new GregorianCalendar();
 
 		final DatePickerDialog.OnDateSetListener datePicked = new DatePickerDialog.OnDateSetListener() {
 
@@ -53,11 +54,11 @@ public class AddActivity extends Activity {
 
 			private void updateLabel() {
 
-			    String myFormat = "MM/dd/yy"; //In which you need put here
-			    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+			    String myFormat = "dd/MM/yy"; //In which you need put here
+			    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.GERMANY);
 
 			    myEditText.setText(sdf.format(myCalendar.getTime()));
-			    }
+			}
 
 		};
 
@@ -95,6 +96,10 @@ public class AddActivity extends Activity {
 	    // Handle presses on the action bar items
 	    switch (item.getItemId()) {
 	        case R.id.action_add_ok:
+	        	String name = ((MultiAutoCompleteTextView)findViewById(R.id.add_text_what)).getEditableText().toString();
+	        	long category = ((Spinner)findViewById(R.id.add_spinner_categories)).getSelectedItemId();
+	        	ToDoEntry newEntry = new ToDoEntry(-1, name, (int)category, myCalendar);
+	        	newEntry.writeToDB(getBaseContext());
 	        	finish();
 	            return true;
 	        

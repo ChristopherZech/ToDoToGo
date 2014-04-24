@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import uni.ma.todotogo.ToDoContract.ToDoEntry;
+import uni.ma.todotogo.ToDoContract.DBToDoEntry;
 
 import android.os.Bundle;
 import android.app.ActionBar;
@@ -27,9 +27,11 @@ import android.location.*;
 
 
 public class ToDoListActivity extends Activity {
+	private ArrayList<HashMap<String, Object>> toDoList;
+	private ArrayAdapter adapter;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) {		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.todo_list_layout);
 		ActionBar actionBar = getActionBar();
@@ -37,47 +39,10 @@ public class ToDoListActivity extends Activity {
 	    actionBar.setDisplayUseLogoEnabled(false);
 	    actionBar.setDisplayHomeAsUpEnabled(true);
 		// create list which will be filled with data
-		ArrayList<HashMap<String, Object>> toDoList = new ArrayList<HashMap<String,Object>>();
-		
-		// initialize DB
-		ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
-		SQLiteDatabase db = mDbHelper.getReadableDatabase();
-		
-		
-		// fill list with content
-		String[] projection = {ToDoEntry._ID,
-				ToDoEntry.COLUMN_NAME_TODO_ID,
-				ToDoEntry.COLUMN_NAME_NAME,
-				ToDoEntry.COLUMN_NAME_CATEGORY,
-				ToDoEntry.COLUMN_NAME_DATE
-		};
-		Cursor cursor = db.query(
-			    ToDoEntry.TABLE_NAME,  // The table to query
-			    projection,                               // The columns to return
-			    null,                                // The columns for the WHERE clause
-			    null,                            // The values for the WHERE clause
-			    null,                                     // don't group the rows
-			    null,                                     // don't filter by row groups
-			    null                                // The sort order
-			    );
-		cursor.moveToFirst();
-		while(true) {
-			String name = cursor.getString(cursor.getColumnIndexOrThrow(ToDoEntry.COLUMN_NAME_NAME));
-
-			// TODO implement distance
-			// TODO implement categories/colors here
-			toDoList.add(addItem(name, "111m", AvailableColors.RED.getColor()));
-			cursor.moveToNext();
-			if(!cursor.moveToNext()) {
-				// we have reached last entry
-				break;
-			}
-		}
+		toDoList = new ArrayList<HashMap<String,Object>>();
 		
 		ListView lv = (ListView)findViewById(R.id.todolist);
-		
-		ArrayAdapter adapter = new ArrayAdapterToDoList(this, toDoList);
-		
+		adapter = new ArrayAdapterToDoList(this, toDoList);
 		lv.setAdapter(adapter);
 	}
 
@@ -126,6 +91,49 @@ public class ToDoListActivity extends Activity {
         item.put("color", bgColor);
         
         return item;
+    }
+    
+    public void updateList() {
+    	toDoList.clear();
+    	// initialize DB
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		// fill list with content
+		String[] projection = {DBToDoEntry._ID,
+				DBToDoEntry.COLUMN_NAME_TODO_ID,
+				DBToDoEntry.COLUMN_NAME_NAME,
+				DBToDoEntry.COLUMN_NAME_CATEGORY,
+				DBToDoEntry.COLUMN_NAME_DATE
+		};
+		Cursor cursor = db.query(
+			    DBToDoEntry.TABLE_NAME,  // The table to query
+			    projection,                               // The columns to return
+			    null,                                // The columns for the WHERE clause
+			    null,                            // The values for the WHERE clause
+			    null,                                     // don't group the rows
+			    null,                                     // don't filter by row groups
+			    null                                // The sort order
+			    );
+		cursor.moveToFirst();
+		while(true) {
+			String name = cursor.getString(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
+			int color = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
+			// TODO implement distance
+			toDoList.add(addItem(name, "111m", color));
+			cursor.moveToNext();
+			if(!cursor.moveToNext()) {
+				// we have reached last entry
+				break;
+			}
+		}
+		
+		adapter.notifyDataSetChanged();
+    }
+    
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	updateList();
     }
 
 }
