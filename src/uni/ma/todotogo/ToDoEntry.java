@@ -97,9 +97,11 @@ public class ToDoEntry {
 		values.put(DBToDoEntry.COLUMN_NAME_CATEGORY, category.getColor());
 		values.put(DBToDoEntry.COLUMN_NAME_DATE, date.getTimeInMillis());
 		
-		if(id != -1) { // a new item is created
+		if(id == -1) { // a new item is created
 			values.put(DBToDoEntry.COLUMN_NAME_TODO_ID, id);
-			db.insert(DBToDoEntry.TABLE_NAME, null, values);
+			id = (int)db.insert(DBToDoEntry.TABLE_NAME, null, values);
+			System.out.println("DB eintrag mit ID: " + id);
+			
 		} else {
 			// item is updated
 			// TODO UPDATE NOT IMPLEMENTED YET!
