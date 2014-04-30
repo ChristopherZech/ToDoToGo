@@ -98,6 +98,9 @@ public class ToDoListActivity extends Activity {
     	// initialize DB
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		System.out.println();
+		
 		// fill list with content
 		String[] projection = {DBToDoEntry._ID,
 				DBToDoEntry.COLUMN_NAME_TODO_ID,
@@ -114,8 +117,8 @@ public class ToDoListActivity extends Activity {
 			    null,                                     // don't filter by row groups
 			    null                                // The sort order
 			    );
-		cursor.moveToFirst();
-		while(true) {
+		
+		while(cursor.moveToFirst()) {
 			String name = cursor.getString(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
 			int color = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
 			// TODO implement distance
