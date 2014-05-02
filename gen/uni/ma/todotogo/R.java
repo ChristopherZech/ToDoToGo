@@ -188,6 +188,11 @@ containing a value of this type.
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
+
          Customize dimensions originally defined in res/values/dimens.xml (such as
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
@@ -238,10 +243,10 @@ containing a value of this type.
         public static final int action_add_ok=0x7f060017;
         public static final int action_place=0x7f060018;
         public static final int action_settings=0x7f060019;
-        public static final int add_spinner_categories=0x7f060007;
-        public static final int add_text_what=0x7f060005;
-        public static final int add_text_when=0x7f060006;
-        public static final int add_text_where=0x7f060008;
+        public static final int add_spinner_categories=0x7f060008;
+        public static final int add_text_what=0x7f060006;
+        public static final int add_text_when=0x7f060007;
+        public static final int add_text_where=0x7f060009;
         public static final int button=0x7f06000e;
         public static final int category_colorblock=0x7f060011;
         public static final int checkBox1=0x7f060013;
@@ -252,7 +257,7 @@ containing a value of this type.
         public static final int list_item_child=0x7f06000a;
         public static final int list_item_text_child=0x7f06000b;
         public static final int list_item_text_view=0x7f06000d;
-        public static final int map=0x7f060009;
+        public static final int map=0x7f060005;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
         public static final int satellite=0x7f060002;
@@ -266,12 +271,13 @@ containing a value of this type.
         public static final int google_play_services_version=0x7f080000;
     }
     public static final class layout {
-        public static final int add_task_layout=0x7f030000;
-        public static final int list_item_child=0x7f030001;
-        public static final int list_item_parent=0x7f030002;
-        public static final int todo_list_entry_layout=0x7f030003;
-        public static final int todo_list_layout=0x7f030004;
-        public static final int todo_show_task=0x7f030005;
+        public static final int activity_map_view=0x7f030000;
+        public static final int add_task_layout=0x7f030001;
+        public static final int list_item_child=0x7f030002;
+        public static final int list_item_parent=0x7f030003;
+        public static final int todo_list_entry_layout=0x7f030004;
+        public static final int todo_list_layout=0x7f030005;
+        public static final int todo_show_task=0x7f030006;
     }
     public static final class menu {
         public static final int add_menu=0x7f0c0000;
@@ -389,6 +395,8 @@ containing a value of this type.
         public static final int pref_tone=0x7f070026;
         public static final int pref_track=0x7f070024;
         public static final int pref_track_summ=0x7f070025;
+        public static final int title_activity_main=0x7f070029;
+        public static final int title_activity_map_view=0x7f07002a;
     }
     public static final class style {
         /** 

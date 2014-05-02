@@ -3,7 +3,10 @@
  */
 package uni.ma.todotogo;
 
+
+
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
@@ -71,5 +74,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
         // to simply to discard the data and start over
         onDelete(db);
         onCreate(db);
-    }
+    }  	
+     
+    
 }

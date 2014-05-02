@@ -68,7 +68,9 @@ public class ToDoListActivity extends Activity {
 	        		    AddActivity.class);
 	        			startActivityForResult(intentAdd, RESULT_OK);
 	            return true;
-	        case R.id.action_place:	        	
+	        case R.id.action_place:	   
+	        	Intent intentMapview = new Intent(this,MapView.class);
+	        	startActivity(intentMapview);
 	            return true;    
 	        
 	        default:

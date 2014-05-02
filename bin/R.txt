@@ -73,10 +73,10 @@ int id action_add 0x7f06001a
 int id action_add_ok 0x7f060017
 int id action_place 0x7f060018
 int id action_settings 0x7f060019
-int id add_spinner_categories 0x7f060007
-int id add_text_what 0x7f060005
-int id add_text_when 0x7f060006
-int id add_text_where 0x7f060008
+int id add_spinner_categories 0x7f060008
+int id add_text_what 0x7f060006
+int id add_text_when 0x7f060007
+int id add_text_where 0x7f060009
 int id button 0x7f06000e
 int id category_colorblock 0x7f060011
 int id checkBox1 0x7f060013
@@ -87,7 +87,7 @@ int id list_item 0x7f06000c
 int id list_item_child 0x7f06000a
 int id list_item_text_child 0x7f06000b
 int id list_item_text_view 0x7f06000d
-int id map 0x7f060009
+int id map 0x7f060005
 int id none 0x7f060000
 int id normal 0x7f060001
 int id satellite 0x7f060002
@@ -97,12 +97,13 @@ int id textView2 0x7f060016
 int id tododesc 0x7f06000f
 int id todolist 0x7f060012
 int integer google_play_services_version 0x7f080000
-int layout add_task_layout 0x7f030000
-int layout list_item_child 0x7f030001
-int layout list_item_parent 0x7f030002
-int layout todo_list_entry_layout 0x7f030003
-int layout todo_list_layout 0x7f030004
-int layout todo_show_task 0x7f030005
+int layout activity_map_view 0x7f030000
+int layout add_task_layout 0x7f030001
+int layout list_item_child 0x7f030002
+int layout list_item_parent 0x7f030003
+int layout todo_list_entry_layout 0x7f030004
+int layout todo_list_layout 0x7f030005
+int layout todo_show_task 0x7f030006
 int menu add_menu 0x7f0c0000
 int menu to_do_list_menu 0x7f0c0001
 int string action_add_backward 0x7f07001f
@@ -146,6 +147,8 @@ int string pref_sync_summ 0x7f070022
 int string pref_tone 0x7f070026
 int string pref_track 0x7f070024
 int string pref_track_summ 0x7f070025
+int string title_activity_main 0x7f070029
+int string title_activity_map_view 0x7f07002a
 int style AppBaseTheme 0x7f0b0000
 int style AppTheme 0x7f0b0001
 int[] styleable AdsAttrs { 0x7f010000, 0x7f010001, 0x7f010002 }

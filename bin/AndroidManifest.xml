@@ -14,7 +14,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--
      The following two permissions are not required to use
-     Google Maps Android API v2, but are recommended.
+     Google Maps Android API v2, but are recommended.
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -58,6 +58,23 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDVVBL65w4DI0gBljiYCcNJvB7hPBUzUhQ" />
+
+        <activity
+            android:name="uni.ma.todotogo.MainActivity"
+            android:label="@string/title_activity_main"
+            android:parentActivityName="uni.ma.todotogo.AddActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="AddActivity" />
+        </activity>
+        <activity
+            android:name="uni.ma.todotogo.MapView"
+            android:label="@string/title_activity_map_view"
+            android:parentActivityName="uni.ma.todotogo.AddActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="AddActivity" />
+        </activity>
     </application>
 
 </manifest>

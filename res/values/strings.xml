@@ -7,19 +7,19 @@
     <string name="action_add_ok">Finish</string>
     <string name="action_add_backward">Cancel</string>
     <string name="hello_world">Hello world!</string>
-    
     <string name="pref_sync">Get informed</string>
     <string name="pref_sync_summ">You will receive push messages based on your location</string>
     <string name="pref_syncConnectionType">Location check intervals</string>
-    
     <string name="pref_track">Get tracked</string>
     <string name="pref_track_summ">Decide whether you want this app to track your location</string>
-    
+
     <color name="white">#FFFFFF</color>
     <color name="blue">#3340CC</color>
-  
+
     <string name="pref_tone">Ringtone</string>
     <string name="pref_mute">Mute</string>
     <string name="pref_mute_summ">Disable all the sound in the application</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_map_view">MapView</string>
 
 </resources>

@@ -102,6 +102,10 @@ public class AddActivity extends Activity {
 	        	newEntry.writeToDB(getBaseContext());
 	        	finish();
 	            return true;
+	            
+	        case R.id.action_place:
+	        	Intent myIntent = new Intent(this, MapView.class);
+	        	startActivity(myIntent);
 	        
 	        default:
 	            return super.onOptionsItemSelected(item);
