@@ -119,17 +119,14 @@ public class ToDoListActivity extends Activity {
 			    null,                                     // don't filter by row groups
 			    null                                // The sort order
 			    );
-		
-		while(cursor.moveToFirst()) {
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()) {
 			String name = cursor.getString(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
 			int color = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
 			// TODO implement distance
 			toDoList.add(addItem(name, "111m", color));
 			cursor.moveToNext();
-			if(!cursor.moveToNext()) {
-				// we have reached last entry
-				break;
-			}
+			
 		}
 		
 		adapter.notifyDataSetChanged();
