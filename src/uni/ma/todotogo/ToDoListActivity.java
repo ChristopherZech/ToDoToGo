@@ -6,7 +6,9 @@ import java.util.List;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.ToDoContract.DBToDoEntry;
+import uni.ma.todotogo.ToDoContract.DBToDoPlacesEntry;
 
 import android.os.Bundle;
 import android.provider.Settings;
@@ -120,9 +122,10 @@ public class ToDoListActivity extends Activity {
 				DBToDoEntry.COLUMN_NAME_DATE
 		};
 		
-//		String query= "Select DBToDoEntry._ID,DBToDoEntry.COLUMN_NAME_TODO_ID,DBToDoEntry.COLUMN_NAME_NAME,DBToDoEntry.COLUMN_NAME_CATEGORY,DBToDoEntry.COLUMN_NAME_DATE ,DBPlacesEntry.COLUMN_NAME_LATITUDE,DBPlacesEntry.COLUMN_NAME_LONGDITUDE FROM DBToDoEntry.TABLE_NAME NATURAL JOIN DBToDoPlacesEntry.TABLE_NAME NATURAL JOIN DBPlacesEntry.TABLE_NAME"; 
-		Cursor cursor = db.query(		
-				DBToDoEntry.TABLE_NAME,  // The table to query
+//		String query= "SELECT * FROM todos NATURAL JOIN todoplaces NATURAL JOIN places";
+//		Cursor cursor = db.rawQuery(query,null);		
+				Cursor cursor = db.query(
+				DBToDoEntry.TABLE_NAME,  					// The table to query
 			    projection,                               // The columns to return
 			    null,                                // The columns for the WHERE clause
 			    null,                            // The values for the WHERE clause
@@ -131,17 +134,34 @@ public class ToDoListActivity extends Activity {
 			    null                                // The sort order
 			    );
 		cursor.moveToFirst();
+		Location loc = new Location("New");
+		loc.setLatitude(0); 
+		loc.setLongitude(0);
+		GPSTracker gps = new GPSTracker(ToDoListActivity.this);
+   	   Location currentLocation= gps.getLocation();
+   	  double Lat= currentLocation.getLatitude();
+   	  double Lng= currentLocation.getLongitude();
+   	  Location current = new Location("Current");
+   	  current.setLatitude(Lat);
+   	  current.setLongitude(Lng);
+   	  
+   	  
 		while(!cursor.isAfterLast()) {
 			String name = cursor.getString(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
 			int color = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
 			// TODO implement distance
-			
-			
-			
-			toDoList.add(addItem(name, "111m", color));
+//			double lat= cursor.getDouble(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LATITUDE));
+//			double lng= cursor.getDouble(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LONGDITUDE));
+//			loc.setLatitude(lat); 
+//			loc.setLongitude(lng);
+//			String dist= "145m";
+			int distance = (int)loc.distanceTo(current);
+			String dist= distance+"m";
+		
+			toDoList.add(addItem(name, dist, color));
 			cursor.moveToNext();
 			
-		}
+	}
 		
 		adapter.notifyDataSetChanged();
     }
