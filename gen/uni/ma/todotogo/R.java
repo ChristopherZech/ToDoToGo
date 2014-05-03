@@ -241,8 +241,8 @@ containing a value of this type.
     public static final class id {
         public static final int action_add=0x7f06001a;
         public static final int action_add_ok=0x7f060017;
-        public static final int action_place=0x7f060018;
-        public static final int action_settings=0x7f060019;
+        public static final int action_place=0x7f060019;
+        public static final int action_settings=0x7f060018;
         public static final int add_spinner_categories=0x7f060008;
         public static final int add_text_what=0x7f060006;
         public static final int add_text_when=0x7f060007;
@@ -271,17 +271,19 @@ containing a value of this type.
         public static final int google_play_services_version=0x7f080000;
     }
     public static final class layout {
-        public static final int activity_map_view=0x7f030000;
-        public static final int add_task_layout=0x7f030001;
-        public static final int list_item_child=0x7f030002;
-        public static final int list_item_parent=0x7f030003;
-        public static final int todo_list_entry_layout=0x7f030004;
-        public static final int todo_list_layout=0x7f030005;
-        public static final int todo_show_task=0x7f030006;
+        public static final int activity_map_marker=0x7f030000;
+        public static final int activity_map_view=0x7f030001;
+        public static final int add_task_layout=0x7f030002;
+        public static final int list_item_child=0x7f030003;
+        public static final int list_item_parent=0x7f030004;
+        public static final int todo_list_entry_layout=0x7f030005;
+        public static final int todo_list_layout=0x7f030006;
+        public static final int todo_show_task=0x7f030007;
     }
     public static final class menu {
         public static final int add_menu=0x7f0c0000;
-        public static final int to_do_list_menu=0x7f0c0001;
+        public static final int map_marker=0x7f0c0001;
+        public static final int to_do_list_menu=0x7f0c0002;
     }
     public static final class string {
         public static final int action_add_backward=0x7f07001f;
@@ -396,6 +398,7 @@ containing a value of this type.
         public static final int pref_track=0x7f070024;
         public static final int pref_track_summ=0x7f070025;
         public static final int title_activity_main=0x7f070029;
+        public static final int title_activity_map_marker=0x7f07002b;
         public static final int title_activity_map_view=0x7f07002a;
     }
     public static final class style {

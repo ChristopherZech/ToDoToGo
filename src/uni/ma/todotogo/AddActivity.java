@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.google.android.gms.maps.GoogleMap;
+
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -21,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
@@ -74,6 +77,8 @@ public class AddActivity extends Activity {
 				}
 		});
 		
+		
+		
 		// fill dropdown menu for colors with content
 		Spinner spinnerDropdown = (Spinner) findViewById(R.id.add_spinner_categories);
 		ArrayAdapter<CharSequence> spinnerDropdownAdapter = new ArrayAdapter(this,
@@ -122,8 +127,10 @@ public class AddActivity extends Activity {
 	  setResult(RESULT_OK, data);
 	  super.finish();
 	} 
-	
-	
-	
+	public void goToMap(View v){
+		Intent myIntent = new Intent(this, MapMarkerActivity.class);
+		startActivity(myIntent);
+		
+	}
 }
 

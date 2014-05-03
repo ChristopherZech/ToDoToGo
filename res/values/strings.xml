@@ -21,5 +21,6 @@
     <string name="pref_mute_summ">Disable all the sound in the application</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_map_view">MapView</string>
+    <string name="title_activity_map_marker">MapMarkerActivity</string>
 
 </resources>
