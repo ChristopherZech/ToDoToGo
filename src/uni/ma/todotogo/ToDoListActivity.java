@@ -137,14 +137,18 @@ public class ToDoListActivity extends Activity {
 		Location loc = new Location("New");
 		loc.setLatitude(0); 
 		loc.setLongitude(0);
-		GPSTracker gps = new GPSTracker(ToDoListActivity.this);
-   	   Location currentLocation= gps.getLocation();
-   	  double Lat= currentLocation.getLatitude();
-   	  double Lng= currentLocation.getLongitude();
-   	  Location current = new Location("Current");
-   	  current.setLatitude(Lat);
-   	  current.setLongitude(Lng);
-   	  
+//		GPSTracker gps = new GPSTracker(ToDoListActivity.this);
+//		if(gps.canGetLocation()){
+//   	  	Location currentLocation= gps.getLocation();
+//   	  	double Lat= currentLocation.getLatitude();
+//   	  	double Lng= currentLocation.getLongitude();
+//   	  	Location current = new Location("Current");
+//   	  	current.setLatitude(1);
+//   	  	current.setLongitude(1);
+//   	  	current.setLatitude(Lat);
+//	  	current.setLongitude(Lng);
+//	  	int distance =111;
+//		}
    	  
 		while(!cursor.isAfterLast()) {
 			String name = cursor.getString(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
@@ -155,9 +159,8 @@ public class ToDoListActivity extends Activity {
 //			loc.setLatitude(lat); 
 //			loc.setLongitude(lng);
 //			String dist= "145m";
-			int distance = (int)loc.distanceTo(current);
+			int distance = (int)loc.distanceTo(getCurrentPosition());
 			String dist= distance+"m";
-		
 			toDoList.add(addItem(name, dist, color));
 			cursor.moveToNext();
 			
@@ -173,9 +176,9 @@ public class ToDoListActivity extends Activity {
     }
     
     public Location getCurrentPosition(){
-    		gps = new GPSTracker(ToDoListActivity.this);
-    	   Location currentLocation= gps.getLocation();
-    	   return currentLocation;
+    	gps = new GPSTracker(ToDoListActivity.this);
+    	Location currentLocation= gps.getLocation();
+    	return currentLocation;
      }
     
 }

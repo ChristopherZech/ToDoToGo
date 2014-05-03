@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import com.google.android.gms.maps.GoogleMap;
-
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -108,6 +106,7 @@ public class AddActivity extends Activity {
 	        	finish();
 	            return true;
 	            
+	        // Start MapView activity when world button is clicked
 	        case R.id.action_place:
 	        	Intent myIntent = new Intent(this, MapView.class);
 	        	startActivity(myIntent);
@@ -127,10 +126,11 @@ public class AddActivity extends Activity {
 	  setResult(RESULT_OK, data);
 	  super.finish();
 	} 
+	
+	// Implementation of Go To Map button that starts MapMarkerActivity to add Locations
 	public void goToMap(View v){
 		Intent myIntent = new Intent(this, MapMarkerActivity.class);
 		startActivity(myIntent);
-		
 	}
+	
 }
-

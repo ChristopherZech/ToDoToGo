@@ -32,7 +32,7 @@ public class MapView extends Activity {
 		
 		//set Action Bar
 		ActionBar actionBar = getActionBar();
-	    //actionBar.setHomeButtonEnabled(true);
+	    actionBar.setHomeButtonEnabled(true);
 	    actionBar.setDisplayUseLogoEnabled(false);
 	    actionBar.setDisplayHomeAsUpEnabled(true);
 	    
@@ -43,41 +43,43 @@ public class MapView extends Activity {
 	         mapView.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 	            if (mapView != null) {
 	            // The Map is verified. It is now safe to manipulate the map.
-	        	
-	            //set Focus of Map (currently Schloss Ehrenhof)	
-	            	GPSTracker gps = new GPSTracker(MapView.this);
-	         	   Location currentLocation= gps.getLocation();
-	         	  double Lat= currentLocation.getLatitude();
-	         	  double Lng= currentLocation.getLongitude();
+	            
+	            	// Instantiated GPSTracker object to get current Position
+	            GPSTracker gps = new GPSTracker(MapView.this);
+	            Location currentLocation= gps.getLocation();
+	            double Lat= currentLocation.getLatitude();
+	         	double Lng= currentLocation.getLongitude();
 	        	LatLng position= new LatLng(Lat,Lng);
+	        	//set Focus of Map current
 	        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
-	        	BitmapDescriptor bitmapDescriptor 
-	        	   = BitmapDescriptorFactory.defaultMarker(
-	        	     BitmapDescriptorFactory.HUE_AZURE);
-	        	
-	        	mapView.addMarker(new MarkerOptions().position(position).icon(bitmapDescriptor).title("Current Location"));
-	        	
+	        	//change color of marker
+	        	BitmapDescriptor bitmapDescriptor = 
+	        			BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);
+	        	// add marker to current Position
+	        	mapView.addMarker(new MarkerOptions().position(position).icon(bitmapDescriptor)
+	        			.title("Current Location"));
+	        	}
 	        	//get Database to display Locations
 	        	ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
 	    		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 	    			if(db!=null){
-	    				Cursor mCursor = db.query("places", new String[]{"name","latitude","longditude"} , null, null, null, null,null);
+	    				Cursor mCursor = db.query("places", new String[]{"name","latitude","longditude"} ,
+	    						null, null, null, null,null);
 	    				mCursor.moveToFirst();
 	    				String name;
 	    				double lat;
 	    				double lng;
-	        	
-	    					//iterate through database to add marker for each location
-	    					while(!mCursor.isAfterLast()){
-	    						name = mCursor.getString(0);
-	    						lat = mCursor.getDouble(1);
-	    						lng = mCursor.getDouble(2);
-	    						LatLng markerPosition = new LatLng(lat,lng);
-	        					mapView.addMarker(new MarkerOptions().position(markerPosition).title(name));
-	        					mCursor.moveToNext();
-	    						}
+	        			//iterate through database to add marker for each location
+	    				while(!mCursor.isAfterLast()){
+	    					name = mCursor.getString(0);
+	    					lat = mCursor.getDouble(1);
+	    					lng = mCursor.getDouble(2);
+	    					LatLng markerPosition = new LatLng(lat,lng);
+	        				mapView.addMarker(new MarkerOptions().position(markerPosition).title(name));
+	        				mCursor.moveToNext();
+	    				}
 	    			}
-	            }
+	           
 	    }
    }
 	
@@ -117,5 +119,5 @@ public class MapView extends Activity {
 			return rootView;
 		}
 	}
-
+	
 }

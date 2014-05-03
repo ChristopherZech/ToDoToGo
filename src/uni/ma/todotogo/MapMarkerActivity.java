@@ -4,8 +4,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -31,34 +29,28 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 		
 		//set Action Bar
 		ActionBar actionBar = getActionBar();
-		//actionBar.setHomeButtonEnabled(true);
+		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayUseLogoEnabled(false);
 		actionBar.setDisplayHomeAsUpEnabled(true);
-			    
 			   
-//		// check whether map was instantiated
+		// check whether map was instantiated
 	    if (mapView == null) {
 	         mapView = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 	         mapView.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 	            if (mapView != null) {
 	            // The Map is verified. It is now safe to manipulate the map.
+	            //get current Position from GPSTracker and set OnMapClickListner
 	            	GPSTracker gps = new GPSTracker(MapMarkerActivity.this);
-		         	   Location currentLocation= gps.getLocation();
-		         	  double Lat= currentLocation.getLatitude();
-		         	  double Lng= currentLocation.getLongitude();
+		         	Location currentLocation= gps.getLocation();
+		         	double Lat= currentLocation.getLatitude();
+		         	double Lng= currentLocation.getLongitude();
 		        	LatLng position= new LatLng(Lat,Lng);
 		        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
 		        	mapView.setOnMapClickListener(this);
-	        	
-
-	            }
-			    }
-	    }
-		
-			   
+	        	}
+		}
+	}
 	
-
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -95,9 +87,12 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 			return rootView;
 		}
 	}
+	
 	public void onMapClick(LatLng point) {
-	mapView.addMarker(new MarkerOptions().position(point));
-	Toast.makeText(getApplicationContext(), "Top",Toast.LENGTH_LONG).show();
+		//add marker at clicked position
+		mapView.addMarker(new MarkerOptions().position(point));
+		// control Toast
+		Toast.makeText(getApplicationContext(), "Top",Toast.LENGTH_LONG).show();
 	}
 
 }

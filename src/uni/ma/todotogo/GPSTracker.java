@@ -12,7 +12,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
- 
+
+// http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial/
 public class GPSTracker extends Service implements LocationListener {
  
     private final Context mContext;
@@ -56,11 +57,12 @@ public class GPSTracker extends Service implements LocationListener {
             // getting network status
             isNetworkEnabled = locationManager
                     .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
- 
+            //prompt user to switch on GPS
             if (!isGPSEnabled && !isNetworkEnabled) {
-            	showSettingsAlert();
+          		showSettingsAlert();
+            	} 
             	// no network provider is enabled
-            } else {
+            else {
                 this.canGetLocation = true;
                 // First get location from Network Provider
                 if (isNetworkEnabled) {
