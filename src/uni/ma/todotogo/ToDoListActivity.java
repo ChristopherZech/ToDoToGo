@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import uni.ma.todotogo.ToDoContract.DBToDoEntry;
 
 import android.os.Bundle;
+import android.provider.Settings;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,6 +35,7 @@ import android.location.*;
 public class ToDoListActivity extends Activity {
 	private ArrayList<HashMap<String, Object>> toDoList;
 	private ArrayAdapter adapter;
+	GPSTracker gps;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {		
@@ -44,6 +51,8 @@ public class ToDoListActivity extends Activity {
 		ListView lv = (ListView)findViewById(R.id.todolist);
 		adapter = new ArrayAdapterToDoList(this, toDoList);
 		lv.setAdapter(adapter);
+		
+		getCurrentPosition();
 	}
 
 	@Override
@@ -110,8 +119,10 @@ public class ToDoListActivity extends Activity {
 				DBToDoEntry.COLUMN_NAME_CATEGORY,
 				DBToDoEntry.COLUMN_NAME_DATE
 		};
-		Cursor cursor = db.query(
-			    DBToDoEntry.TABLE_NAME,  // The table to query
+		
+//		String query= "Select DBToDoEntry._ID,DBToDoEntry.COLUMN_NAME_TODO_ID,DBToDoEntry.COLUMN_NAME_NAME,DBToDoEntry.COLUMN_NAME_CATEGORY,DBToDoEntry.COLUMN_NAME_DATE ,DBPlacesEntry.COLUMN_NAME_LATITUDE,DBPlacesEntry.COLUMN_NAME_LONGDITUDE FROM DBToDoEntry.TABLE_NAME NATURAL JOIN DBToDoPlacesEntry.TABLE_NAME NATURAL JOIN DBPlacesEntry.TABLE_NAME"; 
+		Cursor cursor = db.query(		
+				DBToDoEntry.TABLE_NAME,  // The table to query
 			    projection,                               // The columns to return
 			    null,                                // The columns for the WHERE clause
 			    null,                            // The values for the WHERE clause
@@ -124,6 +135,9 @@ public class ToDoListActivity extends Activity {
 			String name = cursor.getString(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
 			int color = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
 			// TODO implement distance
+			
+			
+			
 			toDoList.add(addItem(name, "111m", color));
 			cursor.moveToNext();
 			
@@ -137,5 +151,12 @@ public class ToDoListActivity extends Activity {
     	super.onResume();
     	updateList();
     }
-
+    
+    public Location getCurrentPosition(){
+    		gps = new GPSTracker(ToDoListActivity.this);
+    	   Location currentLocation= gps.getLocation();
+    	   return currentLocation;
+     }
+    
 }
+

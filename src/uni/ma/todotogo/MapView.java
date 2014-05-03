@@ -6,6 +6,7 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -42,11 +45,17 @@ public class MapView extends Activity {
 	            // The Map is verified. It is now safe to manipulate the map.
 	        	
 	            //set Focus of Map (currently Schloss Ehrenhof)	
-	            double Lat = 49.48403;
-	        	double Lng = 8.46258;
-	        	
+	            	GPSTracker gps = new GPSTracker(MapView.this);
+	         	   Location currentLocation= gps.getLocation();
+	         	  double Lat= currentLocation.getLatitude();
+	         	  double Lng= currentLocation.getLongitude();
 	        	LatLng position= new LatLng(Lat,Lng);
 	        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
+	        	BitmapDescriptor bitmapDescriptor 
+	        	   = BitmapDescriptorFactory.defaultMarker(
+	        	     BitmapDescriptorFactory.HUE_AZURE);
+	        	
+	        	mapView.addMarker(new MarkerOptions().position(position).icon(bitmapDescriptor).title("Current Location"));
 	        	
 	        	//get Database to display Locations
 	        	ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
