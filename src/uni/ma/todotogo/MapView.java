@@ -51,7 +51,7 @@ public class MapView extends Activity {
 	         	double Lng= currentLocation.getLongitude();
 	        	LatLng position= new LatLng(Lat,Lng);
 	        	//set Focus of Map current
-	        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
+	        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 	        	//change color of marker
 	        	BitmapDescriptor bitmapDescriptor = 
 	        			BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE);

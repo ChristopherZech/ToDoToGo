@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 // http://www.androidhive.info/2012/07/android-gps-location-manager-tutorial/
 public class GPSTracker extends Service implements LocationListener {
@@ -102,6 +103,10 @@ public class GPSTracker extends Service implements LocationListener {
  
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Position not found. Please check settings!",Toast.LENGTH_LONG).show();
+            showSettingsAlert();
+            
+            
         }
  
         return location;

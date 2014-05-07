@@ -9,7 +9,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.os.Build;
 
@@ -45,7 +48,7 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 		         	double Lat= currentLocation.getLatitude();
 		         	double Lng= currentLocation.getLongitude();
 		        	LatLng position= new LatLng(Lat,Lng);
-		        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 10));
+		        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 		        	mapView.setOnMapClickListener(this);
 	        	}
 		}
@@ -89,10 +92,35 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 	}
 	
 	public void onMapClick(LatLng point) {
+		
+		// Prompt location name input
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Location Name");
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		input.setId(33);
+		alert.setView(input);
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+		  // Do something with value!
+			EditText editText = (EditText) findViewById(33);
+			//String name = editText.getText().toString();
+			Toast.makeText(getApplicationContext(), "name",Toast.LENGTH_LONG).show();
+		    
+		  }
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+			 String name = "no name";
+			 Toast.makeText(getApplicationContext(), name,Toast.LENGTH_LONG).show();
+		  }
+		});
+
+		alert.show();
 		//add marker at clicked position
-		mapView.addMarker(new MarkerOptions().position(point));
-		// control Toast
-		Toast.makeText(getApplicationContext(), "Top",Toast.LENGTH_LONG).show();
+		mapView.addMarker(new MarkerOptions().position(point).title("name"));
 	}
 
 }
