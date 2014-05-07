@@ -122,7 +122,7 @@ public class ToDoListActivity extends Activity {
 			
 			// TODO implement distance
 			Location loc = new Location("New");
-			loc.setLatitude(0);
+			loc.setLatitude(0)  ;
 			loc.setLongitude(0);
 			int distance = (int) loc.distanceTo(getCurrentPosition());
 			String dist = distance + "m";

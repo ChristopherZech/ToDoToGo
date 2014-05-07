@@ -28,6 +28,7 @@ import android.os.Build;
 public class MapMarkerActivity extends Activity implements OnMapClickListener {
 	private GoogleMap mapView;
 	private HashSet<ToDoLocation> pinnedLocations = new HashSet<ToDoLocation>();
+	private String name;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,8 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 				LatLng position = new LatLng(Lat, Lng);
 				mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(
 						position, 13));
+				Toast.makeText(getApplicationContext(), "Lat:" + Lat + "Lng:" + Lng,
+						Toast.LENGTH_SHORT).show();
 				mapView.setOnMapClickListener(this);
 			}
 		}
@@ -109,15 +112,15 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 		alert.setTitle("Location Name");
 		// Set an EditText view to get user input
 		final EditText input = new EditText(this);
-		input.setId(33);
 		alert.setView(input);
+		final double Lat= point.latitude;
+		final double Lng= point.longitude;
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int whichButton) {
-				// Do something with value!
-				EditText editText = (EditText) findViewById(33);
-				// String name = editText.getText().toString();
-				Toast.makeText(getApplicationContext(), "name",
-						Toast.LENGTH_LONG).show();
+		public void onClick(DialogInterface dialog, int whichButton) {
+		  
+			name = input.getText().toString();
+			Toast.makeText(getApplicationContext(), name+ "Lat:" + Lat + "Lng:" + Lng ,Toast.LENGTH_LONG).show();
+
 
 			}
 		});
@@ -134,10 +137,10 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 
 		alert.show();
 		// add marker at clicked position
-		mapView.addMarker(new MarkerOptions().position(point).title("name"));
+		mapView.addMarker(new MarkerOptions().position(point).title(name));
 		
 		// create new ToDoLocation object and add it to pinnedLocations
-		ToDoLocation newEntry = new ToDoLocation(-1, "name", point.latitude, point.longitude);
+		ToDoLocation newEntry = new ToDoLocation(-1, name, point.latitude, point.longitude);
 		newEntry.writeToDB(getBaseContext());
 		pinnedLocations.add(newEntry);
 	}
