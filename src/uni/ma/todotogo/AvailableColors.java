@@ -35,4 +35,18 @@ public enum AvailableColors {
     	}
     	return names;
     }
+    
+    /**
+     * Takes an RGB color as int and converts it to a AvailableColor.
+     * @param color
+     * @return
+     */
+    public static AvailableColors getColorByInt(int color) {
+    	for(int i = 0; i < AvailableColors.values().length; i++) {
+    		if(AvailableColors.values()[i].color == color) {
+    			return AvailableColors.values()[i];
+    		}
+    	}
+    	return AvailableColors.RED; // if unspecified
+    }
 }
