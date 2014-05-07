@@ -23,6 +23,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
@@ -139,9 +140,18 @@ public class ToDoListActivity extends Activity {
 	}
 
 	public Location getCurrentPosition() {
-		gps = new GPSTracker(ToDoListActivity.this);
-		Location currentLocation = gps.getLocation();
-		return currentLocation;
+		if(gps == null) {
+			gps = new GPSTracker(ToDoListActivity.this);
+		}
+		if(gps.canGetLocation()) {
+			return gps.getLocation();
+		} else {
+			Log.d("GPS", "cannot get location");
+			Location loc = new Location("zero");
+			loc.setLatitude(0);
+			loc.setLongitude(0);
+			return loc;
+		}
 	}
 
 }

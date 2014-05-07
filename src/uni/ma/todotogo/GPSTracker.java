@@ -28,7 +28,7 @@ public class GPSTracker extends Service implements LocationListener {
     // flag for GPS status
     boolean canGetLocation = false;
  
-    Location location; // location
+    Location location = new Location("none"); // location
     double latitude; // latitude
     double longitude; // longitude
  
@@ -88,8 +88,9 @@ public class GPSTracker extends Service implements LocationListener {
                                 LocationManager.GPS_PROVIDER,
                                 MIN_TIME_BW_UPDATES,
                                 MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                        Log.d("GPS Enabled", "GPS Enabled");
+                        Log.d("GPS", "GPS Enabled");
                         if (locationManager != null) {
+                        	Log.d("GPS", "new pos set");
                             location = locationManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
                             if (location != null) {
@@ -103,10 +104,9 @@ public class GPSTracker extends Service implements LocationListener {
  
         } catch (Exception e) {
             e.printStackTrace();
+            Log.d("GPS", "Error!");
             Toast.makeText(getApplicationContext(), "Position not found. Please check settings!",Toast.LENGTH_LONG).show();
             showSettingsAlert();
-            
-            
         }
  
         return location;
