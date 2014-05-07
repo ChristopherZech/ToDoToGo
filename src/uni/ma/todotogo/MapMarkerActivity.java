@@ -1,5 +1,7 @@
 package uni.ma.todotogo;
 
+import java.util.HashSet;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -25,35 +27,40 @@ import android.os.Build;
 
 public class MapMarkerActivity extends Activity implements OnMapClickListener {
 	private GoogleMap mapView;
+	private HashSet<ToDoLocation> pinnedLocations = new HashSet<ToDoLocation>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map_marker);
-		
-		//set Action Bar
+
+		// set Action Bar
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayUseLogoEnabled(false);
 		actionBar.setDisplayHomeAsUpEnabled(true);
-			   
+
 		// check whether map was instantiated
-	    if (mapView == null) {
-	         mapView = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
-	         mapView.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-	            if (mapView != null) {
-	            // The Map is verified. It is now safe to manipulate the map.
-	            //get current Position from GPSTracker and set OnMapClickListner
-	            	GPSTracker gps = new GPSTracker(MapMarkerActivity.this);
-		         	Location currentLocation= gps.getLocation();
-		         	double Lat= currentLocation.getLatitude();
-		         	double Lng= currentLocation.getLongitude();
-		        	LatLng position= new LatLng(Lat,Lng);
-		        	mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
-		        	mapView.setOnMapClickListener(this);
-	        	}
+		if (mapView == null) {
+			mapView = ((MapFragment) getFragmentManager().findFragmentById(
+					R.id.map)).getMap();
+			mapView.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+			if (mapView != null) {
+				// The Map is verified. It is now safe to manipulate the map.
+				// get current Position from GPSTracker and set
+				// OnMapClickListner
+				GPSTracker gps = new GPSTracker(MapMarkerActivity.this);
+				Location currentLocation = gps.getLocation();
+				double Lat = currentLocation.getLatitude();
+				double Lng = currentLocation.getLongitude();
+				LatLng position = new LatLng(Lat, Lng);
+				mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(
+						position, 13));
+				mapView.setOnMapClickListener(this);
+			}
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -70,6 +77,10 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 		int id = item.getItemId();
 		if (id == R.id.action_settings) {
 			return true;
+		}
+		if(id == R.id.add_activity_map_menu_action_add_ok) {
+			
+			finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -90,37 +101,45 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 			return rootView;
 		}
 	}
-	
+
 	public void onMapClick(LatLng point) {
-		
+
 		// Prompt location name input
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Location Name");
-		// Set an EditText view to get user input 
+		// Set an EditText view to get user input
 		final EditText input = new EditText(this);
 		input.setId(33);
 		alert.setView(input);
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-		  // Do something with value!
-			EditText editText = (EditText) findViewById(33);
-			//String name = editText.getText().toString();
-			Toast.makeText(getApplicationContext(), "name",Toast.LENGTH_LONG).show();
-		    
-		  }
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Do something with value!
+				EditText editText = (EditText) findViewById(33);
+				// String name = editText.getText().toString();
+				Toast.makeText(getApplicationContext(), "name",
+						Toast.LENGTH_LONG).show();
+
+			}
 		});
 
-		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-		  public void onClick(DialogInterface dialog, int whichButton) {
-		    // Canceled.
-			 String name = "no name";
-			 Toast.makeText(getApplicationContext(), name,Toast.LENGTH_LONG).show();
-		  }
-		});
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Canceled.
+						String name = "no name";
+						Toast.makeText(getApplicationContext(), name,
+								Toast.LENGTH_LONG).show();
+					}
+				});
 
 		alert.show();
-		//add marker at clicked position
+		// add marker at clicked position
 		mapView.addMarker(new MarkerOptions().position(point).title("name"));
+		
+		// create new ToDoLocation object and add it to pinnedLocations
+		ToDoLocation newEntry = new ToDoLocation(-1, "name", point.latitude, point.longitude);
+		newEntry.writeToDB(getBaseContext());
+		pinnedLocations.add(newEntry);
 	}
 
 }

@@ -1,7 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="uni.ma.todotogo.MapMarkerActivity" >
-
+    tools:context="uni.ma.todotogo.MapMarkerActivity" 
+    >
+    <item
+        android:id="@+id/add_activity_map_menu_action_add_ok"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_action_ok"
+        android:showAsAction="always|collapseActionView"
+        android:title="@string/action_add_ok"/>
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

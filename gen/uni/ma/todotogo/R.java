@@ -239,10 +239,11 @@ containing a value of this type.
         public static final int ic_plusone_tall_off_client=0x7f020023;
     }
     public static final class id {
-        public static final int action_add=0x7f06001a;
+        public static final int action_add=0x7f06001b;
         public static final int action_add_ok=0x7f060017;
-        public static final int action_place=0x7f060019;
-        public static final int action_settings=0x7f060018;
+        public static final int action_place=0x7f06001a;
+        public static final int action_settings=0x7f060019;
+        public static final int add_activity_map_menu_action_add_ok=0x7f060018;
         public static final int add_spinner_categories=0x7f060008;
         public static final int add_text_what=0x7f060006;
         public static final int add_text_when=0x7f060007;

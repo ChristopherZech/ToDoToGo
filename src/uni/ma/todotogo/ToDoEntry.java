@@ -156,7 +156,7 @@ public class ToDoEntry {
 
 	/**
 	 * Writes content to Database. If <code>id</code> is <code>-1</code> a new
-	 * item is created. Update is not implemented yet.
+	 * item is created. Update not tested yet.
 	 */
 	public void writeToDB(Context context) {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
@@ -180,7 +180,7 @@ public class ToDoEntry {
 			db.update(DBToDoEntry.TABLE_NAME, values,
 					DBToDoEntry._ID + " = " + id, null);
 		}
-
+		db.close();
 	}
 
 	public int getId() {
