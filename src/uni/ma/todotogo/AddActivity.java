@@ -127,7 +127,7 @@ public class AddActivity extends Activity {
 	
 	// Implementation of Go To Map button that starts MapMarkerActivity to add Locations
 	public void goToMap(View v){
-		Intent myIntent = new Intent(this, MapMarkerActivity.class);
+		Intent myIntent = new Intent(this, MapView.class);
 		startActivity(myIntent);
 	}
 	

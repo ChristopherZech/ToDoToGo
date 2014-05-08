@@ -1,12 +1,16 @@
 package uni.ma.todotogo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.google.android.gms.maps.GoogleMap;
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
@@ -17,18 +21,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 //Author:Timo
 
-public class MapView extends Activity {
+public class MapView extends Activity implements OnMarkerClickListener, OnMapClickListener {
 	// Create Google Map
 	private GoogleMap mapView;
+	private HashSet<ToDoLocation> pinnedLocations = new HashSet<ToDoLocation>();
+	private String name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,6 +74,10 @@ public class MapView extends Activity {
 	        	// add marker to current Position
 	        	mapView.addMarker(new MarkerOptions().position(position).icon(bitmapDescriptor)
 	        			.title("Current Location"));
+	        	//Display currentposition as toast
+	        	Toast.makeText(getApplicationContext(),	"Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_SHORT).show();
+				mapView.setOnMapClickListener(this);
+	        	mapView.setOnMarkerClickListener(this);
 	        	}
 	           
 	            
@@ -71,7 +87,11 @@ public class MapView extends Activity {
 	            for(Integer i : keys){
 	            	buffer = locationList.get(i);
 	            	Log.d("MapView", buffer.toString()+"loaded");
-	        		mapView.addMarker(new MarkerOptions().position(buffer.getLatLng()).title(buffer.getName()));
+	            	
+	            	//change color of marker
+		        	BitmapDescriptor bitmapDescriptor = 
+		        			BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+	        		mapView.addMarker(new MarkerOptions().position(buffer.getLatLng()).icon(bitmapDescriptor).title(buffer.getName()));
 	        	}
 	            
 	            /*
@@ -99,11 +119,50 @@ public class MapView extends Activity {
 	    }
    }
 	
+	public boolean onMarkerClick(final Marker marker) {
+		
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		String name = marker.getTitle();
+		alert.setTitle("What to do with location " + name + "?");
+		
+		//get Position of marker and pass it to AddActivity
+		alert.setPositiveButton("Use for new task", 
+			new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int whichButton) {
+					Intent intent = new Intent(MapView.this,AddActivity.class);
+					LatLng position=marker.getPosition();
+					intent.putExtra("LatLng", position);
+					startActivity(intent);
+			//use location for task
+				}
+		});
+		
+		//Delete current location
+		alert.setNeutralButton("Delete",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Delete Location
+					}
+		});
+		
+		//Do nothing
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Canceled.(Do nothing)
+						}
+		});
+		
+
+		alert.show();
+		return false; //(still show info menu)
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.to_do_list_menu, menu);
+		getMenuInflater().inflate(R.menu.map_marker, menu);
 		return true;
 	}
 
@@ -116,25 +175,55 @@ public class MapView extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
+		if (id == R.id.add_activity_map_menu_action_add_ok) {
+
+			finish();
+		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-	public static class PlaceholderFragment extends Fragment {
 
-		public PlaceholderFragment() {
-		}
+	public void onMapClick(LatLng point) {
 
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.activity_map_view,
-					container, false);
-			return rootView;
-		}
+		System.out.println("Clicked on location " + point.latitude
+				+ point.longitude);
+		// Prompt location name input
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Location Name");
+		// Set an EditText view to get user input
+		final EditText input = new EditText(this);
+		alert.setView(input);
+		final double Lat = point.latitude;
+		final double Lng = point.longitude;
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+
+				name = input.getText().toString();
+				System.out.println("Name for location  " + name);
+				Toast.makeText(getApplicationContext(),
+						name + "Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_LONG)
+						.show();
+				// add marker at clicked position
+				mapView.addMarker(new MarkerOptions().position(new LatLng(Lat,Lng)).title(name));
+
+				// create new ToDoLocation object and add it to pinnedLocations
+				ToDoLocation newEntry = new ToDoLocation(-1, name, Lat,
+						Lng);
+				newEntry.writeToDB(getBaseContext());
+				pinnedLocations.add(newEntry);
+			}
+		});
+
+		alert.setNegativeButton("Cancel",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						// Canceled.
+						String name = "no name";
+						Toast.makeText(getApplicationContext(), name,
+								Toast.LENGTH_LONG).show();
+					}
+				});
+
+		alert.show();
 	}
-
-	
 }
