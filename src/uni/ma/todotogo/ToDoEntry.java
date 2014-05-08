@@ -42,22 +42,59 @@ public class ToDoEntry {
 					DBToDoEntry.COLUMN_NAME_CATEGORY,
 					DBToDoEntry.COLUMN_NAME_DATE };
 
-			Cursor cursor = db.query(DBToDoEntry.TABLE_NAME, projection, null, null, null, null, null );
-			cursor.moveToFirst();
+			Cursor cursorToDoEntry = db.query(DBToDoEntry.TABLE_NAME, projection, null, null, null, null, null );
+			cursorToDoEntry.moveToFirst();
 
-			while (!cursor.isAfterLast()) {
+			while (!cursorToDoEntry.isAfterLast()) {
 				// get data
-				int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry._ID));
-				String name = cursor.getString(cursor
+				int id = cursorToDoEntry.getInt(cursorToDoEntry.getColumnIndexOrThrow(DBToDoEntry._ID));
+				String name = cursorToDoEntry.getString(cursorToDoEntry
 						.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
-				int category = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
-				int date = cursor.getInt(cursor.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_DATE));
+				int category = cursorToDoEntry.getInt(cursorToDoEntry.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
+				int date = cursorToDoEntry.getInt(cursorToDoEntry.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_DATE));
 				// create object
-				new ToDoEntry(id, name, category, date); // (automatically gets stored in the HashMap)
-				cursor.moveToNext();
+				ToDoEntry newEntry = new ToDoEntry(id, name, category, date); // (automatically gets stored in the HashMap)
+				
+				// add locations to this todo
+				newEntry.addLocationsFromDB(context);
+				
+				
+				cursorToDoEntry.moveToNext();
 			}
 		}
 		return allEntries;
+	}
+	
+	/**
+	 * Queries DB to find all matching locations and adds them to this object.
+	 */
+	public void addLocationsFromDB(Context context) {
+		if(locations.isEmpty()) {
+			ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+			SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+			// DB entries to get
+			String[] projection = { DBToDoPlacesEntry._ID,
+					DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID,
+					DBToDoPlacesEntry.COLUMN_NAME_TODO_ID };
+
+			Cursor cursorToDoLocMappingEntry = db.query(DBToDoPlacesEntry.TABLE_NAME, projection, DBToDoPlacesEntry.COLUMN_NAME_TODO_ID + "='"+id+"'", null, null, null, null );
+			cursorToDoLocMappingEntry.moveToFirst();
+
+			while (!cursorToDoLocMappingEntry.isAfterLast()) {
+				// get data
+				int location_id = cursorToDoLocMappingEntry.getInt(cursorToDoLocMappingEntry.getColumnIndexOrThrow(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID));
+				// create object
+				ToDoLocation newLoc = ToDoLocation.getAllEntries(context).get(location_id);
+				
+				// add new location to this object
+				this.addLocation(newLoc);
+				// add this object to new location
+				newLoc.addToDoEntry(this);
+				
+				cursorToDoLocMappingEntry.moveToNext();
+			}
+		}
 	}
 	
 	public static int staticDelete(int idToBeDeleted, Context context){ 
@@ -168,20 +205,20 @@ public class ToDoEntry {
 
 	/**
 	 * Writes content to Database. If <code>id</code> is <code>-1</code> a new
-	 * item is created. Update not tested yet.
+	 * item is created. Update not tested yet. Also adds <code>locations</code>-mappings into DB.
 	 */
 	public void writeToDB(Context context) {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-		ContentValues values = new ContentValues();
+		ContentValues valuesToDoEntry = new ContentValues();
 
-		values.put(DBToDoEntry.COLUMN_NAME_NAME, name);
-		values.put(DBToDoEntry.COLUMN_NAME_CATEGORY, category.getColor());
-		values.put(DBToDoEntry.COLUMN_NAME_DATE, date.getTimeInMillis());
+		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_NAME, name);
+		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_CATEGORY, category.getColor());
+		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_DATE, date.getTimeInMillis());
 
 		if (id == -1) { // a new item is created
-			id = (int) db.insert(DBToDoEntry.TABLE_NAME, null, values); // insert to db and get ID
+			id = (int) db.insert(DBToDoEntry.TABLE_NAME, null, valuesToDoEntry); // insert to db and get ID
 
 
 			Log.d("ToDoEntry", "new ID is "+id);
@@ -189,9 +226,24 @@ public class ToDoEntry {
 			allEntries.remove(-1);
 			allEntries.put(id, this);
 		} else { // item is updated
-			db.update(DBToDoEntry.TABLE_NAME, values,
+			db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry,
 					DBToDoEntry._ID + " = " + id, null);
 		}
+		
+		
+		// add mappings of todo/places
+		Iterator<ToDoLocation> locIter = locations.iterator();
+		while(locIter.hasNext()) {
+			ToDoLocation curLoc = locIter.next();
+			ContentValues valuesEntryLocation = new ContentValues();
+	
+			valuesEntryLocation.put(DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID, curLoc.getId());
+			valuesEntryLocation.put(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID, this.id);
+			
+			db.insert(DBToDoPlacesEntry.TABLE_NAME, null, valuesEntryLocation);
+		}
+		
+		
 		db.close();
 	}
 	

@@ -62,6 +62,13 @@ public class ToDoLocation extends Location {
 		Log.d("ToDoLocation", "ListItem with ID "+idToBeDeleted+" was deleted.");
 		allLocations.remove(idToBeDeleted);
 		db.close();
+		
+		// TODO maby make this nicer in the future!
+		// reload everything from scratch from the db so no dead mappings exist
+		ToDoLocation.getAllEntries(context).clear();
+		ToDoEntry.getAllEntries(context).clear();
+		ToDoEntry.getAllEntries(context);
+		
 		mDbHelper.close();
 		return success;	
 	}
@@ -210,8 +217,16 @@ public class ToDoLocation extends Location {
 		tasks.add(newTask);
 	}
 
+	public int getId() {
+		return id;
+	}
+	
 	public String getName() {
 		return name;
+	}
+
+	public void addToDoEntry(ToDoEntry newToDoEntry) {
+		tasks.add(newToDoEntry);
 	}
 
 	public HashSet<ToDoEntry> getTasks() {
