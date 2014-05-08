@@ -57,8 +57,8 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 				LatLng position = new LatLng(Lat, Lng);
 				mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(
 						position, 13));
-				Toast.makeText(getApplicationContext(), "Lat:" + Lat + "Lng:" + Lng,
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(),
+						"Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_SHORT).show();
 				mapView.setOnMapClickListener(this);
 			}
 		}
@@ -81,8 +81,8 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if(id == R.id.add_activity_map_menu_action_add_ok) {
-			
+		if (id == R.id.add_activity_map_menu_action_add_ok) {
+
 			finish();
 		}
 		return super.onOptionsItemSelected(item);
@@ -107,21 +107,31 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 
 	public void onMapClick(LatLng point) {
 
+		System.out.println("Clicked on location " + point.latitude
+				+ point.longitude);
 		// Prompt location name input
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("Location Name");
 		// Set an EditText view to get user input
 		final EditText input = new EditText(this);
 		alert.setView(input);
-		final double Lat= point.latitude;
-		final double Lng= point.longitude;
+		final double Lat = point.latitude;
+		final double Lng = point.longitude;
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-		public void onClick(DialogInterface dialog, int whichButton) {
-		  
-			name = input.getText().toString();
-			Toast.makeText(getApplicationContext(), name+ "Lat:" + Lat + "Lng:" + Lng ,Toast.LENGTH_LONG).show();
+			public void onClick(DialogInterface dialog, int whichButton) {
 
+				name = input.getText().toString();
+				System.out.println("Name for location  " + name);
+				Toast.makeText(getApplicationContext(),
+						name + "Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_LONG)
+						.show();
+				mapView.addMarker(new MarkerOptions().position(new LatLng(Lat,Lng)).title(name));
 
+				// create new ToDoLocation object and add it to pinnedLocations
+				ToDoLocation newEntry = new ToDoLocation(-1, name, Lat,
+						Lng);
+				newEntry.writeToDB(getBaseContext());
+				pinnedLocations.add(newEntry);
 			}
 		});
 
@@ -137,12 +147,7 @@ public class MapMarkerActivity extends Activity implements OnMapClickListener {
 
 		alert.show();
 		// add marker at clicked position
-		mapView.addMarker(new MarkerOptions().position(point).title(name));
 		
-		// create new ToDoLocation object and add it to pinnedLocations
-		ToDoLocation newEntry = new ToDoLocation(-1, name, point.latitude, point.longitude);
-		newEntry.writeToDB(getBaseContext());
-		pinnedLocations.add(newEntry);
 	}
 
 }
