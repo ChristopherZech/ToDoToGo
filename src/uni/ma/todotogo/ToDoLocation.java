@@ -19,6 +19,7 @@ public class ToDoLocation extends Location {
 	int id;
 	private String name;
 	private HashSet<ToDoEntry> tasks;
+	private String markerID;
 	
 	private static HashMap<Integer,ToDoLocation> allLocations = new HashMap<Integer, ToDoLocation>();
 
@@ -40,6 +41,19 @@ public class ToDoLocation extends Location {
 		return success;	
 	}
 	
+	
+	public static int staticDeleteByMarker(String markerID, Context context){
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		int success = db.delete(DBPlacesEntry.TABLE_NAME, DBPlacesEntry.COLUMN_NAME_MARKER + "= ?", new String[]{markerID});
+		Log.d("Success ="+success+ ". ToDoLocation", "ListItem with name "+markerID+" was deleted.");
+		allLocations = getAllEntries(context);
+		db.close();
+		mDbHelper.close();
+		return success;	
+	}
+	
 	public static int staticDelete(int idToBeDeleted, Context context){
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
@@ -51,6 +65,7 @@ public class ToDoLocation extends Location {
 		mDbHelper.close();
 		return success;	
 	}
+	
 	
 	/**
 	 * Returns a list with all locataions stored in the db.
@@ -67,7 +82,8 @@ public class ToDoLocation extends Location {
 			String[] projection = { DBPlacesEntry._ID,
 					DBPlacesEntry.COLUMN_NAME_NAME,
 					DBPlacesEntry.COLUMN_NAME_LATITUDE,
-					DBPlacesEntry.COLUMN_NAME_LONGITUDE};
+					DBPlacesEntry.COLUMN_NAME_LONGITUDE,
+					DBPlacesEntry.COLUMN_NAME_MARKER};
 
 			Cursor cursor = db.query(DBPlacesEntry.TABLE_NAME, projection, null, null, null, null, null );
 			cursor.moveToFirst();
@@ -79,9 +95,10 @@ public class ToDoLocation extends Location {
 						.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_NAME));
 				double latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LATITUDE));
 				double longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LONGITUDE));
+				String markerId =cursor.getString(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_MARKER));
 				
 				// create object
-				new ToDoLocation(id, name, latitude, longitude); // (automatically gets stored in the HashMap)
+				new ToDoLocation(id, name, latitude, longitude, markerId); // (automatically gets stored in the HashMap)
 				cursor.moveToNext();
 				
 			}
@@ -89,20 +106,75 @@ public class ToDoLocation extends Location {
 		return allLocations;
 	}
 	
-	public ToDoLocation(int id, String name, double latitude, double longitude) {
-		this(id, name, latitude, longitude, new HashSet<ToDoEntry>());
+	public ToDoLocation(int id, String name, double latitude, double longitude, String markerID) {
+		this(id, name, latitude, longitude, markerID, new HashSet<ToDoEntry>());
 	}
 	
-	public ToDoLocation(int id, String name, double latitude, double longitude, HashSet<ToDoEntry> tasks) {
+	public ToDoLocation(int id, String name, double latitude, double longitude, String markerID, HashSet<ToDoEntry> tasks) {
 		super("none");
 
 		this.id = id;
 		this.name = name;
 		this.tasks = tasks;
+		this.markerID = markerID;
 		this.setLatitude(latitude);
 		this.setLongitude(longitude);
 		
 		allLocations.put(id, this);
+	}
+
+	public static ToDoLocation getToDoLocationFromDB(int id, Context context){ 
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		String[] projection = { DBPlacesEntry._ID,
+				DBPlacesEntry.COLUMN_NAME_NAME,
+				DBPlacesEntry.COLUMN_NAME_LATITUDE,
+				DBPlacesEntry.COLUMN_NAME_LONGITUDE,
+				DBPlacesEntry.COLUMN_NAME_MARKER};
+		
+		Cursor cursor = db.query(DBPlacesEntry.TABLE_NAME, projection, null, null, null, null, null );
+		cursor.moveToPosition(id);
+		
+		String name = cursor.getString(cursor
+				.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_NAME));
+		double latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LATITUDE));
+		double longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LONGITUDE));
+		String markerID = cursor.getString(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_MARKER));
+		//Log.d("ToDoLocation", "ListItem with ID "+id+" was deleted.");
+		// create object
+		return new ToDoLocation(id, name, latitude, longitude, markerID);		
+	}
+	
+	public static ToDoLocation getToDoLocationByMarkerFromDB(String markerID, Context context){
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		String[] projection = { DBPlacesEntry._ID,
+				DBPlacesEntry.COLUMN_NAME_NAME,
+				DBPlacesEntry.COLUMN_NAME_LATITUDE,
+				DBPlacesEntry.COLUMN_NAME_LONGITUDE,
+				DBPlacesEntry.COLUMN_NAME_MARKER};
+		//Cursor cursor = db.query(DBPlacesEntry.TABLE_NAME,projection, DBPlacesEntry.COLUMN_NAME_MARKER + "= ?", new String[]{markerID},null, null, null);
+		Cursor cursor = db.query(DBPlacesEntry.TABLE_NAME, projection, null, null, null, null, null );
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()){
+			if (cursor.getString(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_MARKER)) == markerID){
+				String name = cursor.getString(cursor
+						.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_NAME));
+				double latitude = cursor.getFloat(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LATITUDE));
+				double longitude = cursor.getFloat(cursor.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LONGITUDE));
+				Integer id = cursor.getInt(cursor.getColumnIndexOrThrow(DBPlacesEntry._ID));
+				//Log.d("ToDoLocation", "ListItem with ID "+id+" was deleted.");
+				// create object
+				return new ToDoLocation(id, name, latitude, longitude, markerID);	
+			}
+			else{
+				cursor.moveToNext();
+			}
+		}
+		return null;
+		
 	}
 	
 

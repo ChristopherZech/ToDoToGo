@@ -1,5 +1,5 @@
 /**
- * for Database
+e * for Database
  */
 package uni.ma.todotogo;
 
@@ -35,6 +35,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
 		    "CREATE TABLE " + DBPlacesEntry.TABLE_NAME + " (" +
 		    DBPlacesEntry._ID + " INTEGER PRIMARY KEY," +
 		    DBPlacesEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+		    DBPlacesEntry.COLUMN_NAME_MARKER + " REAL " + COMMA_SEP +
 		    DBPlacesEntry.COLUMN_NAME_LATITUDE + " REAL " + COMMA_SEP +
 		    DBPlacesEntry.COLUMN_NAME_LONGITUDE + " REAL " +
 		    " )";

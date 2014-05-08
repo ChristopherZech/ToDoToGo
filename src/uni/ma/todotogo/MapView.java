@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -39,7 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapView extends Activity implements OnMarkerClickListener, OnMapClickListener {
 	// Create Google Map
 	private GoogleMap mapView;
-	private HashSet<ToDoLocation> pinnedLocations = new HashSet<ToDoLocation>();
+	private HashMap<Marker, ToDoLocation> pinnedLocations = new HashMap<Marker, ToDoLocation>();
 	private String name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -141,7 +142,10 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 		alert.setNeutralButton("Delete",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						ToDoLocation.staticDeleteString(name, getBaseContext());
+						Context context = getBaseContext();
+						ToDoLocation locationBuffer = ToDoLocation.getToDoLocationByMarkerFromDB(marker.getId(), context);
+						ToDoLocation.staticDelete(locationBuffer.id, context);
+						pinnedLocations.remove(marker);
 						marker.remove();
 					}
 		});
@@ -185,7 +189,7 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 
 
 	public void onMapClick(LatLng point) {
-
+		System.out.println("Number of locations pinned"+ pinnedLocations.size());
 		System.out.println("Clicked on location " + point.latitude
 				+ point.longitude);
 		// Prompt location name input
@@ -205,13 +209,13 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 						name + "Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_LONG)
 						.show();
 				// add marker at clicked position
-				mapView.addMarker(new MarkerOptions().position(new LatLng(Lat,Lng)).title(name));
+				Marker marker = mapView.addMarker(new MarkerOptions().position(new LatLng(Lat,Lng)).title(name));
 
 				// create new ToDoLocation object and add it to pinnedLocations
 				ToDoLocation newEntry = new ToDoLocation(-1, name, Lat,
-						Lng);
+						Lng, marker.getId());	
 				newEntry.writeToDB(getBaseContext());
-				pinnedLocations.add(newEntry);
+				pinnedLocations.put(marker, newEntry);
 			}
 		});
 
