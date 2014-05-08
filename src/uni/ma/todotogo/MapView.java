@@ -122,7 +122,7 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 	public boolean onMarkerClick(final Marker marker) {
 		
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
-		String name = marker.getTitle();
+		final String name = marker.getTitle();
 		alert.setTitle("What to do with location " + name + "?");
 		
 		//get Position of marker and pass it to AddActivity
@@ -141,7 +141,8 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 		alert.setNeutralButton("Delete",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						// Delete Location
+						ToDoLocation.staticDeleteString(name, getBaseContext());
+						marker.remove();
 					}
 		});
 		

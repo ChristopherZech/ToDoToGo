@@ -28,6 +28,30 @@ public class ToDoLocation extends Location {
 				+";#connected tasks: "+tasks.size();
 	}
 	
+	public static int staticDeleteString(String stringToBeDeleted, Context context){
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		int success = db.delete(DBPlacesEntry.TABLE_NAME, DBPlacesEntry.COLUMN_NAME_NAME + "= ?", new String[]{stringToBeDeleted});
+		Log.d("Success ="+success+ ". ToDoLocation", "ListItem with name "+stringToBeDeleted+" was deleted.");
+		allLocations = getAllEntries(context);
+		db.close();
+		mDbHelper.close();
+		return success;	
+	}
+	
+	public static int staticDelete(int idToBeDeleted, Context context){
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		
+		int success = db.delete(DBPlacesEntry.TABLE_NAME, DBPlacesEntry._ID + "=" + String.valueOf(idToBeDeleted), null);
+		Log.d("ToDoLocation", "ListItem with ID "+idToBeDeleted+" was deleted.");
+		allLocations.remove(idToBeDeleted);
+		db.close();
+		mDbHelper.close();
+		return success;	
+	}
+	
 	/**
 	 * Returns a list with all locataions stored in the db.
 	 * 
