@@ -22,6 +22,12 @@ public class ToDoLocation extends Location {
 	
 	private static HashMap<Integer,ToDoLocation> allLocations = new HashMap<Integer, ToDoLocation>();
 
+	
+	public String toString(){
+		return "Location name: "+name+"; Lat: "+this.getLatitude()+"; Long: "+this.getLongitude()
+				+";#connected tasks: "+tasks.size();
+	}
+	
 	/**
 	 * Returns a list with all locataions stored in the db.
 	 * 

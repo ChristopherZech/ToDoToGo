@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,6 +70,7 @@ public class MapView extends Activity {
 	        	ToDoLocation buffer;
 	            for(Integer i : keys){
 	            	buffer = locationList.get(i);
+	            	Log.d("MapView", buffer.toString()+"loaded");
 	        		mapView.addMarker(new MarkerOptions().position(buffer.getLatLng()).title(buffer.getName()));
 	        	}
 	            
