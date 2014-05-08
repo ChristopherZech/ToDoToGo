@@ -26,8 +26,10 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -54,7 +56,6 @@ public class ToDoListActivity extends Activity {
 		ListView lv = (ListView) findViewById(R.id.todolist);
 		adapter = new ArrayAdapterToDoList(this, toDoList);
 		lv.setAdapter(adapter);
-
 		getCurrentPosition();
 	}
 
@@ -68,25 +69,24 @@ public class ToDoListActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
-		switch (item.getItemId()) {
-		case R.id.action_settings:
+		int itemID = item.getItemId();
+		if(itemID == R.id.action_settings){
 			Intent intentSettings = new Intent(ToDoListActivity.this,
 					SettingsActivity.class);
 			startActivity(intentSettings);
 
 			return true;
-		case R.id.action_add:
+		} else if (itemID ==  R.id.action_add){
+		
 			Intent intentAdd = new Intent(this, AddActivity.class);
 			startActivityForResult(intentAdd, RESULT_OK);
 			return true;
-		case R.id.action_place:
+		}else if (itemID ==  R.id.action_place){
 			Intent intentMapview = new Intent(this, MapView.class);
 			startActivity(intentMapview);
 			return true;
+		}	else return false; 
 
-		default:
-			return super.onOptionsItemSelected(item);
-		}
 	}
 
 	/**

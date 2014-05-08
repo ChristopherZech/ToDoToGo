@@ -59,6 +59,18 @@ public class ToDoEntry {
 		}
 		return allEntries;
 	}
+	
+	public static int staticDelete(int idToBeDeleted, Context context){ 
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		
+		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "=" + String.valueOf(idToBeDeleted), null);
+		Log.d("ToDoEntry", "ListItem with ID "+idToBeDeleted+" was deleted.");
+		allEntries.remove(idToBeDeleted);
+		db.close();
+		mDbHelper.close();
+		return success;	
+	}
 
 	/**
 	 * 
@@ -182,6 +194,16 @@ public class ToDoEntry {
 		}
 		db.close();
 	}
+	
+	public int delete(Context context){
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+		
+		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "=" + String.valueOf(id), null);
+		Log.d("ToDoEntry", "ListItem with ID "+this.id+" was deleted.");
+		allEntries.remove(id);
+		return success;
+	}               
 
 	public int getId() {
 		return id;

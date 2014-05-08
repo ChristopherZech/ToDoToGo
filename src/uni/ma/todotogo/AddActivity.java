@@ -97,8 +97,8 @@ public class AddActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    // Handle presses on the action bar items
-	    switch (item.getItemId()) {
-	        case R.id.action_add_ok:
+		int itemID = item.getItemId();
+	    if( itemID == R.id.action_add_ok){
 	        	String name = ((MultiAutoCompleteTextView)findViewById(R.id.add_text_what)).getEditableText().toString();
 	        	long category = ((Spinner)findViewById(R.id.add_spinner_categories)).getSelectedItemId();
 	        	ToDoEntry newEntry = new ToDoEntry(-1, name, (int)category, myCalendar);
@@ -106,14 +106,12 @@ public class AddActivity extends Activity {
 	        	finish();
 	            return true;
 	            
-	        // Start MapView activity when world button is clicked
-	        case R.id.action_place:
+	    } else if(itemID == R.id.action_place){ 
+	        
 	        	Intent myIntent = new Intent(this, MapView.class);
 	        	startActivity(myIntent);
-	        
-	        default:
-	            return super.onOptionsItemSelected(item);
-	    }
+	        	return true;
+	    } else return false;
 	}
 	
 	@Override

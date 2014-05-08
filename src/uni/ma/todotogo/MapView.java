@@ -1,5 +1,8 @@
 package uni.ma.todotogo;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import com.google.android.gms.maps.GoogleMap;
 import android.app.Activity;
 import android.app.ActionBar;
@@ -59,11 +62,22 @@ public class MapView extends Activity {
 	        	mapView.addMarker(new MarkerOptions().position(position).icon(bitmapDescriptor)
 	        			.title("Current Location"));
 	        	}
-	        	//get Database to display Locations
+	           
+	            
+	            HashMap<Integer, ToDoLocation> locationList = ToDoLocation.getAllEntries(getBaseContext());
+	        	Set<Integer> keys = locationList.keySet();
+	        	ToDoLocation buffer;
+	            for(Integer i : keys){
+	            	buffer = locationList.get(i);
+	        		mapView.addMarker(new MarkerOptions().position(buffer.getLatLng()).title(buffer.getName()));
+	        	}
+	            
+	            /*
+	            //get Database to display Locations
 	        	ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
 	    		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 	    			if(db!=null){
-	    				Cursor mCursor = db.query("places", new String[]{"name","latitude","longditude"} ,
+	    				Cursor mCursor = db.query("places", new String[]{"name","latitude","longitude"} ,
 	    						null, null, null, null,null);
 	    				mCursor.moveToFirst();
 	    				String name;
@@ -79,7 +93,7 @@ public class MapView extends Activity {
 	        				mCursor.moveToNext();
 	    				}
 	    			}
-	           
+	           */
 	    }
    }
 	
@@ -119,5 +133,6 @@ public class MapView extends Activity {
 			return rootView;
 		}
 	}
+
 	
 }

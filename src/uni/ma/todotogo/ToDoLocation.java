@@ -10,6 +10,8 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.ToDoContract.DBToDoEntry;
 
@@ -112,6 +114,10 @@ public class ToDoLocation extends Location {
 
 	public HashSet<ToDoEntry> getTasks() {
 		return tasks;
+	}
+	
+	public LatLng getLatLng(){
+		return new LatLng(this.getLatitude(),this.getLongitude());
 	}
 
 }
