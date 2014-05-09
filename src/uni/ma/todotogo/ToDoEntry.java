@@ -22,7 +22,7 @@ public class ToDoEntry {
 	String name;
 	AvailableColors category;
 	GregorianCalendar date;
-	HashSet<ToDoLocation> locations;
+	static HashSet<ToDoLocation> locations;
 	private static HashMap<Integer,ToDoEntry> allEntries = new HashMap<Integer, ToDoEntry>();
 
 	/**
@@ -273,7 +273,7 @@ public class ToDoEntry {
 		return date;
 	}
 
-	public HashSet<ToDoLocation> getLocations() {
+	public static HashSet<ToDoLocation> getLocations() {
 		return locations;
 	}
 }

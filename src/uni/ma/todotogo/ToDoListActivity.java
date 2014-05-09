@@ -2,6 +2,7 @@ package uni.ma.todotogo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,6 +17,7 @@ import android.provider.Settings;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,6 +25,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +44,7 @@ public class ToDoListActivity extends Activity {
 	private ArrayList<HashMap<String, Object>> toDoList;
 	private ArrayAdapter adapter;
 	GPSTracker gps;
+	HashSet<ToDoLocation> locations;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -111,21 +115,49 @@ public class ToDoListActivity extends Activity {
 	}
 
 	public void updateList() {
+		int Counter = 0;
 		toDoList.clear();
 		
+		//iterate over all ToDoEntry
 		HashMap<Integer, ToDoEntry> entries = ToDoEntry.getAllEntries(getBaseContext());
 		Set<Integer> entriesIDs = entries.keySet();
 		Iterator<Integer> iterator = entriesIDs.iterator();
 		while(iterator.hasNext()) {
 			int curID = iterator.next();
 			ToDoEntry curEl = entries.get(curID);
+									
+			// TODO Implement proper HashSet for locations which are mapped to a specific task, possibility to display task name
+			//iterate over all locations attributable to one specific task
+			HashSet<ToDoLocation> locations = ToDoLocation.getAllEntries(getBaseContext());
+			Iterator<ToDoLocation> iter = locations.iterator();
 			
-			// TODO implement distance
-			Location loc = new Location("New");
-			loc.setLatitude(0)  ;
-			loc.setLongitude(0);
-			int distance = (int) loc.distanceTo(getCurrentPosition());
-			String dist = distance + "m";
+			int closestDist= 9999999;
+			while (iter.hasNext()) {
+				ToDoLocation curItem = iter.next();
+				// get distance of the specific location to the current position
+				double curDist = curItem.distanceTo(getCurrentPosition());
+				// if user is within the chosen distance to the location a notification is issued
+				if (curDist< 100){
+					NotificationCompat.Builder mBuilder =         
+			                new NotificationCompat.Builder(ToDoListActivity.this)
+			            	.setSmallIcon(R.drawable.ic_launcher)
+			                .setContentTitle("Task Name")
+			                .setContentText("You are within "+ (int)curDist+ "m of " +curItem.getName()+ "!");
+			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			// int Counter allows you to update the notification later on (or insures that new notifications are issued
+			mNotificationManager.notify(Counter, mBuilder.build());
+			Counter++;
+				}
+				// to shortest distance to a location of a task is set and displayed 
+//				
+//				notification for all locations in range or only for the closest?
+//				
+				if (curDist < closestDist) {
+					closestDist = (int) curDist;
+					
+				}
+			}
+			String dist = closestDist + "m";
 			
 			toDoList.add(addItem(curEl.getName(), dist, curEl.getCategory().getColor()));
 		}
