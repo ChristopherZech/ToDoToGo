@@ -40,7 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapView extends Activity implements OnMarkerClickListener, OnMapClickListener {
 	// Create Google Map
 	private GoogleMap mapView;
-	private HashMap<Marker, ToDoLocation> pinnedLocations = new HashMap<Marker, ToDoLocation>();
+	//private HashMap<Marker, ToDoLocation> pinnedLocations = new HashMap<Marker, ToDoLocation>();
 	private String name;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +82,16 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 	        	}
 	           
 	            
-	            HashMap<Integer, ToDoLocation> locationList = ToDoLocation.getAllEntries(getBaseContext());
-	        	Set<Integer> keys = locationList.keySet();
-	        	ToDoLocation buffer;
-	            for(Integer i : keys){
-	            	buffer = locationList.get(i);
-	            	Log.d("MapView", buffer.toString()+"loaded");
+	            HashSet<ToDoLocation> locationList = ToDoLocation.getAllEntries(getBaseContext());
+	            //HashMap<Integer, ToDoLocation> locationList = ToDoLocation.getAllEntries(getBaseContext());
+	        	//Set<Integer> keys = locationList.keySet();
+	            for(ToDoLocation i : locationList){
+	            	Log.d("MapView", i.toString()+"loaded");
 	            	
 	            	//change color of marker
 		        	BitmapDescriptor bitmapDescriptor = 
 		        			BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-	        		mapView.addMarker(new MarkerOptions().position(buffer.getLatLng()).icon(bitmapDescriptor).title(buffer.getName()));
+	        		mapView.addMarker(new MarkerOptions().position(i.getLatLng()).icon(bitmapDescriptor).title(i.getName()));
 	        	}
 	            
 	            /*
@@ -142,11 +141,9 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 		alert.setNeutralButton("Delete",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						Context context = getBaseContext();
-						ToDoLocation locationBuffer = ToDoLocation.getToDoLocationByMarkerFromDB(marker.getId(), context);
-						ToDoLocation.staticDelete(locationBuffer.id, context);
-						pinnedLocations.remove(marker);
-						marker.remove();
+						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, getBaseContext());
+						//pinnedLocations.remove(marker);
+						if (success>0) marker.remove();
 					}
 		});
 		
@@ -189,7 +186,7 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 
 
 	public void onMapClick(LatLng point) {
-		System.out.println("Number of locations pinned"+ pinnedLocations.size());
+		//System.out.println("Number of locations pinned"+ pinnedLocations.size());
 		System.out.println("Clicked on location " + point.latitude
 				+ point.longitude);
 		// Prompt location name input
@@ -215,7 +212,7 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 				ToDoLocation newEntry = new ToDoLocation(-1, name, Lat,
 						Lng, marker.getId());	
 				newEntry.writeToDB(getBaseContext());
-				pinnedLocations.put(marker, newEntry);
+				//pinnedLocations.put(marker, newEntry);
 			}
 		});
 

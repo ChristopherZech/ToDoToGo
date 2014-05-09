@@ -85,7 +85,7 @@ public class ToDoEntry {
 				// get data
 				int location_id = cursorToDoLocMappingEntry.getInt(cursorToDoLocMappingEntry.getColumnIndexOrThrow(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID));
 				// create object
-				ToDoLocation newLoc = ToDoLocation.getAllEntries(context).get(location_id);
+				ToDoLocation newLoc = ToDoLocation.getToDoLocationFromDB(location_id,context);
 				
 				// add new location to this object
 				this.addLocation(newLoc);
