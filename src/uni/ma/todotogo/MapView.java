@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
+
 import com.google.android.gms.maps.GoogleMap;
 import android.app.Activity;
 import android.app.ActionBar;
@@ -120,7 +122,9 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
    }
 	
 	public boolean onMarkerClick(final Marker marker) {
-		
+		//ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
+		//SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		//Log.d("Test", db.query(DBPlacesEntry.TABLE_NAME, new String[]{DBPlacesEntry.COLUMN_NAME_NAME}, DBPlacesEntry.COLUMN_NAME_NAME+" =? AND " +DBPlacesEntry.COLUMN_NAME_LATITUDE+" =? AND " +DBPlacesEntry.COLUMN_NAME_LONGITUDE+" =?", new String[]{"test","49.5919","11.0086"}, null, null, null).getString(1) );
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		final String name = marker.getTitle();
 		alert.setTitle("What to do with location " + name + "?");
@@ -141,7 +145,9 @@ public class MapView extends Activity implements OnMarkerClickListener, OnMapCli
 		alert.setNeutralButton("Delete",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
+						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
 						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, getBaseContext());
+						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
 						//pinnedLocations.remove(marker);
 						if (success>0) marker.remove();
 					}

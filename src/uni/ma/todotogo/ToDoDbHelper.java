@@ -19,7 +19,7 @@ import uni.ma.todotogo.ToDoContract.DBToDoPlacesEntry;
  * 
  */
 public class ToDoDbHelper extends SQLiteOpenHelper {
-	public static final int DATABASE_VERSION = 12;
+	public static final int DATABASE_VERSION = 14;
     public static final String DATABASE_NAME = "ToDoToGo.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
@@ -36,8 +36,8 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
 		    DBPlacesEntry._ID + " INTEGER PRIMARY KEY," +
 		    DBPlacesEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
 		    DBPlacesEntry.COLUMN_NAME_MARKER + " REAL " + COMMA_SEP +
-		    DBPlacesEntry.COLUMN_NAME_LATITUDE + " REAL " + COMMA_SEP +
-		    DBPlacesEntry.COLUMN_NAME_LONGITUDE + " REAL " +
+		    DBPlacesEntry.COLUMN_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
+		    DBPlacesEntry.COLUMN_NAME_LONGITUDE + TEXT_TYPE +
 		    " )";
 	private static final String SQL_CREATE_TODOPLACES =
 		    "CREATE TABLE " + DBToDoPlacesEntry.TABLE_NAME + " (" +
