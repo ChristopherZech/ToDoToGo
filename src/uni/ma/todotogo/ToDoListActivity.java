@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -13,6 +14,7 @@ import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.ToDoContract.DBToDoEntry;
 import uni.ma.todotogo.ToDoContract.DBToDoPlacesEntry;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.app.ActionBar;
 import android.app.Activity;
@@ -21,6 +23,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -74,22 +77,23 @@ public class ToDoListActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle presses on the action bar items
 		int itemID = item.getItemId();
-		if(itemID == R.id.action_settings){
+		if (itemID == R.id.action_settings) {
 			Intent intentSettings = new Intent(ToDoListActivity.this,
 					SettingsActivity.class);
 			startActivity(intentSettings);
 
 			return true;
-		} else if (itemID ==  R.id.action_add){
-		
+		} else if (itemID == R.id.action_add) {
+
 			Intent intentAdd = new Intent(this, AddActivity.class);
 			startActivityForResult(intentAdd, RESULT_OK);
 			return true;
-		}else if (itemID ==  R.id.action_place){
+		} else if (itemID == R.id.action_place) {
 			Intent intentMapview = new Intent(this, MapView.class);
 			startActivity(intentMapview);
 			return true;
-		}	else return false; 
+		} else
+			return false;
 
 	}
 
@@ -115,51 +119,91 @@ public class ToDoListActivity extends Activity {
 	}
 
 	public void updateList() {
-		int Counter = 0;
 		toDoList.clear();
-		
-		//iterate over all ToDoEntry
-		HashMap<Integer, ToDoEntry> entries = ToDoEntry.getAllEntries(getBaseContext());
+
+		// iterate over all ToDoEntry
+		HashMap<Integer, ToDoEntry> entries = ToDoEntry
+				.getAllEntries(getBaseContext());
 		Set<Integer> entriesIDs = entries.keySet();
 		Iterator<Integer> iterator = entriesIDs.iterator();
-		while(iterator.hasNext()) {
+
+		int notificationCounter = 0; // unique id for notifications
+
+		while (iterator.hasNext()) {
 			int curID = iterator.next();
 			ToDoEntry curEl = entries.get(curID);
-									
-			// TODO Implement proper HashSet for locations which are mapped to a specific task, possibility to display task name
-			//iterate over all locations attributable to one specific task
-			HashSet<ToDoLocation> locations = ToDoLocation.getAllEntries(getBaseContext());
+
+			// TODO Implement proper HashSet for locations which are mapped to a
+			// specific task, possibility to display task name
+			// iterate over all locations attributable to one specific task
+			/*HashSet<ToDoLocation> locations = ToDoLocation.getAllEntries(getBaseContext());
 			Iterator<ToDoLocation> iter = locations.iterator();
-			
-			int closestDist= 9999999;
+
+			int closestDist = 9999999;
 			while (iter.hasNext()) {
 				ToDoLocation curItem = iter.next();
 				// get distance of the specific location to the current position
 				double curDist = curItem.distanceTo(getCurrentPosition());
-				// if user is within the chosen distance to the location a notification is issued
-				if (curDist< 100){
-					NotificationCompat.Builder mBuilder =         
-			                new NotificationCompat.Builder(ToDoListActivity.this)
-			            	.setSmallIcon(R.drawable.ic_launcher)
-			                .setContentTitle("Task Name")
-			                .setContentText("You are within "+ (int)curDist+ "m of " +curItem.getName()+ "!");
-			NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			// int Counter allows you to update the notification later on (or insures that new notifications are issued
-			mNotificationManager.notify(Counter, mBuilder.build());
-			Counter++;
+				// if user is within the chosen distance to the location a
+				// notification is issued
+				if (curDist < 100) {
+					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+							ToDoListActivity.this)
+							.setSmallIcon(R.drawable.ic_launcher)
+							.setContentTitle("Task Name")
+							.setContentText(
+									"You are within " + (int) curDist + "m of "
+											+ curItem.getName() + "!");
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					// int Counter allows you to update the notification later
+					// on (or insures that new notifications are issued
+					mNotificationManager.notify(Counter, mBuilder.build());
+					Counter++;
 				}
-				// to shortest distance to a location of a task is set and displayed 
-//				
-//				notification for all locations in range or only for the closest?
-//				
+				// to shortest distance to a location of a task is set and
+				// displayed
+				//
+				// notification for all locations in range or only for the
+				// closest?
+				//
 				if (curDist < closestDist) {
 					closestDist = (int) curDist;
-					
+
 				}
 			}
-			String dist = closestDist + "m";
-			
-			toDoList.add(addItem(curEl.getName(), dist, curEl.getCategory().getColor()));
+			String dist = closestDist + "m";*/
+			float distFloat = curEl.getClosestLocationTo(getCurrentPosition());
+			String dist;
+			if(distFloat == Float.POSITIVE_INFINITY) {
+				dist = "no loc";
+			} else {
+				dist =  (int)distFloat + "m";
+
+				// if user is within the chosen distance to the location a
+				// notification is issued
+
+				// get distance to notify from preferences
+				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+				int distToNotify = sharedPref.getInt("pref_distance", 100);
+
+
+				if (distFloat < distToNotify) {
+					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+							ToDoListActivity.this)
+							.setSmallIcon(R.drawable.ic_launcher)
+							.setContentTitle(curEl.getName())
+							.setContentText("You are within " + distFloat + "m!");
+					NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+					// int Counter allows you to update the notification later
+					// on (or insures that new notifications are issued
+					mNotificationManager.notify(notificationCounter, mBuilder.build());
+					notificationCounter++;
+				}
+			}
+
+
+			toDoList.add(addItem(curEl.getName(), dist, curEl.getCategory()
+					.getColor()));
 		}
 
 		adapter.notifyDataSetChanged();
@@ -172,10 +216,10 @@ public class ToDoListActivity extends Activity {
 	}
 
 	public Location getCurrentPosition() {
-		if(gps == null) {
+		if (gps == null) {
 			gps = new GPSTracker(ToDoListActivity.this);
 		}
-		if(gps.canGetLocation()) {
+		if (gps.canGetLocation()) {
 			return gps.getLocation();
 		} else {
 			Log.d("GPS", "cannot get location");
