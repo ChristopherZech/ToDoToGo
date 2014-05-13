@@ -199,6 +199,7 @@ public class ToDoListActivity extends Activity {
 
 		while (iterator.hasNext()) {
 			ToDoEntry currentEntry = iterator.next();
+			currentEntry.connectWithAllLocations(getBaseContext());
 			toDoList.add(currentEntry);
 			
 			// TODO Implement proper HashSet for locations which are mapped to a
@@ -293,6 +294,24 @@ public class ToDoListActivity extends Activity {
 			loc.setLatitude(0);
 			loc.setLongitude(0);
 			return loc;
+		}
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 1) {
+			if (resultCode == RESULT_OK) {
+				Intent intent = getIntent();
+				// locations = (HashSet<Integer>) intent
+				// .getSerializableExtra("locationsAdded");
+				
+				int entryID = data.getIntExtra("entryID",-1);
+				Toast.makeText(this, "" + entryID, Toast.LENGTH_LONG).show();
+				Log.d("Intent Info",""+entryID);
+				
+				ToDoEntry entry = ToDoEntry.getToDoEntryFromDB(entryID, getBaseContext());
+				adapter.
+			}
 		}
 	}*/
 }

@@ -48,7 +48,7 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	  }
 	  
 	  public String calcDistance(ToDoEntry entry){
-	  float distFloat = entry.getClosestLocationTo(gp.getLocation());
+	  float distFloat = entry.getClosestDistanceTo(gp.getLocation());
 		String dist;
 		if(distFloat == Float.POSITIVE_INFINITY) {
 			dist = "no loc";

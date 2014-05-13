@@ -252,5 +252,6 @@ public class ToDoEntryLocation {
 			result += columns[columns.length - 1] + " =?";
 			return result;
 		}
+		
 
 }

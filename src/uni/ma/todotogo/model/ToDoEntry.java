@@ -138,10 +138,35 @@ public class ToDoEntry {
 	 *            Location of which the shortest distance shall be calculated.
 	 * @return Shortest distance.
 	 */
-	public float getClosestLocationTo(Location distTo) {
+	public ToDoLocation getClosestLocationTo(Location distTo) {
 		Iterator<ToDoLocation> iter = locations.iterator();
 		float closestDist = Float.POSITIVE_INFINITY;
+		ToDoLocation result = null;
+		
+		while (iter.hasNext()) {
+			ToDoLocation curItem = iter.next();
+			float curDist = distTo.distanceTo(curItem);
+			if (curDist < closestDist) {
+				closestDist = curDist;
+				result = curItem;
+			}
+		}
 
+		return result;
+	}
+	
+	/**
+	 * Calculates the distance from <code>distTo</code> to the closest Location
+	 * stored in <code>locations</code>.
+	 * 
+	 * @param distTo
+	 *            Location of which the shortest distance shall be calculated.
+	 * @return Shortest distance.
+	 */
+	public float getClosestDistanceTo(Location distTo) {
+		Log.d("Entry", "ConnectedLocations: "+locations.size());
+		Iterator<ToDoLocation> iter = locations.iterator();
+		float closestDist = Float.POSITIVE_INFINITY;
 		while (iter.hasNext()) {
 			ToDoLocation curItem = iter.next();
 			float curDist = distTo.distanceTo(curItem);
@@ -149,7 +174,7 @@ public class ToDoEntry {
 				closestDist = curDist;
 			}
 		}
-
+		Log.d("Entry", "Closest distance to "+this.name+" is "+closestDist);
 		return closestDist;
 	}
 
@@ -159,7 +184,7 @@ public class ToDoEntry {
 	 * item is created. Update not tested yet. Also adds <code>locations</code>
 	 * -mappings into DB.
 	 */
-	public void writeToDB(Context context) {
+	public int writeToDB(Context context) {
 		ToDoEntry proof = getToDoEntryFromDB(this.id, context);
 		
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
@@ -182,10 +207,12 @@ public class ToDoEntry {
 																					// ID
 
 			Log.d("ToDoEntry", "new ID is " + id);
+			return id;
 			// update id in allEntries
 		} else { // item is updated
-			db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry, DBToDoEntry._ID
+			id = db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry, DBToDoEntry._ID
 					+ " = " + id, null);
+			return id;
 		}
 
 		/*
@@ -203,7 +230,7 @@ public class ToDoEntry {
 			db.insert(DBToDoPlacesEntry.TABLE_NAME, null, valuesEntryLocation);
 		}*/
 
-		db.close();
+		
 	}
 
 	/**
@@ -298,4 +325,14 @@ public class ToDoEntry {
 	public void setLocationsFromDB(Context context){
 		setLocations(ToDoEntryLocation.getConnectedLocations(this, context));
 	}
+	
+	public void connectWithAllLocations(Context context){
+		HashSet<ToDoLocation> allLocations = ToDoLocation.getAllEntries(context);
+		for (ToDoLocation test:allLocations){
+			locations.add(test);
+			ToDoEntryLocation buffer = new ToDoEntryLocation(this, test);
+			buffer.writeToDB(context);
+		}
+	}
+
 }

@@ -143,7 +143,12 @@ public class AddActivity extends Activity {
 				mapper.writeToDB(context);
 				// }
 				newEntry.setLocations(locationsBuffer);
-				newEntry.writeToDB(getBaseContext());
+				int entryID = newEntry.writeToDB(getBaseContext());
+				Intent dataForListView = new Intent();
+				dataForListView.putExtra("entryID", entryID);
+				setResult(RESULT_OK, dataForListView);
+				finish();
+				
 				finish();
 				return true;
 			}
