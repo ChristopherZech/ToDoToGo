@@ -124,15 +124,15 @@ public class ToDoLocation extends Location {
 	 */
 	public static ToDoLocation getLocationByNameAndLatLng(String name,
 			double lat, double lng, Context context) {
-		DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
-		dfs.setDecimalSeparator('.');
-		DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
+		//DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
+		//dfs.setDecimalSeparator('.');
+		//DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
 
 		String selection = DBPlacesEntry.COLUMN_NAME_NAME + "= ? AND "
 				+ DBPlacesEntry.COLUMN_NAME_LATITUDE + "= ? AND "
 				+ DBPlacesEntry.COLUMN_NAME_LONGITUDE + "=?";
-		String[] selectionArgs = { name, numberFormat.format(lat),
-				numberFormat.format(lng) };
+		String[] selectionArgs = { name, String.valueOf(lat),
+				String.valueOf(lng) };
 
 		Cursor cursor = getCursor(context, selection, selectionArgs);
 		cursor.moveToFirst();
@@ -325,9 +325,9 @@ public class ToDoLocation extends Location {
 	 */
 	public static int staticDeleteByNameLatLng(String name, double lat,
 			double lng, Context context) {
-		DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
-		dfs.setDecimalSeparator('.');
-		DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
+		//DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
+		//dfs.setDecimalSeparator('.');
+		//DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
 
 		String[] buffer = { DBPlacesEntry.COLUMN_NAME_NAME,
 				DBPlacesEntry.COLUMN_NAME_LATITUDE,

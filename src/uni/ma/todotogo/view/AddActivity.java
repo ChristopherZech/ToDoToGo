@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,36 +31,38 @@ import android.widget.Toast;
 public class AddActivity extends Activity {
 
 	String name = "";
-	//HashSet<Integer> locations = new HashSet<Integer>();
-	int locations=0;
+	// HashSet<Integer> locations = new HashSet<Integer>();
+	int locations = 0;
 	MultiAutoCompleteTextView myEditText;
 	GregorianCalendar myCalendar;
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (resultCode == RESULT_OK) {
-	    	Intent intent = getIntent();
-			//locations = (HashSet<Integer>) intent
-			//		.getSerializableExtra("locationsAdded");
-			
-			locations = intent.getIntExtra("locationsAdded", 0);
-			Toast.makeText(this, ""+locations,
-	                Toast.LENGTH_LONG).show();
-	    }
+		if (requestCode == 1) {
+			if (resultCode == RESULT_OK) {
+				Intent intent = getIntent();
+				// locations = (HashSet<Integer>) intent
+				// .getSerializableExtra("locationsAdded");
+
+				locations = data.getIntExtra("locationsAdded", 0);
+				Toast.makeText(this, "" + locations, Toast.LENGTH_LONG).show();
+				Log.d("Intent Info",""+locations);
+			}
+		}
 	}
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_task_layout);
 		locations = 0;
-		
+
 		this.myEditText = (MultiAutoCompleteTextView) findViewById(R.id.add_text_when);
 
 		this.myCalendar = new GregorianCalendar();
 
 		final DatePickerDialog.OnDateSetListener datePicked = new DatePickerDialog.OnDateSetListener() {
-			
+
 			@Override
 			public void onDateSet(DatePicker view, int year, int monthOfYear,
 					int dayOfMonth) {
@@ -114,39 +117,43 @@ public class AddActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    // Handle presses on the action bar items
+		// Handle presses on the action bar items
 		Context context = getBaseContext();
 		int itemID = item.getItemId();
-	    if( itemID == R.id.action_add_ok){
-	        	String name = ((MultiAutoCompleteTextView)findViewById(R.id.add_text_what)).getEditableText().toString();
-	        	long category = ((Spinner)findViewById(R.id.add_spinner_categories)).getSelectedItemId();
-	        	ToDoEntry newEntry = new ToDoEntry(-1, name, (int)category, myCalendar);
-	        	newEntry.writeToDB(getBaseContext());
-	        	HashSet<ToDoLocation> locationsBuffer = new HashSet<ToDoLocation>();
-	        	ToDoLocation locationBuffer = new ToDoLocation(-1, null);
-	        	ToDoEntryLocation mapper = new ToDoEntryLocation(-1);
-	        	if(locations==0){//.isEmpty()){
-	        		finish();
-	        		return false;
-	        	}
-	        	else {
-		        	//for(Integer locationID:locations){
-		        		locationBuffer = ToDoLocation.getToDoLocationFromDB(locations, context);
-		        		locationsBuffer.add(locationBuffer);
-		        		mapper = new ToDoEntryLocation(-1, newEntry, locationBuffer);
-		        		mapper.writeToDB(context);
-		        	//}
-	        	newEntry.setLocations(locationsBuffer);
-	        	newEntry.writeToDB(getBaseContext());
-	        	finish();
-	            return true;
-	        	}
-	    } else if(itemID == R.id.action_place){ 
-	        
-	        	Intent myIntent = new Intent(this, MapActivity.class);
-	        	startActivity(myIntent);
-	        	return true;
-	    } else return false;
+		if (itemID == R.id.action_add_ok) {
+			String name = ((MultiAutoCompleteTextView) findViewById(R.id.add_text_what))
+					.getEditableText().toString();
+			long category = ((Spinner) findViewById(R.id.add_spinner_categories))
+					.getSelectedItemId();
+			ToDoEntry newEntry = new ToDoEntry(-1, name, (int) category,
+					myCalendar);
+			newEntry.writeToDB(getBaseContext());
+			HashSet<ToDoLocation> locationsBuffer = new HashSet<ToDoLocation>();
+			ToDoLocation locationBuffer = new ToDoLocation(-1, null);
+			ToDoEntryLocation mapper = new ToDoEntryLocation(-1);
+			if (locations == 0) {// .isEmpty()){
+				finish();
+				return false;
+			} else {
+				// for(Integer locationID:locations){
+				locationBuffer = ToDoLocation.getToDoLocationFromDB(locations,
+						context);
+				locationsBuffer.add(locationBuffer);
+				mapper = new ToDoEntryLocation(-1, newEntry, locationBuffer);
+				mapper.writeToDB(context);
+				// }
+				newEntry.setLocations(locationsBuffer);
+				newEntry.writeToDB(getBaseContext());
+				finish();
+				return true;
+			}
+		} else if (itemID == R.id.action_place) {
+
+			Intent myIntent = new Intent(this, MapActivity.class);
+			startActivityForResult(myIntent, 1);
+			return true;
+		} else
+			return false;
 	}
 
 	@Override

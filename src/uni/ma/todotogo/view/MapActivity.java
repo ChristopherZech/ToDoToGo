@@ -56,7 +56,6 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 		super.onCreate(savedInstanceState);
 		//locationsAdded = new HashSet<Integer>();
 		setContentView(R.layout.activity_map_view);
-		Intent intent = new Intent();
 		//set Action Bar
 		ActionBar actionBar = getActionBar();
 	    actionBar.setHomeButtonEnabled(true);
@@ -203,9 +202,12 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						ToDoLocation buffer = ToDoLocation.getLocationByNameAndLatLng(marker.getTitle(), marker.getPosition().latitude, marker.getPosition().longitude, context);
+						String name = "no name";
+						Toast.makeText(getApplicationContext(), buffer.getName(),
+								Toast.LENGTH_LONG).show();
 						int success = buffer.getId();
 						locationsAdded = buffer.getId();//locationsAdded.add(buffer.getId());
-						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
+						Log.d("MapView","New locationsAdded"+locationsAdded);
 						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
 						//pinnedLocations.remove(marker);
 					}
