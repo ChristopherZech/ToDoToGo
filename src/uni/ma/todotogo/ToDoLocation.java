@@ -9,7 +9,6 @@ import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.HashMap;
 import java.util.HashSet;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -43,32 +42,18 @@ public class ToDoLocation extends Location {
 	 * @return
 	 */
 	public static HashSet<ToDoLocation> getAllEntries(Context context) {
-		// if (allLocations.isEmpty()) {
-		// fill list with entries
 		HashSet<ToDoLocation> locations = new HashSet<ToDoLocation>();
 		ToDoLocation buffer;
+
 		Cursor cursor = getCursor(context, null, null);
 		cursor.moveToFirst();
 
 		while (!cursor.isAfterLast()) {
 			buffer = getCurrentObjectFromCursor(cursor);
-			Log.d("DB",
-					"How Lat looks in DB:"
-							+ cursor.getString(cursor
-									.getColumnIndex(DBPlacesEntry.COLUMN_NAME_LATITUDE)));
-			Log.d("DB", "How Lat looks in Ob:" + buffer.getLatitude());
-			Log.d("DB",
-					"How Lng looks in DB:"
-							+ cursor.getString(cursor
-									.getColumnIndex(DBPlacesEntry.COLUMN_NAME_LONGITUDE)));
-			Log.d("DB", "How Lat looks in Ob:" + buffer.getLongitude());
-			Log.d("DB", buffer.toString());
 			locations.add(buffer);
 			cursor.moveToNext();
 		}
 		return locations;
-		// }
-		// return allLocations;
 	}
 
 	/**
@@ -310,7 +295,7 @@ public class ToDoLocation extends Location {
 	}
 
 	/**
-	 * deletes a  location from the DB with specific ID
+	 * deletes a location from the DB with specific ID
 	 * 
 	 * statically deletes a location ouf of the DB with a
 	 * 
@@ -373,8 +358,7 @@ public class ToDoLocation extends Location {
 	}
 
 	/**
-	 * creates a full, 'classical' query, e.g. 
-	 * [columx, columy],[blabla,bubu] -> 
+	 * creates a full, 'classical' query, e.g. [columx, columy],[blabla,bubu] ->
 	 * columx = 'blabla' AND columy = 'bubu'
 	 * 
 	 * @param columns

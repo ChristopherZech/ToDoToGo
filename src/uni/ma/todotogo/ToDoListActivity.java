@@ -44,9 +44,8 @@ import android.widget.Toast;
 import android.location.*;
 
 public class ToDoListActivity extends Activity {
-	private ArrayList<HashMap<String, Object>> toDoList;
+	private ArrayList<ToDoEntry> toDoList;
 	private ArrayAdapter adapter;
-	GPSTracker gps;
 	HashSet<ToDoLocation> locations;
 
 	@Override
@@ -58,12 +57,32 @@ public class ToDoListActivity extends Activity {
 		actionBar.setDisplayUseLogoEnabled(false);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// create list which will be filled with data
-		toDoList = new ArrayList<HashMap<String, Object>>();
+		toDoList = new ArrayList<ToDoEntry>();
 
 		ListView lv = (ListView) findViewById(R.id.todolist);
 		adapter = new ArrayAdapterToDoList(this, toDoList);
 		lv.setAdapter(adapter);
-		getCurrentPosition();
+		lv.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View item,
+                    int position, long id)
+            {
+            	Context context = getApplicationContext();
+            	ToDoEntry toDoBuffer = toDoList.get(position);
+            	int success = toDoBuffer.delete(context);
+            	int duration = Toast.LENGTH_SHORT;
+            	if(success == 1){
+            		adapter.remove(adapter.getItem(position));
+                	Toast toast = Toast.makeText(context, "Item "+position+" has been removed", duration);
+                	toast.show();
+            	}
+            	else{
+                	Toast toast = Toast.makeText(context, "Item "+position+" could not removed!!", duration);
+                	toast.show();
+            	}
+            }
+        });
 	}
 
 	@Override
@@ -132,7 +151,8 @@ public class ToDoListActivity extends Activity {
 		while (iterator.hasNext()) {
 			int curID = iterator.next();
 			ToDoEntry curEl = entries.get(curID);
-
+			toDoList.add(curEl);
+			
 			// TODO Implement proper HashSet for locations which are mapped to a
 			// specific task, possibility to display task name
 			// iterate over all locations attributable to one specific task
@@ -171,7 +191,7 @@ public class ToDoListActivity extends Activity {
 
 				}
 			}
-			String dist = closestDist + "m";*/
+			String dist = closestDist + "m";
 			float distFloat = curEl.getClosestLocationTo(getCurrentPosition());
 			String dist;
 			if(distFloat == Float.POSITIVE_INFINITY) {
@@ -199,11 +219,9 @@ public class ToDoListActivity extends Activity {
 					mNotificationManager.notify(notificationCounter, mBuilder.build());
 					notificationCounter++;
 				}
-			}
+			}*/
 
 
-			toDoList.add(addItem(curEl.getName(), dist, curEl.getCategory()
-					.getColor()));
 		}
 
 		adapter.notifyDataSetChanged();
@@ -214,7 +232,7 @@ public class ToDoListActivity extends Activity {
 		super.onResume();
 		updateList();
 	}
-
+	/*
 	public Location getCurrentPosition() {
 		if (gps == null) {
 			gps = new GPSTracker(ToDoListActivity.this);
@@ -228,6 +246,5 @@ public class ToDoListActivity extends Activity {
 			loc.setLongitude(0);
 			return loc;
 		}
-	}
-
+	}*/
 }
