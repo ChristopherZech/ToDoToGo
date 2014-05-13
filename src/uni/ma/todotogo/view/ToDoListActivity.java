@@ -47,7 +47,7 @@ import android.location.*;
 public class ToDoListActivity extends Activity {
 	private ArrayList<ToDoEntry> toDoList;
 	private ArrayAdapter adapter;
-	HashSet<ToDoLocation> locations;
+	//HashSet<Integer> locations;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +67,58 @@ public class ToDoListActivity extends Activity {
         {
             @Override
             public void onItemClick(AdapterView<?> parent, View item,
-                    int position, long id)
+                    final int position, long id)
             {
-            	Context context = getApplicationContext();
+            	final Context context = getApplicationContext();
+            	final ToDoEntry toDoBuffer = toDoList.get(position);
+            	final String title = toDoBuffer.getName();
+            	int success = ToDoEntry.staticDelete(toDoBuffer.getId(), context);
+            	if(success>0) updateList();
+            	/*AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        		alert.setTitle("What to do with task '" + title + "'?");
+        		
+        		//get Position of marker and pass it to AddActivity
+        		alert.setPositiveButton("View on Map", 
+        			new DialogInterface.OnClickListener() {
+        				public void onClick(DialogInterface dialog, int whichButton) {
+        					Intent intent = new Intent(context,MapActivity.class);
+        					HashSet<ToDoLocation> positions= toDoBuffer.getLocations();
+        					HashSet<Integer> locations = new HashSet<Integer>();
+        					for(ToDoLocation location: positions){
+        						locations.add(location.getId());
+        					}
+        					intent.putExtra("Locations", locations);
+        					startActivity(intent);
+        			//use location for task
+        				}
+        		});
+        		
+        		/*
+        		//Delete current location
+        		alert.setNeutralButton("Delete",
+        				new DialogInterface.OnClickListener() {
+        					public void onClick(DialogInterface dialog, int whichButton) {
+        						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
+        						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, getBaseContext());
+        						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
+        						//pinnedLocations.remove(marker);
+        						if (success>0) marker.remove();
+        					}
+        		});
+        		
+        		//Do nothing
+        		alert.setNegativeButton("Cancel",
+        				new DialogInterface.OnClickListener() {
+        					public void onClick(DialogInterface dialog, int whichButton) {
+        						// Canceled.(Do nothing)
+        						}
+        		});
+        		
+				
+        		alert.show();
+        		//return false; //(still show info menu)
+            	
+            	/*Context context = getApplicationContext();
             	ToDoEntry toDoBuffer = toDoList.get(position);
             	int success = toDoBuffer.delete(context);
             	int duration = Toast.LENGTH_SHORT;
@@ -81,7 +130,7 @@ public class ToDoListActivity extends Activity {
             	else{
                 	Toast toast = Toast.makeText(context, "Item "+position+" could not removed!!", duration);
                 	toast.show();
-            	}
+            	}*/
             }
         });
 	}
@@ -142,17 +191,15 @@ public class ToDoListActivity extends Activity {
 		toDoList.clear();
 
 		// iterate over all ToDoEntry
-		HashMap<Integer, ToDoEntry> entries = ToDoEntry
+		HashSet<ToDoEntry> entries = ToDoEntry
 				.getAllEntries(getBaseContext());
-		Set<Integer> entriesIDs = entries.keySet();
-		Iterator<Integer> iterator = entriesIDs.iterator();
+		Iterator<ToDoEntry> iterator = entries.iterator();
 
 		int notificationCounter = 0; // unique id for notifications
 
 		while (iterator.hasNext()) {
-			int curID = iterator.next();
-			ToDoEntry curEl = entries.get(curID);
-			toDoList.add(curEl);
+			ToDoEntry currentEntry = iterator.next();
+			toDoList.add(currentEntry);
 			
 			// TODO Implement proper HashSet for locations which are mapped to a
 			// specific task, possibility to display task name

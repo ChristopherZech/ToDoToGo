@@ -27,9 +27,17 @@ public class ToDoLocation extends Location {
 	private HashSet<ToDoEntry> tasks;
 	private String markerID;
 
+	
+	
+	public ToDoLocation(int id, String name){
+		super(name);
+		this.id = id;
+	}
+	
 	// private static HashMap<Integer, ToDoLocation> allLocations = new
 	// HashMap<Integer, ToDoLocation>();
 
+	
 	public String toString() {
 		return "#" + id + "; name: " + name + "; Lat: " + this.getLatitude()
 				+ "; Long: " + this.getLongitude() + "; #tasks: "
@@ -161,15 +169,18 @@ public class ToDoLocation extends Location {
 	 * @return
 	 */
 	public static ToDoLocation getCurrentObjectFromCursor(Cursor cursor) {
-		int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBPlacesEntry._ID));
+		if(cursor.getCount()<1){
+			return new ToDoLocation(-1, "", 0, 0, null);
+		}
+		int id = cursor.getInt(cursor.getColumnIndex(DBPlacesEntry._ID));
 		String name = cursor.getString(cursor
-				.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_NAME));
+				.getColumnIndex(DBPlacesEntry.COLUMN_NAME_NAME));
 		double latitude = Double.parseDouble(cursor.getString(cursor
-				.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LATITUDE)));
+				.getColumnIndex(DBPlacesEntry.COLUMN_NAME_LATITUDE)));
 		double longitude = Double.parseDouble(cursor.getString(cursor
-				.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_LONGITUDE)));
+				.getColumnIndex(DBPlacesEntry.COLUMN_NAME_LONGITUDE)));
 		String markerId = cursor.getString(cursor
-				.getColumnIndexOrThrow(DBPlacesEntry.COLUMN_NAME_MARKER));
+				.getColumnIndex(DBPlacesEntry.COLUMN_NAME_MARKER));
 
 		// create object
 		return new ToDoLocation(id, name, latitude, longitude, markerId); // (automatically
@@ -202,6 +213,8 @@ public class ToDoLocation extends Location {
 	 * item is created. Update not tested yet.
 	 */
 	public void writeToDB(Context context) {
+		ToDoLocation proof = getToDoLocationFromDB(this.id, context);
+
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -213,20 +226,10 @@ public class ToDoLocation extends Location {
 		values.put(DBPlacesEntry.COLUMN_NAME_LONGITUDE,
 				String.valueOf(this.getLongitude()));
 
-		if (id == -1) { // a new item is created
-
-			// insert
-			// to
-			// db
-			// and
-			// get
-			// ID
+		if (proof.id < 0) {
 			id = (int) db.insert(DBPlacesEntry.TABLE_NAME, null, values);
 
-			// update id in allEntries
-			// allLocations.remove(-1);
-			// allLocations.put(id, this);
-		} else { // item is updated
+		} else {
 			db.update(DBPlacesEntry.TABLE_NAME, values, DBPlacesEntry._ID
 					+ " = " + id, null);
 		}
@@ -416,6 +419,14 @@ public class ToDoLocation extends Location {
 	 */
 	public LatLng getLatLng() {
 		return new LatLng(this.getLatitude(), this.getLongitude());
+	}
+
+	public void setEntries(HashSet<ToDoEntry> tasks) {
+		this.tasks = tasks;
+	}
+
+	public void setEntriesFromDB(Context context) {
+		setEntries(ToDoEntryLocation.getConnectedEntries(this, context));
 	}
 
 }

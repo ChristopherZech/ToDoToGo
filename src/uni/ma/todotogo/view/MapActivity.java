@@ -8,6 +8,7 @@ import uni.ma.todotogo.controler.GPSTracker;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoLocation;
 
+import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.GoogleMap;
 import android.app.Activity;
 import android.app.ActionBar;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +32,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.MapFragment;
@@ -46,11 +49,14 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 	private GoogleMap mapView;
 	//private HashMap<Marker, ToDoLocation> pinnedLocations = new HashMap<Marker, ToDoLocation>();
 	private String name;
+	private int locationsAdded;//private HashSet<Integer> locationsAdded;
+	private LocationManager locationManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		//locationsAdded = new HashSet<Integer>();
 		setContentView(R.layout.activity_map_view);
-		
+		Intent intent = new Intent();
 		//set Action Bar
 		ActionBar actionBar = getActionBar();
 	    actionBar.setHomeButtonEnabled(true);
@@ -66,7 +72,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 	            // The Map is verified. It is now safe to manipulate the map.
 	            
 	            	// Instantiated GPSTracker object to get current Position
-	            GPSTracker gps = new GPSTracker(MapActivity.this);
+	            /*GPSTracker gps = new GPSTracker(MapActivity.this);
 	            Location currentLocation= gps.getLocation();
 	            double Lat= currentLocation.getLatitude();
 	         	double Lng= currentLocation.getLongitude();
@@ -80,7 +86,14 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 	        	mapView.addMarker(new MarkerOptions().position(position).icon(bitmapDescriptor)
 	        			.title("Current Location"));
 	        	//Display currentposition as toast
-	        	Toast.makeText(getApplicationContext(),	"Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_SHORT).show();
+	        	Toast.makeText(getApplicationContext(),	"Lat:" + Lat + "Lng:" + Lng, Toast.LENGTH_SHORT).show();*/
+	            mapView.setMyLocationEnabled(true);
+	            GPSTracker gps = new GPSTracker(MapActivity.this);
+	            Location currentLocation= gps.getLocation();
+	            double Lat= currentLocation.getLatitude();
+	         	double Lng= currentLocation.getLongitude();
+	        	LatLng position= new LatLng(Lat,Lng);
+	            mapView.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 				mapView.setOnMapClickListener(this);
 	        	mapView.setOnMarkerClickListener(this);
 	        	}
@@ -97,7 +110,47 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 		        			BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
 	        		mapView.addMarker(new MarkerOptions().position(i.getLatLng()).icon(bitmapDescriptor).title(i.getName()));
 	        	}
-	            
+	           /* mapView.setOnInfoWindowClickListener(new OnInfoWindowClickListener(){
+	            	public void onInfoWindowClick(Marker marker){
+	            		
+	            		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+	            		final String name = marker.getTitle();
+	            		alert.setTitle("What to do with location " + name + "?");
+	            		
+	            		//get Position of marker and pass it to AddActivity
+	            		alert.setPositiveButton("Use for new task", 
+	            			new DialogInterface.OnClickListener() {
+	            				public void onClick(DialogInterface dialog, int whichButton) {
+	            					Intent intent = new Intent(MapActivity.this,AddActivity.class);
+	            					LatLng position=marker.getPosition();
+	            					intent.putExtra("LatLng", position);
+	            					startActivity(intent);
+	            			//use location for task
+	            				}
+	            		});
+	            		
+	            		//Delete current location
+	            		alert.setNeutralButton("Delete",
+	            				new DialogInterface.OnClickListener() {
+	            					public void onClick(DialogInterface dialog, int whichButton) {
+	            						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
+	            						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, getBaseContext());
+	            						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
+	            						//pinnedLocations.remove(marker);
+	            						if (success>0) marker.remove();
+	            					}
+	            		});
+	            		
+	            		//Do nothing
+	            		alert.setNegativeButton("Cancel",
+	            				new DialogInterface.OnClickListener() {
+	            					public void onClick(DialogInterface dialog, int whichButton) {
+	            						// Canceled.(Do nothing)
+	            						}
+	            		});
+	            		
+	            	}
+	            });
 	            /*
 	            //get Database to display Locations
 	        	ToDoDbHelper mDbHelper = new ToDoDbHelper(getBaseContext());
@@ -130,36 +183,43 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		final String name = marker.getTitle();
 		alert.setTitle("What to do with location " + name + "?");
-		
+		final Context context = getBaseContext();
 		//get Position of marker and pass it to AddActivity
+		/*
 		alert.setPositiveButton("Use for new task", 
 			new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int whichButton) {
 					Intent intent = new Intent(MapActivity.this,AddActivity.class);
 					LatLng position=marker.getPosition();
-					intent.putExtra("LatLng", position);
+					locationsAdded.add(ToDoLocation.getLocationByNameAndLatLng(marker.getTitle(), position.latitude, position.longitude, context));
+					intent.putExtra("locationsAdded", locationsAdded);
 					startActivity(intent);
 			//use location for task
 				}
-		});
+		});*/
 		
 		//Delete current location
-		alert.setNeutralButton("Delete",
+		alert.setNeutralButton("Use for current task",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
+						ToDoLocation buffer = ToDoLocation.getLocationByNameAndLatLng(marker.getTitle(), marker.getPosition().latitude, marker.getPosition().longitude, context);
+						int success = buffer.getId();
+						locationsAdded = buffer.getId();//locationsAdded.add(buffer.getId());
 						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
-						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, getBaseContext());
 						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
 						//pinnedLocations.remove(marker);
-						if (success>0) marker.remove();
 					}
 		});
 		
 		//Do nothing
-		alert.setNegativeButton("Cancel",
+		alert.setNegativeButton("Delete",
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
-						// Canceled.(Do nothing)
+						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
+						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, context);
+						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
+						//pinnedLocations.remove(marker);
+						if (success>0) marker.remove();
 						}
 		});
 		
@@ -186,7 +246,9 @@ public class MapActivity extends Activity implements OnMarkerClickListener, OnMa
 			return true;
 		}
 		if (id == R.id.add_activity_map_menu_action_add_ok) {
-
+			Intent data = new Intent();
+			data.putExtra("locationsAdded", locationsAdded);
+			setResult(RESULT_OK, data);
 			finish();
 		}
 		return super.onOptionsItemSelected(item);

@@ -61,18 +61,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="goToMap"
-        android:text="Go to Map" />
-    
-    <fragment
-          android:id="@+id/map"
-          android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:ems="10"
-          android:name="com.google.android.gms.maps.MapFragment"
-          
-           />
+        android:onClick="goToMap"
+        android:text="Go to Map" />
 
 </LinearLayout>

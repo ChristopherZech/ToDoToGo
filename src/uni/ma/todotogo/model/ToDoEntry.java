@@ -24,90 +24,45 @@ public class ToDoEntry {
 	public AvailableColors category;
 	GregorianCalendar date;
 	static HashSet<ToDoLocation> locations;
-	private static HashMap<Integer,ToDoEntry> allEntries = new HashMap<Integer, ToDoEntry>();
 
 	/**
 	 * Returns a list with all entries stored in the db.
 	 * 
 	 * @return
 	 */
-	public static HashMap<Integer, ToDoEntry> getAllEntries(Context context) {
-		if(allEntries.isEmpty()) {
-			// fill list with entries
-			ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
-			SQLiteDatabase db = mDbHelper.getReadableDatabase();
+	public static HashSet<ToDoEntry> getAllEntries(Context context) {
 
-			// DB entries to get
-			String[] projection = { DBToDoEntry._ID,
-					DBToDoEntry.COLUMN_NAME_NAME,
-					DBToDoEntry.COLUMN_NAME_CATEGORY,
-					DBToDoEntry.COLUMN_NAME_DATE };
+		HashSet<ToDoEntry> allEntries = new HashSet<ToDoEntry>();
+		ToDoEntry buffer;
 
-			Cursor cursorToDoEntry = db.query(DBToDoEntry.TABLE_NAME, projection, null, null, null, null, null );
-			cursorToDoEntry.moveToFirst();
+		Cursor cursorToDoEntry = getCursor(context, null, null);
+		cursorToDoEntry.moveToFirst();
 
-			while (!cursorToDoEntry.isAfterLast()) {
-				// get data
-				int id = cursorToDoEntry.getInt(cursorToDoEntry.getColumnIndexOrThrow(DBToDoEntry._ID));
-				String name = cursorToDoEntry.getString(cursorToDoEntry
-						.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_NAME));
-				int category = cursorToDoEntry.getInt(cursorToDoEntry.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_CATEGORY));
-				int date = cursorToDoEntry.getInt(cursorToDoEntry.getColumnIndexOrThrow(DBToDoEntry.COLUMN_NAME_DATE));
-				// create object
-				ToDoEntry newEntry = new ToDoEntry(id, name, category, date); // (automatically gets stored in the HashMap)
-				
-				// add locations to this todo
-				newEntry.addLocationsFromDB(context);
-				
-				
-				cursorToDoEntry.moveToNext();
-			}
+		while (!cursorToDoEntry.isAfterLast()) {
+			buffer = getCurrentObjectFromCursor(cursorToDoEntry);
+			buffer.setLocationsFromDB(context);
+			allEntries.add(buffer);
+			cursorToDoEntry.moveToNext();
 		}
+		cursorToDoEntry.close();
 		return allEntries;
 	}
 	
-	/**
-	 * Queries DB to find all matching locations and adds them to this object.
-	 */
-	public void addLocationsFromDB(Context context) {
-		if(locations.isEmpty()) {
-			ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
-			SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
-			// DB entries to get
-			String[] projection = { DBToDoPlacesEntry._ID,
-					DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID,
-					DBToDoPlacesEntry.COLUMN_NAME_TODO_ID };
-
-			Cursor cursorToDoLocMappingEntry = db.query(DBToDoPlacesEntry.TABLE_NAME, projection, DBToDoPlacesEntry.COLUMN_NAME_TODO_ID + "='"+id+"'", null, null, null, null );
-			cursorToDoLocMappingEntry.moveToFirst();
-
-			while (!cursorToDoLocMappingEntry.isAfterLast()) {
-				// get data
-				int location_id = cursorToDoLocMappingEntry.getInt(cursorToDoLocMappingEntry.getColumnIndexOrThrow(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID));
-				// create object
-				ToDoLocation newLoc = ToDoLocation.getToDoLocationFromDB(location_id,context);
-				
-				// add new location to this object
-				this.addLocation(newLoc);
-				// add this object to new location
-				newLoc.addToDoEntry(this);
-				
-				cursorToDoLocMappingEntry.moveToNext();
-			}
-		}
+	public ToDoEntry(int id){
+		this.id = id; 
 	}
-	
-	public static int staticDelete(int idToBeDeleted, Context context){ 
+
+	public static int staticDelete(int idToBeDeleted, Context context) {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		
-		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "=" + String.valueOf(idToBeDeleted), null);
-		Log.d("ToDoEntry", "ListItem with ID "+idToBeDeleted+" was deleted.");
-		allEntries.remove(idToBeDeleted);
+
+		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "="
+				+ String.valueOf(idToBeDeleted), null);
+		Log.d("ToDoEntry", "ListItem with ID " + idToBeDeleted
+				+ " was deleted.");
 		db.close();
 		mDbHelper.close();
-		return success;	
+		return success;
 	}
 
 	/**
@@ -142,18 +97,18 @@ public class ToDoEntry {
 	 *            ID in database. <code>-1</code> if does not have ID yet.
 	 * @param name
 	 * @param category
-	 * @param date Time in milliseconds from the epoch.
+	 * @param date
+	 *            Time in milliseconds from the epoch.
 	 */
-	public ToDoEntry(int id, String name, int category, int date) {
+	public ToDoEntry(int id, String name, String category, String date) {
 		this.id = id;
 		this.name = name;
-		this.category = AvailableColors.getColorByInt(category);
+		this.category = AvailableColors.getColorByInt(Integer.parseInt(category));
 		this.locations = new HashSet<ToDoLocation>();
-		
+
 		GregorianCalendar date2 = new GregorianCalendar();
-		date2.setTimeInMillis(date);
+		date2.setTimeInMillis(Long.parseLong(date));
 		this.date = date2;
-		allEntries.put(id, this);
 	}
 
 	/**
@@ -172,14 +127,8 @@ public class ToDoEntry {
 		this.category = category;
 		this.date = date;
 		this.locations = locations;
-
-		Log.d("ToDoEntry", "added entry with ID "+id);
-		allEntries.put(id, this);
 	}
 
-	public void addLocation(ToDoLocation newLocation) {
-		locations.add(newLocation);
-	}
 
 	/**
 	 * Calculates the distance from <code>distTo</code> to the closest Location
@@ -204,59 +153,123 @@ public class ToDoEntry {
 		return closestDist;
 	}
 
+	
 	/**
 	 * Writes content to Database. If <code>id</code> is <code>-1</code> a new
-	 * item is created. Update not tested yet. Also adds <code>locations</code>-mappings into DB.
+	 * item is created. Update not tested yet. Also adds <code>locations</code>
+	 * -mappings into DB.
 	 */
 	public void writeToDB(Context context) {
+		ToDoEntry proof = getToDoEntryFromDB(this.id, context);
+		
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
 		ContentValues valuesToDoEntry = new ContentValues();
 
 		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_NAME, name);
-		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_CATEGORY, category.getColor());
-		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_DATE, date.getTimeInMillis());
+		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_CATEGORY,
+				category.getColor());
+		valuesToDoEntry.put(DBToDoEntry.COLUMN_NAME_DATE,
+				date.getTimeInMillis());
 
-		if (id == -1) { // a new item is created
-			id = (int) db.insert(DBToDoEntry.TABLE_NAME, null, valuesToDoEntry); // insert to db and get ID
+		if (proof.id<0) { // a new item is created
+			id = (int) db.insert(DBToDoEntry.TABLE_NAME, null, valuesToDoEntry); // insert
+																					// to
+																					// db
+																					// and
+																					// get
+																					// ID
 
-
-			Log.d("ToDoEntry", "new ID is "+id);
+			Log.d("ToDoEntry", "new ID is " + id);
 			// update id in allEntries
-			allEntries.remove(-1);
-			allEntries.put(id, this);
 		} else { // item is updated
-			db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry,
-					DBToDoEntry._ID + " = " + id, null);
+			db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry, DBToDoEntry._ID
+					+ " = " + id, null);
 		}
-		
-		
+
+		/*
 		// add mappings of todo/places
 		Iterator<ToDoLocation> locIter = locations.iterator();
-		while(locIter.hasNext()) {
+		while (locIter.hasNext()) {
 			ToDoLocation curLoc = locIter.next();
 			ContentValues valuesEntryLocation = new ContentValues();
-	
-			valuesEntryLocation.put(DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID, curLoc.getId());
-			valuesEntryLocation.put(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID, this.id);
-			
+
+			valuesEntryLocation.put(DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID,
+					curLoc.getId());
+			valuesEntryLocation.put(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID,
+					this.id);
+
 			db.insert(DBToDoPlacesEntry.TABLE_NAME, null, valuesEntryLocation);
-		}
-		
-		
+		}*/
+
 		db.close();
 	}
+
+	/**
+	 * returns a single entry from the DB chosen by ID
+	 * 
+	 * @param id
+	 * @param context
+	 * @return
+	 */
+	public static ToDoEntry getToDoEntryFromDB(int entryID, Context context) {
+		String selection = DBToDoEntry._ID + " =?";
+		String[] selectionArgs = { String.valueOf(entryID) };
+		return getCurrentObjectFromCursor(getCursor(context, selection,
+				selectionArgs));
+	}
 	
-	public int delete(Context context){
+	/**
+	 * returns a single location from where the cursor points at the DB
+	 * 
+	 * @param cursor
+	 * @return
+	 */
+	public static ToDoEntry getCurrentObjectFromCursor(Cursor cursor) {
+		if(cursor.getCount()<1){
+			return new ToDoEntry(-1);
+		}
+		
+		int id = cursor.getInt(cursor.getColumnIndex(DBToDoEntry._ID));
+		String name = cursor.getString(cursor
+				.getColumnIndex(DBToDoEntry.COLUMN_NAME_NAME));
+		String category = cursor.getString(cursor
+				.getColumnIndex(DBToDoEntry.COLUMN_NAME_CATEGORY));
+		String date = cursor.getString(cursor
+				.getColumnIndex(DBToDoEntry.COLUMN_NAME_DATE));
+		return new ToDoEntry(id, name, category, date);
+	}
+
+	/**
+	 * returns a cursor for a specific query with where=selection and
+	 * whereargs=selectionargs
+	 * 
+	 * @param context
+	 * @param selection
+	 * @param selectionArgs
+	 * @return
+	 */
+	public static Cursor getCursor(Context context, String selection,
+			String[] selectionArgs) {
+		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+		String[] projection = { DBToDoEntry._ID, DBToDoEntry.COLUMN_NAME_NAME,
+				DBToDoEntry.COLUMN_NAME_CATEGORY, DBToDoEntry.COLUMN_NAME_DATE };
+		return db.query(DBToDoEntry.TABLE_NAME, projection, selection,
+				selectionArgs, null, null, null);
+	}
+
+	public int delete(Context context) {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		
-		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "=" + String.valueOf(id), null);
-		Log.d("ToDoEntry", "ListItem with ID "+this.id+" was deleted.");
-		allEntries.remove(id);
+
+		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "="
+				+ String.valueOf(id), null);
+		Log.d("ToDoEntry", "ListItem with ID " + this.id + " was deleted.");
 		return success;
-	}               
+	}
 
 	public int getId() {
 		return id;
@@ -274,7 +287,15 @@ public class ToDoEntry {
 		return date;
 	}
 
-	public static HashSet<ToDoLocation> getLocations() {
+	public HashSet<ToDoLocation> getLocations() {
 		return locations;
+	}
+	
+	public void setLocations(HashSet<ToDoLocation> locations){
+		this.locations = locations;
+	}
+	
+	public void setLocationsFromDB(Context context){
+		setLocations(ToDoEntryLocation.getConnectedLocations(this, context));
 	}
 }
