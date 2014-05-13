@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.view;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;

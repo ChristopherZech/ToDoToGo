@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.model;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,10 +11,10 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.HashSet;
 
-import com.google.android.gms.maps.model.LatLng;
+import uni.ma.todotogo.controler.ToDoDbHelper;
+import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 
-import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoEntry;
+import com.google.android.gms.maps.model.LatLng;
 
 /**
  * @author simon.seiter

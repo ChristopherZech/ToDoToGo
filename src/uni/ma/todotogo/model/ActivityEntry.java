@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.model;
 
 import java.util.ArrayList;
 import java.util.List;

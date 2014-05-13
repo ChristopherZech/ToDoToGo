@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,11 +8,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.Preferences;
 
+import uni.ma.todotogo.controler.ArrayAdapterToDoList;
+import uni.ma.todotogo.model.ToDoEntry;
+import uni.ma.todotogo.model.ToDoLocation;
+
 import com.google.android.gms.maps.model.LatLng;
 
-import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoPlacesEntry;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -108,7 +109,7 @@ public class ToDoListActivity extends Activity {
 			startActivityForResult(intentAdd, RESULT_OK);
 			return true;
 		} else if (itemID == R.id.action_place) {
-			Intent intentMapview = new Intent(this, MapView.class);
+			Intent intentMapview = new Intent(this, MapActivity.class);
 			startActivity(intentMapview);
 			return true;
 		} else

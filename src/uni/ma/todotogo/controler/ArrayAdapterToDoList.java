@@ -1,19 +1,16 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.controler;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import android.app.NotificationManager;
+import uni.ma.todotogo.R;
+import uni.ma.todotogo.model.ToDoEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {

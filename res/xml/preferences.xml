@@ -15,7 +15,7 @@
         android:defaultValue="true" />
     
     
-    <uni.ma.todotogo.IntEditTextPreference
+    <uni.ma.todotogo.model.IntEditTextPreference
         android:dependency="pref_sync"
         android:key="pref_distance"
         android:title= "Information Radius (m)"

@@ -2,7 +2,7 @@
  * Contract for Database
  * @author Chris
  */
-package uni.ma.todotogo;
+package uni.ma.todotogo.model;
 import android.provider.BaseColumns;
 
 /**

@@ -1,18 +1,16 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.view;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import uni.ma.todotogo.model.AvailableColors;
+import uni.ma.todotogo.model.ToDoEntry;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -21,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.Spinner;
@@ -108,7 +105,7 @@ public class AddActivity extends Activity {
 	            
 	    } else if(itemID == R.id.action_place){ 
 	        
-	        	Intent myIntent = new Intent(this, MapView.class);
+	        	Intent myIntent = new Intent(this, MapActivity.class);
 	        	startActivity(myIntent);
 	        	return true;
 	    } else return false;
@@ -127,7 +124,7 @@ public class AddActivity extends Activity {
 	
 	// Implementation of Go To Map button that starts MapMarkerActivity to add Locations
 	public void goToMap(View v){
-		Intent myIntent = new Intent(this, MapView.class);
+		Intent myIntent = new Intent(this, MapActivity.class);
 		startActivity(myIntent);
 	}
 	

@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.controler;
 
 import android.app.AlertDialog;
 import android.app.Service;

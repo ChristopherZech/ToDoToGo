@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="uni.ma.todotogo.MapMarkerActivity" 
+    tools:context="uni.ma.todotogo.view.MapMarkerActivity" 
     >
     <item
         android:id="@+id/add_activity_map_menu_action_add_ok"

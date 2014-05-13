@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.view;
 
 import android.app.Activity;
 import android.app.ExpandableListActivity;
@@ -7,7 +7,9 @@ import android.widget.ExpandableListView;
  
 import java.util.ArrayList;
 
-public class ShowTask extends Activity {
+import uni.ma.todotogo.model.Parent;
+
+public class ShowTaskActivity extends Activity {
 	
 	private ExpandableListView mExpandableList;
 	 

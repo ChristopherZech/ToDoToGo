@@ -1,7 +1,7 @@
 /**
 e * for Database
  */
-package uni.ma.todotogo;
+package uni.ma.todotogo.controler;
 
 
 
@@ -9,9 +9,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoPlacesEntry;
+import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
+import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
+import uni.ma.todotogo.model.ToDoContract.DBToDoPlacesEntry;
 
 /**
  * 

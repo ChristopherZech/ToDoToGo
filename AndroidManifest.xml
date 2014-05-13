@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="uni.ma.todotogo"
+    package="uni.ma.todotogo.view"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -25,7 +25,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="uni.ma.todotogo.ToDoListActivity"
+            android:name="uni.ma.todotogo.view.ToDoListActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,22 +34,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="uni.ma.todotogo.SettingsActivity"
-            android:parentActivityName="uni.ma.todotogo.ToDoListActivity" >
+            android:name="uni.ma.todotogo.view.SettingsActivity"
+            android:parentActivityName="uni.ma.todotogo.view.ToDoListActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="uni.ma.todotogo.ToDoListActivity" />
+                android:value="uni.ma.todotogo.view.ToDoListActivity" />
         </activity>
         <activity
-            android:name="uni.ma.todotogo.AddActivity"
-            android:parentActivityName="uni.ma.todotogo.ToDoListActivity" >
+            android:name="uni.ma.todotogo.view.AddActivity"
+            android:parentActivityName="uni.ma.todotogo.view.ToDoListActivity" >
 
             <!-- Parent activity meta-data to support 4.0 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="uni.ma.todotogo.ToDoListActivity" />
+                android:value="uni.ma.todotogo.view.ToDoListActivity" />
         </activity>
 
         <meta-data
@@ -62,23 +62,16 @@
         <activity
             android:name="uni.ma.todotogo.MainActivity"
             android:label="@string/title_activity_main"
-            android:parentActivityName="uni.ma.todotogo.AddActivity" >
+            android:parentActivityName="uni.ma.todotogo.view.AddActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="AddActivity" />
         </activity>
+        
         <activity
-            android:name="uni.ma.todotogo.MapView"
+            android:name="uni.ma.todotogo.view.MapActivity"
             android:label="@string/title_activity_map_view"
-            android:parentActivityName="uni.ma.todotogo.AddActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="AddActivity" />
-        </activity>
-        <activity
-            android:name="uni.ma.todotogo.MapMarkerActivity"
-            android:label="@string/title_activity_map_marker"
-            android:parentActivityName="uni.ma.todotogo.AddActivity" >
+            android:parentActivityName="uni.ma.todotogo.view.AddActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="AddActivity" />

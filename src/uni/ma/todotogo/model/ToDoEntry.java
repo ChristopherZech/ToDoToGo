@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.model;
 
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -13,14 +13,15 @@ import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.util.Log;
 import android.widget.Toast;
-import uni.ma.todotogo.ToDoContract.DBPlacesEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoEntry;
-import uni.ma.todotogo.ToDoContract.DBToDoPlacesEntry;
+import uni.ma.todotogo.controler.ToDoDbHelper;
+import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
+import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
+import uni.ma.todotogo.model.ToDoContract.DBToDoPlacesEntry;
 
 public class ToDoEntry {
 	int id;
-	String name;
-	AvailableColors category;
+	public String name;
+	public AvailableColors category;
 	GregorianCalendar date;
 	static HashSet<ToDoLocation> locations;
 	private static HashMap<Integer,ToDoEntry> allEntries = new HashMap<Integer, ToDoEntry>();

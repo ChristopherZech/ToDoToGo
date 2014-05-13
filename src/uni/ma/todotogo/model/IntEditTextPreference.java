@@ -1,4 +1,4 @@
-package uni.ma.todotogo;
+package uni.ma.todotogo.model;
 
 import android.content.Context;
 import android.preference.EditTextPreference;
