@@ -38,21 +38,64 @@ public class AddActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == 1) {
-			if (resultCode == RESULT_OK) {
-				Intent intent = getIntent();
-				// locations = (HashSet<Integer>) intent
-				// .getSerializableExtra("locationsAdded");
-
-				locations = data.getIntExtra("locationsAdded", 0);
-				Toast.makeText(this, "" + locations, Toast.LENGTH_LONG).show();
-				Log.d("Intent Info",""+locations);
+		Log.d("LOOOOK", " onActivityResult starts");
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK && requestCode == 1) {
+			if (data.hasExtra("returnKey1")) {
+				Log.d("TestIntent", data.getExtras().getString("returnKey1"));
+			} else {
+				Log.d("TestIntent", "ITSNOTFUCKINGWORKING!!!!!!!!!!!!!!");
 			}
 		}
 	}
 
+	/*
+	 * @Override protected void onActivityResult(int requestCode, int
+	 * resultCode, Intent data) { if (requestCode == 1) { if (resultCode ==
+	 * RESULT_OK) { Intent intent = getIntent(); // locations =
+	 * (HashSet<Integer>) intent // .getSerializableExtra("locationsAdded");
+	 * 
+	 * locations = data.getIntExtra("locationsAdded", 0); Toast.makeText(this,
+	 * "" + locations, Toast.LENGTH_LONG).show();
+	 * Log.d("Intent Info",""+locations); } } }
+	 */
+	@Override
+	public void onNewIntent(Intent intent)
+	{
+		Log.d("LOOOOK", "on New Intent!!	 is getting called");
+	  super.onNewIntent(intent);
+
+	  // Why isn't this performed by the framework in the line above?
+	  setIntent(intent);
+	}
+	
+	@Override
+	protected void onResume() {
+		Log.d("LOOOOK", "on Resume!!	 is getting called");
+		super.onResume();
+		Intent myIntent = getIntent();
+		if (myIntent != null) {
+			if (myIntent.getExtras() != null) {
+
+				{
+					if (myIntent.hasExtra("returnKey1")) {
+						Log.d("TestIntent",
+								myIntent.getExtras().getString("returnKey1"));
+					} else
+						Log.d("TestIntent", "key is missing!!!!!!!!!!!!!!");
+				}
+			} else {
+				Log.d("TestIntent", "keys are empty!!!!!!!!!!!!!!");
+			}
+		} else {
+			Log.d("TestIntent", "ITSNOTFUCKINGWORKING!!!!!!!!!!!!!!");
+		}
+		;
+	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d("LOOOOK", "OncreateStarts");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_task_layout);
 		locations = 0;
@@ -145,17 +188,17 @@ public class AddActivity extends Activity {
 				newEntry.setLocations(locationsBuffer);
 				int entryID = newEntry.writeToDB(getBaseContext());
 				Intent dataForListView = new Intent();
-				dataForListView.putExtra("entryID", entryID);
+				// dataForListView.putExtra("entryID", entryID);
 				setResult(RESULT_OK, dataForListView);
 				finish();
-				
+
 				finish();
 				return true;
 			}
 		} else if (itemID == R.id.action_place) {
-
 			Intent myIntent = new Intent(this, MapActivity.class);
 			startActivityForResult(myIntent, 1);
+			Log.d("LOOOOK", "acitivity is started for result");
 			return true;
 		} else
 			return false;

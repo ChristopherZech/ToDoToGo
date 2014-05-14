@@ -43,6 +43,8 @@ public class ToDoEntryLocation {
 		this.location = location;
 	}
 	
+	
+	
 	public static ToDoEntryLocation getToDoEntryLocationFromDB(int id, Context context){
 		String[] selectionArgs = {""+id};
 		String selection = DBToDoPlacesEntry._ID +" =?";
@@ -237,6 +239,26 @@ public class ToDoEntryLocation {
 			return deleteBySelection(context, selection, selectionArgs);
 		}
 		
+		public static int staticDeleteByBothIDs(int entryID, int locationID,
+				 Context context) {
+			//DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
+			//dfs.setDecimalSeparator('.');
+			//DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
+
+			String[] buffer = { DBToDoPlacesEntry.COLUMN_NAME_TODO_ID,
+					DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID,};
+			String[] selectionArgs = { String.valueOf(entryID),
+					String.valueOf(locationID) };// numberFormat.format(lat),
+											// numberFormat.format(lng)};
+			String selection = createQueryColumns(buffer);
+			// String selection= DBPlacesEntry.COLUMN_NAME_NAME + " =? AND " +
+			// DBPlacesEntry.COLUMN_NAME_LATITUDE + " =? AND " +
+			// DBPlacesEntry.COLUMN_NAME_LONGITUDE + " =?";
+			Log.d("DB", selectionArgs[0] + selectionArgs[1]);
+
+			return deleteBySelection(context, selection, selectionArgs);
+		}
+		
 		/**
 		 * Creates a query string used for db.query from columns string[] where
 		 * arguments are left as ?
@@ -251,6 +273,10 @@ public class ToDoEntryLocation {
 			}
 			result += columns[columns.length - 1] + " =?";
 			return result;
+		}
+		
+		public static int sizeOfMappings(Context context){
+			return getMappingCursor(context, null, null).getCount();
 		}
 		
 
