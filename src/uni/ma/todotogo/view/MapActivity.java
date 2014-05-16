@@ -79,7 +79,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 				// Instantiated GPSTracker object to get current Position
 				
 				mapView.setMyLocationEnabled(true);
-				GPSTracker gps = new GPSTracker(MapActivity.this);
+				GPSTracker gps = new GPSTracker(getApplicationContext());//new GPSTracker(MapActivity.this);
 				Location currentLocation = gps.getLocation();
 				double Lat = currentLocation.getLatitude();
 				double Lng = currentLocation.getLongitude();
@@ -288,7 +288,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 				// create new ToDoLocation object and add it to pinnedLocations
 				ToDoLocation newEntry = new ToDoLocation(-1, name, Lat, Lng,
 						marker.getId());
-				newEntry.writeToDB(getBaseContext());
+				newEntry.writeToDB(getApplicationContext());
 				// pinnedLocations.put(marker, newEntry);
 			}
 		});

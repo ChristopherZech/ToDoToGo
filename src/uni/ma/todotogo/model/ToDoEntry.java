@@ -6,13 +6,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
+import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+import uni.ma.todotogo.controler.GPSTracker;
 import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
@@ -332,6 +339,38 @@ public class ToDoEntry {
 			locations.add(test);
 			ToDoEntryLocation buffer = new ToDoEntryLocation(this, test);
 			buffer.writeToDB(context);
+		}
+	}
+	
+	/**
+	 * Registers proximity alerts to all mapped locations.
+	 */
+	public void registerProximityAlerts(Context context) {
+		GPSTracker gps = new GPSTracker(context);
+		gps.getLocation();
+		LocationManager locationManager = GPSTracker.getLocationManager();
+		
+		// get distance threshold for notification from preferences
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		int distToNotify = sharedPref.getInt("pref_distance", 100);
+		
+		Log.d("Notification", "no of locations mapped to task; "+locations.size());
+		
+		Iterator<ToDoLocation> locIter = locations.iterator();
+		while(locIter.hasNext()) {
+			ToDoLocation curLoc = locIter.next();
+			Intent intent = new Intent("uni.ma.todotogo.model.ProximityAlert");
+			PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+			locationManager.addProximityAlert(
+					curLoc.getLatitude(), // the latitude of the central point of the alert region
+					curLoc.getLongitude(), // the longitude of the central point of the alert region
+					distToNotify, // the radius of the central point of the alert region, in meters
+					-1, // time for this proximity alert, in milliseconds, or -1 to indicate no expiration
+					proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
+					);
+			IntentFilter filter = new IntentFilter("uni.ma.todotogo.model.ProximityAlert"); 
+			context.registerReceiver(new ProximityIntentReceiver(this, curLoc, proximityIntent), filter);
+			Log.d("Notification", "registered intent for notification");
 		}
 	}
 

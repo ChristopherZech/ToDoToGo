@@ -9,6 +9,8 @@ import java.util.Set;
 import java.util.prefs.Preferences;
 
 import uni.ma.todotogo.controler.ArrayAdapterToDoList;
+import uni.ma.todotogo.controler.GPSTracker;
+import uni.ma.todotogo.model.ProximityIntentReceiver;
 import uni.ma.todotogo.model.ToDoEntry;
 import uni.ma.todotogo.model.ToDoLocation;
 
@@ -60,6 +62,7 @@ public class ToDoListActivity extends Activity {
 		// create list which will be filled with data
 		toDoList = new ArrayList<ToDoEntry>();
 
+		
 		ListView lv = (ListView) findViewById(R.id.todolist);
 		adapter = new ArrayAdapterToDoList(this, toDoList);
 		lv.setAdapter(adapter);
@@ -188,89 +191,18 @@ public class ToDoListActivity extends Activity {
 	}
 
 	public void updateList() {
+		ProximityIntentReceiver.removeAllReceivers(getApplicationContext());
 		toDoList.clear();
-
 		// iterate over all ToDoEntry
 		HashSet<ToDoEntry> entries = ToDoEntry
-				.getAllEntries(getBaseContext());
+				.getAllEntries(getApplicationContext());
 		Iterator<ToDoEntry> iterator = entries.iterator();
-
-		int notificationCounter = 0; // unique id for notifications
 
 		while (iterator.hasNext()) {
 			ToDoEntry currentEntry = iterator.next();
-			currentEntry.connectWithAllLocations(getBaseContext());
+			currentEntry.connectWithAllLocations(getApplicationContext());
 			toDoList.add(currentEntry);
-			
-			// TODO Implement proper HashSet for locations which are mapped to a
-			// specific task, possibility to display task name
-			// iterate over all locations attributable to one specific task
-			/*HashSet<ToDoLocation> locations = ToDoLocation.getAllEntries(getBaseContext());
-			Iterator<ToDoLocation> iter = locations.iterator();
-
-			int closestDist = 9999999;
-			while (iter.hasNext()) {
-				ToDoLocation curItem = iter.next();
-				// get distance of the specific location to the current position
-				double curDist = curItem.distanceTo(getCurrentPosition());
-				// if user is within the chosen distance to the location a
-				// notification is issued
-				if (curDist < 100) {
-					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-							ToDoListActivity.this)
-							.setSmallIcon(R.drawable.ic_launcher)
-							.setContentTitle("Task Name")
-							.setContentText(
-									"You are within " + (int) curDist + "m of "
-											+ curItem.getName() + "!");
-					NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					// int Counter allows you to update the notification later
-					// on (or insures that new notifications are issued
-					mNotificationManager.notify(Counter, mBuilder.build());
-					Counter++;
-				}
-				// to shortest distance to a location of a task is set and
-				// displayed
-				//
-				// notification for all locations in range or only for the
-				// closest?
-				//
-				if (curDist < closestDist) {
-					closestDist = (int) curDist;
-
-				}
-			}
-			String dist = closestDist + "m";
-			float distFloat = curEl.getClosestLocationTo(getCurrentPosition());
-			String dist;
-			if(distFloat == Float.POSITIVE_INFINITY) {
-				dist = "no loc";
-			} else {
-				dist =  (int)distFloat + "m";
-
-				// if user is within the chosen distance to the location a
-				// notification is issued
-
-				// get distance to notify from preferences
-				SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-				int distToNotify = sharedPref.getInt("pref_distance", 100);
-
-
-				if (distFloat < distToNotify) {
-					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-							ToDoListActivity.this)
-							.setSmallIcon(R.drawable.ic_launcher)
-							.setContentTitle(curEl.getName())
-							.setContentText("You are within " + distFloat + "m!");
-					NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-					// int Counter allows you to update the notification later
-					// on (or insures that new notifications are issued
-					mNotificationManager.notify(notificationCounter, mBuilder.build());
-					notificationCounter++;
-				}
-			}*/
-
-
+			currentEntry.registerProximityAlerts(getApplicationContext());
 		}
 
 		adapter.notifyDataSetChanged();
@@ -279,6 +211,9 @@ public class ToDoListActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		new GPSTracker(getApplicationContext()).getLocation();
+		
 		updateList();
 	}
 	/*

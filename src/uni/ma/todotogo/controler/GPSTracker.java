@@ -39,7 +39,7 @@ public class GPSTracker extends Service implements LocationListener {
     private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
  
     // Declaring a Location Manager
-    protected LocationManager locationManager;
+    protected static LocationManager locationManager = null;
  
     public GPSTracker(Context context) {
         this.mContext = context;
@@ -48,9 +48,11 @@ public class GPSTracker extends Service implements LocationListener {
  
     public Location getLocation() {
         try {
-            locationManager = (LocationManager) mContext
-                    .getSystemService(LOCATION_SERVICE);
- 
+        	if(locationManager == null) {
+	            locationManager = (LocationManager) mContext
+	                    .getSystemService(LOCATION_SERVICE);
+        	}
+        	
             // getting GPS status
             isGPSEnabled = locationManager
                     .isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -205,6 +207,10 @@ public class GPSTracker extends Service implements LocationListener {
     @Override
     public IBinder onBind(Intent arg0) {
         return null;
+    }
+    
+    public static LocationManager getLocationManager() {
+    	return locationManager;
     }
  
 }
