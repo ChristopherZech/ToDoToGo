@@ -41,6 +41,7 @@ public class ToDoEntryLocation {
 	public ToDoEntryLocation(ToDoEntry entry, ToDoLocation location) {
 		this.entry = entry;
 		this.location = location;
+		this.id = -1;
 	}
 	
 	
@@ -52,6 +53,7 @@ public class ToDoEntryLocation {
 		if(cursor.getCount()<1){
 			return new ToDoEntryLocation(-1);
 		}
+		cursor.moveToFirst();
 		return getCurrentObjectFromCursor(cursor, context);
 	}
 	
@@ -62,6 +64,7 @@ public class ToDoEntryLocation {
 		if(cursor.getCount()<1){
 			return new ToDoEntryLocation(-1);
 		}
+		cursor.moveToFirst();
 		return getCurrentObjectFromCursor(cursor, context);
 	}
 	
@@ -69,7 +72,7 @@ public class ToDoEntryLocation {
 	public static HashSet<ToDoEntry> getConnectedEntries(ToDoLocation location,
 			Context context) {
 		HashSet<ToDoEntry> connectedEntries = new HashSet<ToDoEntry>();
-		String selection = DBToDoPlacesEntry.COLUMN_NAME_TODO_ID + " =?";
+		String selection = DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID + " =?";
 		String[] selectionArgs = { String.valueOf(location.id) };
 		Cursor cursor = getMappingCursor(context, selection, selectionArgs);
 		if(cursor.getCount()<1){
@@ -79,6 +82,7 @@ public class ToDoEntryLocation {
 		while (!cursor.isAfterLast()) {
 			connectedEntries
 					.add(getCurrentObjectFromCursor(cursor, context).entry);
+			cursor.moveToNext();
 		}
 		return connectedEntries;
 	}
@@ -150,48 +154,78 @@ public class ToDoEntryLocation {
 	public static HashSet<ToDoLocation> getConnectedLocations(ToDoEntry entry,
 			Context context) {
 		HashSet<ToDoLocation> connectedLocations = new HashSet<ToDoLocation>();
-		String selection = DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID + " =?";
+		String selection = DBToDoPlacesEntry.COLUMN_NAME_TODO_ID + " =?";
 		String[] selectionArgs = { String.valueOf(entry.id) };
 		Cursor cursor = getMappingCursor(context, selection, selectionArgs);
+		ToDoEntryLocation buffer;
 		if(cursor.getCount()<1){
 			return new HashSet<ToDoLocation>();
 		}
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
+			buffer = getCurrentObjectFromCursor(cursor, context);
+			Log.d("ToDoEntryLocation","Added a mapping"+ buffer.location.toString());
 			connectedLocations
-					.add(getCurrentObjectFromCursor(cursor, context).location);
+					.add(buffer.location);
+			cursor.moveToNext();
 		}
 		return connectedLocations;
 	}
 	
 	public int writeToDB(Context context){		
+//		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+//		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//		String[] projection = { DBToDoPlacesEntry._ID,
+//				DBToDoPlacesEntry.COLUMN_NAME_TODO_ID,
+//				DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID };
+//		String[] selectionArgs = {id+""};
+//		Cursor cursor = db.query(DBToDoPlacesEntry.TABLE_NAME, projection, DBToDoPlacesEntry._ID+"=?",
+//				selectionArgs, null, null, null);
+//		if(cursor.getCount()<1){
+//			return 0;
+//		}
+//		ToDoEntryLocation buffer = getCurrentObjectFromCursor(cursor, context);
+//		
+//		ContentValues values = new ContentValues();
+//		values.put(DBToDoPlacesEntry._ID, id);
+//		values.put(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID,
+//				String.valueOf(this.entry.id));
+//		values.put(DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID,
+//				String.valueOf(this.location.id));
+//		
+//		if (buffer.id<0) { // a new item is created
+//			id = (int) db.insert(DBPlacesEntry.TABLE_NAME, null, values);
+//			return id;
+//		} else { // item is updated
+//			return db.update(DBPlacesEntry.TABLE_NAME, values, DBPlacesEntry._ID
+//					+ " = " + id, null);
+//		}
+		
+		ToDoEntryLocation proof = getToDoEntryLocationFromDB(this.id, context);
+		int result = 0;
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-		String[] projection = { DBToDoPlacesEntry._ID,
-				DBToDoPlacesEntry.COLUMN_NAME_TODO_ID,
-				DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID };
-		String[] selectionArgs = {id+""};
-		Cursor cursor = db.query(DBToDoPlacesEntry.TABLE_NAME, projection, DBToDoPlacesEntry._ID+"=?",
-				selectionArgs, null, null, null);
-		if(cursor.getCount()<1){
-			return 0;
-		}
-		ToDoEntryLocation buffer = getCurrentObjectFromCursor(cursor, context);
-		
+
 		ContentValues values = new ContentValues();
-		values.put(DBToDoPlacesEntry._ID, id);
-		values.put(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID,
-				String.valueOf(this.entry.id));
+
+		values.put(DBToDoPlacesEntry.COLUMN_NAME_TODO_ID, String.valueOf(this.entry.id));
 		values.put(DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID,
 				String.valueOf(this.location.id));
-		
-		if (buffer.id<0) { // a new item is created
-			id = (int) db.insert(DBPlacesEntry.TABLE_NAME, null, values);
-			return id;
-		} else { // item is updated
-			return db.update(DBPlacesEntry.TABLE_NAME, values, DBPlacesEntry._ID
+		Log.d("ToDoEntryLocation","Values have been put: " +values.toString());
+
+		if (proof.id < 0) {
+			result = (int) db.insert(DBToDoPlacesEntry.TABLE_NAME, null, values);
+			id =result;
+		} else {
+			result =  db.update(DBToDoPlacesEntry.TABLE_NAME, values, DBPlacesEntry._ID
 					+ " = " + id, null);
 		}
+		db.close();
+		return result;
+		
+//		this.entry.setLocations(getConnectedLocations(this.entry, context));
+//		this.location.setEntries(getConnectedEntries(this.location,context));
+		
 	}
 	
 	// DELETERS
@@ -256,6 +290,22 @@ public class ToDoEntryLocation {
 			// DBPlacesEntry.COLUMN_NAME_LONGITUDE + " =?";
 			Log.d("DB", selectionArgs[0] + selectionArgs[1]);
 
+			return deleteBySelection(context, selection, selectionArgs);
+		}
+		
+		public static int staticDeleteByEntryID(int entryID, Context context){
+			String[] buffer = { DBToDoPlacesEntry.COLUMN_NAME_TODO_ID};
+			String[] selectionArgs = { String.valueOf(entryID)};// numberFormat.format(lat),
+											// numberFormat.format(lng)};
+			String selection = createQueryColumns(buffer);
+			return deleteBySelection(context, selection, selectionArgs);
+		}
+		
+		public static int staticDeleteByLocationID(int locationID, Context context){
+			String[] buffer = {DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID};
+			String[] selectionArgs = {String.valueOf(locationID) };// numberFormat.format(lat),
+											// numberFormat.format(lng)};
+			String selection = createQueryColumns(buffer);
 			return deleteBySelection(context, selection, selectionArgs);
 		}
 		

@@ -40,15 +40,15 @@ public class ToDoEntry {
 	public static HashSet<ToDoEntry> getAllEntries(Context context) {
 
 		HashSet<ToDoEntry> allEntries = new HashSet<ToDoEntry>();
-		ToDoEntry buffer;
+		ToDoEntry entryBuffer;
 
 		Cursor cursorToDoEntry = getCursor(context, null, null);
 		cursorToDoEntry.moveToFirst();
 
 		while (!cursorToDoEntry.isAfterLast()) {
-			buffer = getCurrentObjectFromCursor(cursorToDoEntry);
-			buffer.setLocationsFromDB(context);
-			allEntries.add(buffer);
+			entryBuffer = getCurrentObjectFromCursor(cursorToDoEntry);
+			entryBuffer.setLocationsFromDB(context);
+			allEntries.add(entryBuffer);
 			cursorToDoEntry.moveToNext();
 		}
 		cursorToDoEntry.close();
@@ -170,8 +170,9 @@ public class ToDoEntry {
 	 *            Location of which the shortest distance shall be calculated.
 	 * @return Shortest distance.
 	 */
-	public float getClosestDistanceTo(Location distTo) {
-		Log.d("Entry", "ConnectedLocations: "+locations.size());
+	public float getClosestDistanceTo(Location distTo, Context context) {
+		setLocationsFromDB(context);
+		Log.d("Entry", "ConnectedLocations for "+this.name+": "+locations.size()+"~"+locations.toArray()[0].toString());
 		Iterator<ToDoLocation> iter = locations.iterator();
 		float closestDist = Float.POSITIVE_INFINITY;
 		while (iter.hasNext()) {
@@ -217,9 +218,9 @@ public class ToDoEntry {
 			return id;
 			// update id in allEntries
 		} else { // item is updated
-			id = db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry, DBToDoEntry._ID
+			db.update(DBToDoEntry.TABLE_NAME, valuesToDoEntry, DBToDoEntry._ID
 					+ " = " + id, null);
-			return id;
+			return this.id;
 		}
 
 		/*
@@ -248,10 +249,23 @@ public class ToDoEntry {
 	 * @return
 	 */
 	public static ToDoEntry getToDoEntryFromDB(int entryID, Context context) {
-		String selection = DBToDoEntry._ID + " =?";
+		String selection = createQueryColumns(new String[]{DBToDoEntry._ID});
 		String[] selectionArgs = { String.valueOf(entryID) };
-		return getCurrentObjectFromCursor(getCursor(context, selection,
-				selectionArgs));
+		Log.d("DB", "Querying entry from DB by "+createQueryColumns(new String[]{DBToDoEntry._ID})+";"+selectionArgs[0].toString());
+		Cursor cursor = getCursor(context, selection,
+				selectionArgs);
+		cursor.moveToFirst();
+		//String selection = DBToDoEntry._ID+"="+entryID; 
+		return getCurrentObjectFromCursor(cursor);
+//		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+//		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//		Cursor cursor = db.query(DBToDoEntry.TABLE_NAME, null, null, null, null, null, null);
+//		Log.d("ToDoEntry", "ListItem with ID " + entryID
+//				+ " was found.");
+//		db.close();
+//		mDbHelper.close();
+//		return success;
 	}
 	
 	/**
@@ -262,6 +276,7 @@ public class ToDoEntry {
 	 */
 	public static ToDoEntry getCurrentObjectFromCursor(Cursor cursor) {
 		if(cursor.getCount()<1){
+			Log.d("DB","no results for this entry");
 			return new ToDoEntry(-1);
 		}
 		
@@ -289,10 +304,13 @@ public class ToDoEntry {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-		String[] projection = { DBToDoEntry._ID, DBToDoEntry.COLUMN_NAME_NAME,
-				DBToDoEntry.COLUMN_NAME_CATEGORY, DBToDoEntry.COLUMN_NAME_DATE };
-		return db.query(DBToDoEntry.TABLE_NAME, projection, selection,
+		String[] projection = { DBToDoEntry._ID, 
+				DBToDoEntry.COLUMN_NAME_NAME,
+				DBToDoEntry.COLUMN_NAME_CATEGORY, 
+				DBToDoEntry.COLUMN_NAME_DATE };
+		Cursor result = db.query(DBToDoEntry.TABLE_NAME, projection, selection,
 				selectionArgs, null, null, null);
+		return result;		 
 	}
 
 	public int delete(Context context) {
@@ -330,7 +348,9 @@ public class ToDoEntry {
 	}
 	
 	public void setLocationsFromDB(Context context){
-		setLocations(ToDoEntryLocation.getConnectedLocations(this, context));
+		HashSet<ToDoLocation> result = ToDoEntryLocation.getConnectedLocations(this, context); 
+		Log.d("ToDoEntry","set Locations for "+this.name+" with "+result.toArray()[0].toString());
+		this.setLocations(result);
 	}
 	
 	public void connectWithAllLocations(Context context){
@@ -372,6 +392,23 @@ public class ToDoEntry {
 			context.registerReceiver(new ProximityIntentReceiver(this, curLoc, proximityIntent), filter);
 			Log.d("Notification", "registered intent for notification");
 		}
+	}
+	
+
+	/**
+	 * Creates a query string used for db.query from columns string[] where
+	 * arguments are left as ?
+	 * 
+	 * @param columns
+	 * @return
+	 */
+	public static String createQueryColumns(String[] columns) {
+		String result = "";
+		for (int i = 0; i < (columns.length - 1); ++i) {
+			result += columns[i] + " =? AND ";
+		}
+		result += columns[columns.length - 1] + " =?";
+		return result;
 	}
 
 }

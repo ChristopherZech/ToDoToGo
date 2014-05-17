@@ -13,6 +13,7 @@ import java.util.HashSet;
 
 import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
+import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -108,8 +109,10 @@ public class ToDoLocation extends Location {
 	public static ToDoLocation getToDoLocationFromDB(int id, Context context) {
 		String selection = DBPlacesEntry._ID + " =?";
 		String[] selectionArgs = { String.valueOf(id) };
-		return getCurrentObjectFromCursor(getCursor(context, selection,
-				selectionArgs));
+		Cursor cursor = getCursor(context, selection,
+				selectionArgs);
+		cursor.moveToFirst();
+		return getCurrentObjectFromCursor(cursor);
 	}
 
 	/**
@@ -153,13 +156,14 @@ public class ToDoLocation extends Location {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getReadableDatabase();
 
-		String[] projection = { DBPlacesEntry._ID,
+		String[] projection = { DBPlacesEntry._ID, 
 				DBPlacesEntry.COLUMN_NAME_NAME,
-				DBPlacesEntry.COLUMN_NAME_LATITUDE,
+				DBPlacesEntry.COLUMN_NAME_LATITUDE, 
 				DBPlacesEntry.COLUMN_NAME_LONGITUDE,
 				DBPlacesEntry.COLUMN_NAME_MARKER };
-		return db.query(DBPlacesEntry.TABLE_NAME, projection, selection,
+		Cursor result = db.query(DBPlacesEntry.TABLE_NAME, projection, selection,
 				selectionArgs, null, null, null);
+		return result;		 
 	}
 
 	/**
@@ -212,7 +216,7 @@ public class ToDoLocation extends Location {
 	 * Writes content to Database. If <code>id</code> is <code>-1</code> a new
 	 * item is created. Update not tested yet.
 	 */
-	public void writeToDB(Context context) {
+	public int writeToDB(Context context) {
 		ToDoLocation proof = getToDoLocationFromDB(this.id, context);
 
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
@@ -225,15 +229,16 @@ public class ToDoLocation extends Location {
 				String.valueOf(this.getLatitude()));
 		values.put(DBPlacesEntry.COLUMN_NAME_LONGITUDE,
 				String.valueOf(this.getLongitude()));
-
+		int result;
 		if (proof.id < 0) {
 			id = (int) db.insert(DBPlacesEntry.TABLE_NAME, null, values);
-
+			result = id;
 		} else {
-			db.update(DBPlacesEntry.TABLE_NAME, values, DBPlacesEntry._ID
+			result = db.update(DBPlacesEntry.TABLE_NAME, values, DBPlacesEntry._ID
 					+ " = " + id, null);
 		}
 		db.close();
+		return result;
 
 	}
 

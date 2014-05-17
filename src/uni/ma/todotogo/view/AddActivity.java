@@ -35,7 +35,8 @@ public class AddActivity extends Activity {
 	int locations = 0;
 	MultiAutoCompleteTextView myEditText;
 	GregorianCalendar myCalendar;
-
+	int entryID; 
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d("LOOOOK", " onActivityResult starts");
@@ -170,35 +171,42 @@ public class AddActivity extends Activity {
 					.getSelectedItemId();
 			ToDoEntry newEntry = new ToDoEntry(-1, name, (int) category,
 					myCalendar);
-			newEntry.writeToDB(getBaseContext());
-			HashSet<ToDoLocation> locationsBuffer = new HashSet<ToDoLocation>();
-			ToDoLocation locationBuffer = new ToDoLocation(-1, null);
-			ToDoEntryLocation mapper = new ToDoEntryLocation(-1);
-			if (locations == 0) {// .isEmpty()){
-				finish();
-				return false;
-			} else {
-				// for(Integer locationID:locations){
-				locationBuffer = ToDoLocation.getToDoLocationFromDB(locations,
-						context);
-				locationsBuffer.add(locationBuffer);
-				mapper = new ToDoEntryLocation(-1, newEntry, locationBuffer);
-				mapper.writeToDB(context);
-				// }
-				newEntry.setLocations(locationsBuffer);
-				int entryID = newEntry.writeToDB(getBaseContext());
-				Intent dataForListView = new Intent();
-				// dataForListView.putExtra("entryID", entryID);
-				setResult(RESULT_OK, dataForListView);
-				finish();
-
-				finish();
-				return true;
-			}
+			entryID = newEntry.writeToDB(getBaseContext());
+			Log.d("Add View", entryID + " is the new entry ID");
+//			HashSet<ToDoLocation> locationsBuffer = new HashSet<ToDoLocation>();
+//			ToDoLocation locationBuffer = new ToDoLocation(-1, null);
+//			ToDoEntryLocation mapper = new ToDoEntryLocation(-1);
+//			if (locations == 0) {// .isEmpty()){
+//				finish();
+//				return false;
+//			} else {
+//				// for(Integer locationID:locations){
+//				locationBuffer = ToDoLocation.getToDoLocationFromDB(locations,
+//						context);
+//				locationsBuffer.add(locationBuffer);
+//				mapper = new ToDoEntryLocation(-1, newEntry, locationBuffer);
+//				mapper.writeToDB(context);
+//				// }
+//				newEntry.setLocations(locationsBuffer);
+//				int entryID = newEntry.writeToDB(getBaseContext());
+//				Intent dataForListView = new Intent();
+//				// dataForListView.putExtra("entryID", entryID);
+//				setResult(RESULT_OK, dataForListView);
+//				finish();
+//
+//				finish();
+//				return true;
+//			}
+			Intent myIntent = new Intent(this, MapActivity.class);
+			 myIntent.putExtra("entryID", entryID);
+			startActivity(myIntent);
+			finish();
+			return true;		
 		} else if (itemID == R.id.action_place) {
 			Intent myIntent = new Intent(this, MapActivity.class);
 			startActivityForResult(myIntent, 1);
 			Log.d("LOOOOK", "acitivity is started for result");
+			finish();
 			return true;
 		} else
 			return false;
@@ -206,12 +214,12 @@ public class AddActivity extends Activity {
 
 	@Override
 	public void finish() {
-		// Prepare data intent
-		Intent data = new Intent();
-		data.putExtra("Name", "Swinging on a star");
-		data.putExtra("Date", "You could be better then you are. ");
-		// Activity finished ok, return the data
-		setResult(RESULT_OK, data);
+//		// Prepare data intent
+//		Intent data = new Intent();
+//		data.putExtra("EntryID", );
+//		data.putExtra("Date", "You could be better then you are. ");
+//		// Activity finished ok, return the data
+//		setResult(RESULT_OK, data);
 		super.finish();
 	}
 

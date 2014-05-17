@@ -12,6 +12,7 @@ import uni.ma.todotogo.controler.ArrayAdapterToDoList;
 import uni.ma.todotogo.controler.GPSTracker;
 import uni.ma.todotogo.model.ProximityIntentReceiver;
 import uni.ma.todotogo.model.ToDoEntry;
+import uni.ma.todotogo.model.ToDoEntryLocation;
 import uni.ma.todotogo.model.ToDoLocation;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -200,7 +201,10 @@ public class ToDoListActivity extends Activity {
 
 		while (iterator.hasNext()) {
 			ToDoEntry currentEntry = iterator.next();
-			currentEntry.connectWithAllLocations(getApplicationContext());
+			currentEntry.setLocationsFromDB(getBaseContext());
+			Log.d("ListActivity","Object to be displayed: "+currentEntry.toString());
+			//currentEntry.setLocationsFromDB(getBaseContext());
+			//currentEntry.connectWithAllLocations(getApplicationContext());
 			toDoList.add(currentEntry);
 			currentEntry.registerProximityAlerts(getApplicationContext());
 		}

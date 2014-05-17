@@ -22,7 +22,6 @@ public final class ToDoContract {
         public static final String COLUMN_NAME_NAME = "name";
         public static final String COLUMN_NAME_CATEGORY = "category";
         public static final String COLUMN_NAME_DATE = "date";
-        public static final String COLUMN_NAME_MARKER = "marker";
     }
 	
 	/**

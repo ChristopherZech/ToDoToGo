@@ -7,6 +7,7 @@ import uni.ma.todotogo.model.ToDoEntry;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +37,10 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	    TextView textViewDist = (TextView) rowView.findViewById(R.id.distance);
 	    View categoryView = (View) rowView.findViewById(R.id.category_colorblock);
 	    
+	    ToDoEntry buffer = values.get(position);
+	    Log.d("ArrayAdapter","Loaded: "+buffer.toString());
 	    // set text of description and distance field
-	    textViewDesc.setText(values.get(position).name);
+	    textViewDesc.setText(buffer.name);
 	    textViewDist.setText(calcDistance(values.get(position)));
 	    categoryView.setBackgroundColor(values.get(position).category.getColor());
 
@@ -48,7 +51,7 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	  }
 	  
 	  public String calcDistance(ToDoEntry entry){
-	  float distFloat = entry.getClosestDistanceTo(gp.getLocation());
+	  float distFloat = entry.getClosestDistanceTo(gp.getLocation(), getContext());
 		String dist;
 		if(distFloat == Float.POSITIVE_INFINITY) {
 			dist = "no loc";

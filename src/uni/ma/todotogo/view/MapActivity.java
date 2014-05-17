@@ -53,6 +53,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 	// private HashMap<Marker, ToDoLocation> pinnedLocations = new
 	// HashMap<Marker, ToDoLocation>();
 	private String name;
+	private ToDoEntry connectedEntry;
 	private int locationsAdded;// private HashSet<Integer> locationsAdded;
 	private LocationManager locationManager;
 
@@ -61,7 +62,19 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 		super.onCreate(savedInstanceState);
 		// locationsAdded = new HashSet<Integer>();
 		setContentView(R.layout.activity_map_view);
-
+		Intent overgivenIntent;
+		try {
+			overgivenIntent = getIntent();
+			if (!(overgivenIntent.getExtras().isEmpty())){
+				Bundle extras = overgivenIntent.getExtras();
+				int entryID = extras.getInt("entryID");
+				Log.d("MapActivity", "Intent is not empty!"+ entryID);
+				connectedEntry = ToDoEntry.getToDoEntryFromDB(entryID, getBaseContext());
+				overgivenIntent.removeExtra("entryID");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		// set Action Bar
 		ActionBar actionBar = getActionBar();
 		actionBar.setHomeButtonEnabled(true);
@@ -118,7 +131,6 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 				.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE);
 		final BitmapDescriptor unselectedColor = BitmapDescriptorFactory
 				.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-		final ToDoEntry justForAdding = new ToDoEntry(-2);
 
 		
 		// get Position of marker and pass it to AddActivity
@@ -135,6 +147,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 		 */
 
 		// Delete current location
+		if(!(connectedEntry==null)){
 		if ((marker.getSnippet() == null) || !((marker.getSnippet().equals("added")))){
 			 
 			alert.setNeutralButton("Use for current task",
@@ -147,11 +160,10 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 											marker.getPosition().latitude,
 											marker.getPosition().longitude,
 											context);
-							String name = "no name ";
 							Toast.makeText(getApplicationContext(),
 									buffer.getName(), Toast.LENGTH_LONG).show();
 							int success = buffer.getId();
-							ToDoEntryLocation mapping = new ToDoEntryLocation(justForAdding, buffer);
+							ToDoEntryLocation mapping = new ToDoEntryLocation(connectedEntry, buffer);
 							int mappingSuccess = mapping.writeToDB(context);
 							Log.d("MapView", "Was mapping added successfull?"
 									+ mappingSuccess);
@@ -182,7 +194,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 											marker.getPosition().longitude,
 											context);
 							int success = buffer.getId();
-							success =ToDoEntryLocation.staticDeleteByBothIDs(justForAdding.getId(),buffer.getId(), context);
+							success =ToDoEntryLocation.staticDeleteByBothIDs(connectedEntry.getId(),buffer.getId(), context);
 							locationsAdded = buffer.getId();// locationsAdded.add(buffer.getId());
 							Log.d("MapView", "New location removed "
 									+ success);
@@ -190,7 +202,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 							marker.setIcon(unselectedColor);
 						}
 					});
-		}
+		}}
 
 		// Do nothing
 		alert.setNegativeButton("Delete",
