@@ -47,7 +47,7 @@ public class ToDoEntry {
 
 		while (!cursorToDoEntry.isAfterLast()) {
 			entryBuffer = getCurrentObjectFromCursor(cursorToDoEntry);
-			entryBuffer.setLocationsFromDB(context);
+			//entryBuffer.setLocationsFromDB(context);
 			allEntries.add(entryBuffer);
 			cursorToDoEntry.moveToNext();
 		}
@@ -172,7 +172,7 @@ public class ToDoEntry {
 	 */
 	public float getClosestDistanceTo(Location distTo, Context context) {
 		setLocationsFromDB(context);
-		Log.d("Entry", "ConnectedLocations for "+this.name+": "+locations.size()+"~"+locations.toArray()[0].toString());
+		//Log.d("Entry", "ConnectedLocations for "+this.name+": "+locations.size()+"~"+locations.toArray()[0].toString());
 		Iterator<ToDoLocation> iter = locations.iterator();
 		float closestDist = Float.POSITIVE_INFINITY;
 		while (iter.hasNext()) {
@@ -349,7 +349,7 @@ public class ToDoEntry {
 	
 	public void setLocationsFromDB(Context context){
 		HashSet<ToDoLocation> result = ToDoEntryLocation.getConnectedLocations(this, context); 
-		Log.d("ToDoEntry","set Locations for "+this.name+" with "+result.toArray()[0].toString());
+		//Log.d("ToDoEntry","set Locations for "+this.name+" with "+result.toArray()[0].toString());
 		this.setLocations(result);
 	}
 	
