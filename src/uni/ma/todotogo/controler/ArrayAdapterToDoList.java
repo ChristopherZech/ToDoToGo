@@ -2,8 +2,8 @@ package uni.ma.todotogo.controler;
 
 import java.util.ArrayList;
 
-import uni.ma.todotogo.R;
 import uni.ma.todotogo.model.ToDoEntry;
+import uni.ma.todotogo.view.R;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

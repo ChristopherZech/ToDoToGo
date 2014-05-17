@@ -29,15 +29,6 @@
         android:hint="When" >
 
     </MultiAutoCompleteTextView>
-	<!-- 
-    <MultiAutoCompleteTextView
-        android:id="@+id/add_text_where"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:ems="10"
-        android:hint="Where" /> -->
 
     <Spinner
         android:id="@+id/add_spinner_categories"
@@ -47,24 +38,5 @@
         android:ems="10"
         android:layout_gravity="center" />
 
-    <EditText
-        android:id="@+id/add_text_where"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:ems="10"
-        android:inputType="textPostalAddress" 
-        android:hint="Where"        
-     />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/activity_horizontal_margin"
-        android:ems="10"
-        android:onClick="goToMap"
-        android:text="Go to Map" />
 
 </LinearLayout>

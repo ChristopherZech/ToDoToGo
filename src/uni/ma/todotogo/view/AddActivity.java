@@ -211,23 +211,4 @@ public class AddActivity extends Activity {
 		} else
 			return false;
 	}
-
-	@Override
-	public void finish() {
-//		// Prepare data intent
-//		Intent data = new Intent();
-//		data.putExtra("EntryID", );
-//		data.putExtra("Date", "You could be better then you are. ");
-//		// Activity finished ok, return the data
-//		setResult(RESULT_OK, data);
-		super.finish();
-	}
-
-	// Implementation of Go To Map button that starts MapMarkerActivity to add
-	// Locations
-	public void goToMap(View v) {
-		Intent myIntent = new Intent(this, MapActivity.class);
-		startActivity(myIntent);
-	}
-
 }
