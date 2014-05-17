@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import uni.ma.todotogo.controler.GPSTracker;
+import uni.ma.todotogo.model.ProximityIntentReceiver;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoEntry;
 import uni.ma.todotogo.model.ToDoEntryLocation;
@@ -165,6 +166,7 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 							int success = buffer.getId();
 							ToDoEntryLocation mapping = new ToDoEntryLocation(connectedEntry, buffer);
 							int mappingSuccess = mapping.writeToDB(context);
+							//mapping.registerProximityAlert(context);
 							Log.d("MapView", "Was mapping added successfull?"
 									+ mappingSuccess);
 							locationsAdded = buffer.getId();// locationsAdded.add(buffer.getId());
@@ -194,7 +196,9 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 											marker.getPosition().longitude,
 											context);
 							int success = buffer.getId();
-							success =ToDoEntryLocation.staticDeleteByBothIDs(connectedEntry.getId(),buffer.getId(), context);
+							ToDoEntryLocation mapping = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(connectedEntry, buffer, context);
+							//ProximityIntentReceiver.removeReceiverByEntryLocation(ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(connectedEntry, buffer, context),context);
+							success = mapping.delete(context);
 							locationsAdded = buffer.getId();// locationsAdded.add(buffer.getId());
 							Log.d("MapView", "New location removed "
 									+ success);
@@ -211,10 +215,12 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 						Log.d("MapView",
 								"How Lat looks in marker:"
 										+ marker.getPosition().latitude);
-						int success = ToDoLocation.staticDeleteByNameLatLng(
+						
+						ToDoLocation buffer = ToDoLocation.getLocationByNameAndLatLng(
 								marker.getTitle(),
 								marker.getPosition().latitude,
 								marker.getPosition().longitude, context);
+						int success = buffer.delete(context);
 						// int success =
 						// ToDoLocation.staticDeleteByString(marker.getTitle(),
 						// getBaseContext());

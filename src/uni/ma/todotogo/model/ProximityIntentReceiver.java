@@ -1,7 +1,10 @@
 package uni.ma.todotogo.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import uni.ma.todotogo.controler.GPSTracker;
 import uni.ma.todotogo.view.R;
@@ -16,79 +19,94 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-
-
 public class ProximityIntentReceiver extends BroadcastReceiver {
 	private ToDoEntry todo;
 	private ToDoLocation loc;
 	private static int notificationCounter = 0;
-	private int notificationId;
 	private PendingIntent proximityIntent;
-	
-	private static ArrayList<ProximityIntentReceiver> allReceivers = new ArrayList<ProximityIntentReceiver>();
-	
-	public ProximityIntentReceiver(ToDoEntry todo, ToDoLocation loc, PendingIntent proximityIntent) {
-		this.todo = todo;
-		this.loc = loc;
+	private Integer mappingID;
+
+	private static HashMap<Integer, ProximityIntentReceiver> allReceivers = new HashMap<Integer, ProximityIntentReceiver>();
+
+	public ProximityIntentReceiver(ToDoEntryLocation mapping,
+			PendingIntent proximityIntent) {
+		this.todo = mapping.entry;
+		this.loc = mapping.location;
 		this.proximityIntent = proximityIntent;
-		
-		notificationCounter++;
-		this.notificationId = Integer.valueOf(notificationCounter);
-		
-		allReceivers.add(this);
+		this.mappingID = mapping.id;
+		allReceivers.put(this.mappingID, this);
+		Log.d("Proximity", "Mapping put:"+mappingID);
 	}
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		
+
 		// get distance threshold for notification from preferences
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences sharedPref = PreferenceManager
+				.getDefaultSharedPreferences(context);
 		int distToNotify = sharedPref.getInt("pref_distance", 100);
-		
-		NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		
-		if(intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) {
+
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+
+		if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING,
+				false)) {
 			// entering
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					context)
 					.setSmallIcon(R.drawable.ic_launcher)
 					.setContentTitle(todo.getName())
 					.setContentText(
-							notificationId+" |You are within " + distToNotify + "m of "
-									+ loc.getName() + "!");
-			
-			Log.d("Notification", "added notification with id "+ notificationId);
-			
+							mappingID + " |You are within " + distToNotify
+									+ "m of " + loc.getName() + "!");
+
+			Log.d("Notification", "added notification with id " + mappingID);
+
 			// int Counter allows you to update the notification later
 			// on (or insures that new notifications are issued
-			mNotificationManager.notify(notificationId, mBuilder.build());
+			mNotificationManager.notify(mappingID, mBuilder.build());
 		} else {
 			// exiting
-			mNotificationManager.cancel(notificationId);
+			mNotificationManager.cancel(mappingID);
 		}
 	}
-	
-	public static void removeAllReceivers(Context context) {
-		Iterator<ProximityIntentReceiver> iter = allReceivers.iterator();
 
-		
-		while(iter.hasNext()) {
-			ProximityIntentReceiver curReceiver = iter.next();
+	public static void removeReceiverByEntryLocation(ToDoEntryLocation mapping,
+			Context context) {
+		ProximityIntentReceiver curReceiver = allReceivers.get(mapping.id);
+		curReceiver.cancelNotification(context);
+		allReceivers.remove(mapping.id);
+	}
+
+	public static void removeReceiverByEntryLocationID(Integer mappingID,
+			Context context) {
+		ProximityIntentReceiver curReceiver = allReceivers.get(mappingID);
+		curReceiver.cancelNotification(context);
+		allReceivers.remove(mappingID);
+	}
+
+	public static void removeAllReceivers(Context context) {
+
+		Iterator<Integer> iter = allReceivers.keySet().iterator();
+		while (iter.hasNext()) {
+			int value = iter.next();
+			ProximityIntentReceiver curReceiver = allReceivers.get(value);
 			curReceiver.cancelNotification(context);
 		}
-		
+
 		allReceivers.clear();
 	}
-	
+
 	public void cancelNotification(Context context) {
-		NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel(notificationId);
-		
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(mappingID);
+
 		LocationManager locationManager = GPSTracker.getLocationManager();
-		
+
 		locationManager.removeProximityAlert(proximityIntent);
 		context.unregisterReceiver(this);
-		
-		Log.d("Notification", "deleted notification with id "+notificationId);
+
+		Log.d("Notification", "deleted notification with id " + mappingID);
 	}
 }

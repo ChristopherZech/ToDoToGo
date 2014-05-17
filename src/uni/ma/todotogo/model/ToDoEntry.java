@@ -59,18 +59,18 @@ public class ToDoEntry {
 		this.id = id; 
 	}
 
-	public static int staticDelete(int idToBeDeleted, Context context) {
-		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
-		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
-		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "="
-				+ String.valueOf(idToBeDeleted), null);
-		Log.d("ToDoEntry", "ListItem with ID " + idToBeDeleted
-				+ " was deleted.");
-		db.close();
-		mDbHelper.close();
-		return success;
-	}
+//	public static int staticDelete(int idToBeDeleted, Context context) {
+//		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+//		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+//
+//		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "="
+//				+ String.valueOf(idToBeDeleted), null);
+//		Log.d("ToDoEntry", "ListItem with ID " + idToBeDeleted
+//				+ " was deleted.");
+//		db.close();
+//		mDbHelper.close();
+//		return success;
+//	}
 
 	/**
 	 * 
@@ -289,6 +289,27 @@ public class ToDoEntry {
 				.getColumnIndex(DBToDoEntry.COLUMN_NAME_DATE));
 		return new ToDoEntry(id, name, category, date);
 	}
+	
+	
+	public HashSet<ToDoEntryLocation> getConnectedMappingsFromDB (Context context){
+		HashSet<ToDoEntryLocation> mappings = new HashSet<ToDoEntryLocation>();
+		setLocationsFromDB(context);
+		for(ToDoLocation location:locations){
+			mappings.add(ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(this, location, context));
+		}
+		return mappings;
+	}
+	
+	public int deleteConnectedMappings(Context context){
+		setLocationsFromDB(context);
+		int result = 1;
+		for(ToDoLocation location:locations){
+			ToDoEntryLocation buffer = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(this, location, context);
+			ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
+			result *= buffer.delete(context);
+		}
+		return result;
+	}
 
 	/**
 	 * returns a cursor for a specific query with where=selection and
@@ -319,7 +340,10 @@ public class ToDoEntry {
 
 		int success = db.delete(DBToDoEntry.TABLE_NAME, DBToDoEntry._ID + "="
 				+ String.valueOf(id), null);
+		
 		Log.d("ToDoEntry", "ListItem with ID " + this.id + " was deleted.");
+		//int medsuccess = deleteConnectedMappings(context);
+		//Log.d("ToDoEntry", "where mappings deleted " + medsuccess);
 		return success;
 	}
 
@@ -362,37 +386,37 @@ public class ToDoEntry {
 		}
 	}
 	
-	/**
-	 * Registers proximity alerts to all mapped locations.
-	 */
-	public void registerProximityAlerts(Context context) {
-		GPSTracker gps = new GPSTracker(context);
-		gps.getLocation();
-		LocationManager locationManager = GPSTracker.getLocationManager();
-		
-		// get distance threshold for notification from preferences
-		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-		int distToNotify = sharedPref.getInt("pref_distance", 100);
-		
-		Log.d("Notification", "no of locations mapped to task; "+locations.size());
-		
-		Iterator<ToDoLocation> locIter = locations.iterator();
-		while(locIter.hasNext()) {
-			ToDoLocation curLoc = locIter.next();
-			Intent intent = new Intent("uni.ma.todotogo.model.ProximityAlert");
-			PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
-			locationManager.addProximityAlert(
-					curLoc.getLatitude(), // the latitude of the central point of the alert region
-					curLoc.getLongitude(), // the longitude of the central point of the alert region
-					distToNotify, // the radius of the central point of the alert region, in meters
-					-1, // time for this proximity alert, in milliseconds, or -1 to indicate no expiration
-					proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
-					);
-			IntentFilter filter = new IntentFilter("uni.ma.todotogo.model.ProximityAlert"); 
-			context.registerReceiver(new ProximityIntentReceiver(this, curLoc, proximityIntent), filter);
-			Log.d("Notification", "registered intent for notification");
-		}
-	}
+//	/**
+//	 * Registers proximity alerts to all mapped locations.
+//	 */
+//	public void registerProximityAlerts(Context context) {
+//		GPSTracker gps = new GPSTracker(context);
+//		gps.getLocation();
+//		LocationManager locationManager = GPSTracker.getLocationManager();
+//		
+//		// get distance threshold for notification from preferences
+//		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+//		int distToNotify = sharedPref.getInt("pref_distance", 100);
+//		
+//		Log.d("Notification", "no of locations mapped to task; "+locations.size());
+//		
+//		Iterator<ToDoLocation> locIter = locations.iterator();
+//		while(locIter.hasNext()) {
+//			ToDoLocation curLoc = locIter.next();
+//			Intent intent = new Intent("uni.ma.todotogo.model.ProximityAlert");
+//			PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+//			locationManager.addProximityAlert(
+//					curLoc.getLatitude(), // the latitude of the central point of the alert region
+//					curLoc.getLongitude(), // the longitude of the central point of the alert region
+//					distToNotify, // the radius of the central point of the alert region, in meters
+//					-1, // time for this proximity alert, in milliseconds, or -1 to indicate no expiration
+//					proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
+//					);
+//			IntentFilter filter = new IntentFilter("uni.ma.todotogo.model.ProximityAlert"); 
+//			context.registerReceiver(new ProximityIntentReceiver(this, curLoc, proximityIntent), filter);
+//			Log.d("Notification", "registered intent for notification");
+//		}
+//	}
 	
 
 	/**

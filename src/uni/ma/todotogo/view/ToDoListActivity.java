@@ -55,12 +55,14 @@ public class ToDoListActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Context context  = getApplicationContext();
 		setContentView(R.layout.todo_list_layout);
 		ActionBar actionBar = getActionBar();
 		// actionBar.setHomeButtonEnabled(true);
 		actionBar.setDisplayUseLogoEnabled(false);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		// create list which will be filled with data
+		
 		toDoList = new ArrayList<ToDoEntry>();
 
 		
@@ -73,68 +75,12 @@ public class ToDoListActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View item,
                     final int position, long id)
             {
-            	final Context context = getApplicationContext();
+            	final Context context = getBaseContext();
             	final ToDoEntry toDoBuffer = toDoList.get(position);
             	final String title = toDoBuffer.getName();
-            	int success = ToDoEntry.staticDelete(toDoBuffer.getId(), context);
-            	if(success>0) updateList();
-            	/*AlertDialog.Builder alert = new AlertDialog.Builder(context);
-        		alert.setTitle("What to do with task '" + title + "'?");
-        		
-        		//get Position of marker and pass it to AddActivity
-        		alert.setPositiveButton("View on Map", 
-        			new DialogInterface.OnClickListener() {
-        				public void onClick(DialogInterface dialog, int whichButton) {
-        					Intent intent = new Intent(context,MapActivity.class);
-        					HashSet<ToDoLocation> positions= toDoBuffer.getLocations();
-        					HashSet<Integer> locations = new HashSet<Integer>();
-        					for(ToDoLocation location: positions){
-        						locations.add(location.getId());
-        					}
-        					intent.putExtra("Locations", locations);
-        					startActivity(intent);
-        			//use location for task
-        				}
-        		});
-        		
-        		/*
-        		//Delete current location
-        		alert.setNeutralButton("Delete",
-        				new DialogInterface.OnClickListener() {
-        					public void onClick(DialogInterface dialog, int whichButton) {
-        						Log.d("MapView","How Lat looks in marker:"+marker.getPosition().latitude);
-        						int success = ToDoLocation.staticDeleteByNameLatLng(marker.getTitle(),marker.getPosition().latitude,marker.getPosition().longitude, getBaseContext());
-        						//int success = ToDoLocation.staticDeleteByString(marker.getTitle(), getBaseContext());
-        						//pinnedLocations.remove(marker);
-        						if (success>0) marker.remove();
-        					}
-        		});
-        		
-        		//Do nothing
-        		alert.setNegativeButton("Cancel",
-        				new DialogInterface.OnClickListener() {
-        					public void onClick(DialogInterface dialog, int whichButton) {
-        						// Canceled.(Do nothing)
-        						}
-        		});
-        		
-				
-        		alert.show();
-        		//return false; //(still show info menu)
-            	
-            	/*Context context = getApplicationContext();
-            	ToDoEntry toDoBuffer = toDoList.get(position);
             	int success = toDoBuffer.delete(context);
-            	int duration = Toast.LENGTH_SHORT;
-            	if(success == 1){
-            		adapter.remove(adapter.getItem(position));
-                	Toast toast = Toast.makeText(context, "Item "+position+" has been removed", duration);
-                	toast.show();
-            	}
-            	else{
-                	Toast toast = Toast.makeText(context, "Item "+position+" could not removed!!", duration);
-                	toast.show();
-            	}*/
+            	//int success = ToDoEntry.staticDelete(toDoBuffer.getId(), context);
+            	if(success>0) updateList();
             }
         });
 	}
@@ -192,13 +138,15 @@ public class ToDoListActivity extends Activity {
 	}
 
 	public void updateList() {
-		ProximityIntentReceiver.removeAllReceivers(getApplicationContext());
+//		ProximityIntentReceiver.removeAllReceivers(getApplicationContext());
 		toDoList.clear();
 		// iterate over all ToDoEntry
 		HashSet<ToDoEntry> entries = ToDoEntry
 				.getAllEntries(getApplicationContext());
 		Iterator<ToDoEntry> iterator = entries.iterator();
-
+		ProximityIntentReceiver.removeAllReceivers(this);
+		ToDoEntryLocation.startAllReceivers(this);
+		
 		while (iterator.hasNext()) {
 			ToDoEntry currentEntry = iterator.next();
 			currentEntry.setLocationsFromDB(getBaseContext());
@@ -206,7 +154,6 @@ public class ToDoListActivity extends Activity {
 			//currentEntry.setLocationsFromDB(getBaseContext());
 			//currentEntry.connectWithAllLocations(getApplicationContext());
 			toDoList.add(currentEntry);
-			currentEntry.registerProximityAlerts(getApplicationContext());
 		}
 
 		adapter.notifyDataSetChanged();

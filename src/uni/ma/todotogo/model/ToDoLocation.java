@@ -14,6 +14,7 @@ import java.util.HashSet;
 import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
+import uni.ma.todotogo.model.ToDoContract.DBToDoPlacesEntry;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -241,113 +242,146 @@ public class ToDoLocation extends Location {
 		return result;
 
 	}
+	
+	public void setLocationsFromDB(Context context){
+		HashSet<ToDoEntry> tasks = ToDoEntryLocation.getConnectedEntries(this, context); 
+		//Log.d("ToDoEntry","set Locations for "+this.name+" with "+result.toArray()[0].toString());
+		this.setEntries(tasks);
+	}
 
-	// DELETERS
-	/**
-	 * deletes a specific entry that is selected by selection columsn and
-	 * selectionArgs arguments
-	 * 
-	 * @param context
-	 * @param selection
-	 * @param selectionArgs
-	 * @return
-	 */
-	public static int deleteBySelection(Context context, String selection,
-			String[] selectionArgs) {
+	public int delete(Context context) {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
-		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-		String[] projection = { DBPlacesEntry._ID,
-				DBPlacesEntry.COLUMN_NAME_NAME,
-				DBPlacesEntry.COLUMN_NAME_LATITUDE,
-				DBPlacesEntry.COLUMN_NAME_LONGITUDE,
-				DBPlacesEntry.COLUMN_NAME_MARKER };
-		// Log.d("DB Location", db.query(false,
-		// DBPlacesEntry.TABLE_NAME,projection, selection, selectionArgs, null,
-		// null, null, null).getCount() + " items found");
-		int id = db.delete(DBPlacesEntry.TABLE_NAME, selection, selectionArgs);
-		// allLocations.remove(id);
-		db.close();
-		mDbHelper.close();
-		Log.d("DB Location", "Delted ID:" + id);
-		return id;
+		int success = db.delete(DBPlacesEntry.TABLE_NAME, DBPlacesEntry._ID + "="
+				+ String.valueOf(id), null);
+		
+		
+		//int medsuccess = deleteConnected/gs(context);
+		//Log.d("DBPlacesEntry", "Mapping delete successfull? " + medsuccess);
+		
+		return success;
 	}
-
-	/**
-	 * deletes a specific entry with the name strinToBeDeleted
-	 * 
-	 * @param stringToBeDeleted
-	 * @param context
-	 * @return
-	 */
-	public static int staticDeleteByString(String stringToBeDeleted,
-			Context context) {
-		String[] buffer = { DBPlacesEntry.COLUMN_NAME_NAME };
-		String selection = createQueryColumns(buffer);
-		String[] selectionArgs = new String[] { stringToBeDeleted };
-		return deleteBySelection(context, selection, selectionArgs);
+	
+	public int deleteConnectedMappings(Context context){
+		setEntriesFromDB(context);
+		int result = 1;
+		for(ToDoEntry entry:tasks){
+			ToDoEntryLocation buffer = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(entry, this, context);
+			ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
+			result *= buffer.delete(context);
+		}
+		return result;
 	}
-
-	/**
-	 * deletes a specific location from the Db where markerID = ?
-	 * 
-	 * @param markerID
-	 * @param context
-	 * @return
-	 */
-	public static int staticDeleteByMarker(String markerID, Context context) {
-		String[] buffer = { DBPlacesEntry.COLUMN_NAME_MARKER };
-		String selection = createQueryColumns(buffer);
-		String[] selectionArgs = new String[] { markerID };
-		return deleteBySelection(context, selection, selectionArgs);
-	}
-
-	/**
-	 * deletes a location from the DB with specific ID
-	 * 
-	 * statically deletes a location ouf of the DB with a
-	 * 
-	 * @param idToBeDeleted
-	 * @param context
-	 * @return
-	 */
-	public static int staticDeleteByID(int idToBeDeleted, Context context) {
-		String[] buffer = { DBPlacesEntry._ID };
-		String selection = createQueryColumns(buffer);
-		String[] selectionArgs = { String.valueOf(idToBeDeleted) };
-		return deleteBySelection(context, selection, selectionArgs);
-	}
-
-	/**
-	 * statically deletes a Location by acombination of name, latitude and
-	 * longitude out of the database
-	 * 
-	 * @param name
-	 * @param lat
-	 * @param lng
-	 * @param context
-	 * @return
-	 */
-	public static int staticDeleteByNameLatLng(String name, double lat,
-			double lng, Context context) {
-		//DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
-		//dfs.setDecimalSeparator('.');
-		//DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
-
-		String[] buffer = { DBPlacesEntry.COLUMN_NAME_NAME,
-				DBPlacesEntry.COLUMN_NAME_LATITUDE,
-				DBPlacesEntry.COLUMN_NAME_LONGITUDE };
-		String[] selectionArgs = { name, String.valueOf(lat),
-				String.valueOf(lng) };// numberFormat.format(lat),
-										// numberFormat.format(lng)};
-		String selection = createQueryColumns(buffer);
-		// String selection= DBPlacesEntry.COLUMN_NAME_NAME + " =? AND " +
-		// DBPlacesEntry.COLUMN_NAME_LATITUDE + " =? AND " +
-		// DBPlacesEntry.COLUMN_NAME_LONGITUDE + " =?";
-		Log.d("DB", selectionArgs[0] + selectionArgs[1] + selectionArgs[2]);
-
-		return deleteBySelection(context, selection, selectionArgs);
-	}
+	
+	 
+	
+//	// DELETERS
+//	/**
+//	 * deletes a specific entry that is selected by selection columsn and
+//	 * selectionArgs arguments
+//	 * 
+//	 * @param context
+//	 * @param selection
+//	 * @param selectionArgs
+//	 * @return
+//	 */
+//	public static int deleteBySelection(Context context, String selection,
+//			String[] selectionArgs) {
+//		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
+//		SQLiteDatabase db = mDbHelper.getReadableDatabase();
+//
+//		String[] projection = { DBPlacesEntry._ID,
+//				DBPlacesEntry.COLUMN_NAME_NAME,
+//				DBPlacesEntry.COLUMN_NAME_LATITUDE,
+//				DBPlacesEntry.COLUMN_NAME_LONGITUDE,
+//				DBPlacesEntry.COLUMN_NAME_MARKER };
+//		// Log.d("DB Location", db.query(false,
+//		// DBPlacesEntry.TABLE_NAME,projection, selection, selectionArgs, null,
+//		// null, null, null).getCount() + " items found");
+//		int id = db.delete(DBPlacesEntry.TABLE_NAME, selection, selectionArgs);
+//		// allLocations.remove(id);
+//		db.close();
+//		mDbHelper.close();
+//		Log.d("DB Location", "Delted ID:" + id);
+//		return id;
+//	}
+//
+//	/**
+//	 * deletes a specific entry with the name strinToBeDeleted
+//	 * 
+//	 * @param stringToBeDeleted
+//	 * @param context
+//	 * @return
+//	 */
+//	public static int staticDeleteByString(String stringToBeDeleted,
+//			Context context) {
+//		String[] buffer = { DBPlacesEntry.COLUMN_NAME_NAME };
+//		String selection = createQueryColumns(buffer);
+//		String[] selectionArgs = new String[] { stringToBeDeleted };
+//		return deleteBySelection(context, selection, selectionArgs);
+//	}
+//
+//	/**
+//	 * deletes a specific location from the Db where markerID = ?
+//	 * 
+//	 * @param markerID
+//	 * @param context
+//	 * @return
+//	 */
+//	public static int staticDeleteByMarker(String markerID, Context context) {
+//		String[] buffer = { DBPlacesEntry.COLUMN_NAME_MARKER };
+//		String selection = createQueryColumns(buffer);
+//		String[] selectionArgs = new String[] { markerID };
+//		return deleteBySelection(context, selection, selectionArgs);
+//	}
+//
+//	/**
+//	 * deletes a location from the DB with specific ID
+//	 * 
+//	 * statically deletes a location ouf of the DB with a
+//	 * 
+//	 * @param idToBeDeleted
+//	 * @param context
+//	 * @return
+//	 */
+//	public static int staticDeleteByID(int idToBeDeleted, Context context) {
+//		String[] buffer = { DBPlacesEntry._ID };
+//		String selection = createQueryColumns(buffer);
+//		String[] selectionArgs = { String.valueOf(idToBeDeleted) };
+//		return deleteBySelection(context, selection, selectionArgs);
+//	}
+//
+//	/**
+//	 * statically deletes a Location by acombination of name, latitude and
+//	 * longitude out of the database
+//	 * 
+//	 * @param name
+//	 * @param lat
+//	 * @param lng
+//	 * @param context
+//	 * @return
+//	 */
+//	public static int staticDeleteByNameLatLng(String name, double lat,
+//			double lng, Context context) {
+//		//DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance();
+//		//dfs.setDecimalSeparator('.');
+//		//DecimalFormat numberFormat = new DecimalFormat("#.####", dfs);
+//
+//		String[] buffer = { DBPlacesEntry.COLUMN_NAME_NAME,
+//				DBPlacesEntry.COLUMN_NAME_LATITUDE,
+//				DBPlacesEntry.COLUMN_NAME_LONGITUDE };
+//		String[] selectionArgs = { name, String.valueOf(lat),
+//				String.valueOf(lng) };// numberFormat.format(lat),
+//										// numberFormat.format(lng)};
+//		String selection = createQueryColumns(buffer);
+//		// String selection= DBPlacesEntry.COLUMN_NAME_NAME + " =? AND " +
+//		// DBPlacesEntry.COLUMN_NAME_LATITUDE + " =? AND " +
+//		// DBPlacesEntry.COLUMN_NAME_LONGITUDE + " =?";
+//		Log.d("DB", selectionArgs[0] + selectionArgs[1] + selectionArgs[2]);
+//
+//		return deleteBySelection(context, selection, selectionArgs);
+//	}
 
 	/**
 	 * Creates a query string used for db.query from columns string[] where
