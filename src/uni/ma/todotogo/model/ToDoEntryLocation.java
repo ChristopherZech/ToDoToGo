@@ -184,7 +184,7 @@ public class ToDoEntryLocation {
 		while (!cursor.isAfterLast()) {
 			buffer = getCurrentObjectFromCursor(cursor, context);
 			Log.d("ToDoEntryLocation",
-					"Added a mapping" + buffer.location.toString());
+					"Buffered a local mapping" + buffer.location.toString());
 			connectedLocations.add(buffer.location);
 			cursor.moveToNext();
 		}
@@ -406,6 +406,7 @@ public class ToDoEntryLocation {
 		while (!cursorToDoEntry.isAfterLast()) {
 			entryBuffer = getCurrentObjectFromCursor(cursorToDoEntry, context);
 			//entryBuffer.setLocationsFromDB(context);
+			Log.d("ToDoEntryLocation", "Entry in all entries:"+ entryBuffer.id+" - entry: "+entryBuffer.entry.name+" - location: "+entryBuffer.location.getName());
 			allEntries.add(entryBuffer);
 			cursorToDoEntry.moveToNext();
 		}

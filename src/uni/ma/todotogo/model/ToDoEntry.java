@@ -31,6 +31,7 @@ public class ToDoEntry {
 	public AvailableColors category;
 	GregorianCalendar date;
 	static HashSet<ToDoLocation> locations;
+	public float closestDistance; 
 
 	/**
 	 * Returns a list with all entries stored in the db.
@@ -57,6 +58,7 @@ public class ToDoEntry {
 	
 	public ToDoEntry(int id){
 		this.id = id; 
+		this.closestDistance = Float.POSITIVE_INFINITY;
 	}
 
 //	public static int staticDelete(int idToBeDeleted, Context context) {
@@ -116,6 +118,7 @@ public class ToDoEntry {
 		GregorianCalendar date2 = new GregorianCalendar();
 		date2.setTimeInMillis(Long.parseLong(date));
 		this.date = date2;
+		this.closestDistance = Float.POSITIVE_INFINITY;
 	}
 
 	/**
@@ -158,7 +161,6 @@ public class ToDoEntry {
 				result = curItem;
 			}
 		}
-
 		return result;
 	}
 	
@@ -183,8 +185,11 @@ public class ToDoEntry {
 			}
 		}
 		Log.d("Entry", "Closest distance to "+this.name+" is "+closestDist);
+		this.closestDistance = closestDist;
 		return closestDist;
 	}
+	
+	//public float getClosestDistanceTo
 
 	
 	/**

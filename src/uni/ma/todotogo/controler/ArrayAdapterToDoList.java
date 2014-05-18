@@ -1,6 +1,8 @@
 package uni.ma.todotogo.controler;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import uni.ma.todotogo.model.ToDoEntry;
 import uni.ma.todotogo.view.R;
@@ -20,12 +22,15 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	  private final GPSTracker gp; 
 
 	  public ArrayAdapterToDoList(Context context, ArrayList<ToDoEntry> values) {
-	    super(context, R.layout.todo_list_entry_layout, values);
+	   
+		super(context, R.layout.todo_list_entry_layout, values);
 	    this.context = context;
 	    this.values = values;
 	    gp = new GPSTracker(context);
 	  }
+	  
 
+	  
 	  @Override
 	  public View getView(int position, View convertView, ViewGroup parent) {
 	    LayoutInflater inflater = (LayoutInflater) context
@@ -36,7 +41,6 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	    TextView textViewDesc = (TextView) rowView.findViewById(R.id.tododesc);
 	    TextView textViewDist = (TextView) rowView.findViewById(R.id.distance);
 	    View categoryView = (View) rowView.findViewById(R.id.category_colorblock);
-	    
 	    ToDoEntry buffer = values.get(position);
 	    Log.d("ArrayAdapter","Loaded: "+buffer.toString());
 	    // set text of description and distance field
@@ -81,6 +85,8 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 		}
 		return dist;
 	  }
+	  
+
 
 	  
 	} 
