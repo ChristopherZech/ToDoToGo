@@ -14,6 +14,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
@@ -40,16 +41,25 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		//if(intent.getBooleanExtra(LocationManager.KEY_LOCATION_CHANGED, false) && loc.distanceTo(new GPSTracker(context).getLocation()) <= distToNotify) { // TODO TEST!!! otherwise use line below 
+		if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING, false)) { // || intent.getBooleanExtra(LocationManager.KEY_LOCATION_CHANGED, false)) {
+			checkIfAddOrRemoveNotification(context);
+		} else {
+			// exiting
+			checkIfAddOrRemoveNotification(context);
+		}
+	}
+	
+	private void checkIfAddOrRemoveNotification(Context context) {
 		// get distance threshold for notification from preferences
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		int distToNotify = sharedPref.getInt("pref_distance", 100);
-
+		
 		NotificationManager mNotificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-
-		if (intent.getBooleanExtra(LocationManager.KEY_PROXIMITY_ENTERING,
-				false)) {
+		
+		if(loc.distanceTo(new GPSTracker(context).getLocation()) <= distToNotify) {
 			// entering
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 					context)
@@ -59,7 +69,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 							mappingID + " |You are within " + distToNotify
 									+ "m of " + loc.getName() + "!");
 
-			Log.d("Notification", "added notification with id " + mappingID+"| size of mapping: "+ToDoEntryLocation.sizeOfMappings(context));
+			Log.d("Notification", "added notification id: " + mappingID+"| size of mapping: "+ToDoEntryLocation.sizeOfMappings(context) + " | locName:" + loc.getName() + " | dist: "+ loc.distanceTo(new GPSTracker(context).getLocation()));
 
 			// int Counter allows you to update the notification later
 			// on (or insures that new notifications are issued
@@ -90,7 +100,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		while (iter.hasNext()) {
 			int value = iter.next();
 			ProximityIntentReceiver curReceiver = allReceivers.get(value);
-			curReceiver.cancelNotification(context);
+			//curReceiver.cancelNotification(context);
 		}
 
 		allReceivers.clear();
@@ -105,6 +115,12 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
 		locationManager.removeProximityAlert(proximityIntent);
 		context.unregisterReceiver(this);
+		try {
+			finalize();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		Log.d("Notification", "deleted notification with id " + mappingID);
 	}

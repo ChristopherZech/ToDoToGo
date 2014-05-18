@@ -34,6 +34,7 @@ public class ToDoLocation extends Location {
 	public ToDoLocation(int id, String name){
 		super(name);
 		this.id = id;
+		this.tasks = new HashSet<ToDoEntry>();
 	}
 	
 	// private static HashMap<Integer, ToDoLocation> allLocations = new
@@ -96,6 +97,7 @@ public class ToDoLocation extends Location {
 		this.markerID = markerID;
 		this.setLatitude(latitude);
 		this.setLongitude(longitude);
+		this.tasks = tasks;
 
 		// allLocations.put(id, this);
 	}

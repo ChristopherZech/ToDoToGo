@@ -30,7 +30,7 @@ public class ToDoEntry {
 	public String name;
 	public AvailableColors category;
 	GregorianCalendar date;
-	static HashSet<ToDoLocation> locations;
+	HashSet<ToDoLocation> locations;
 	public float closestDistance; 
 
 	/**
@@ -57,7 +57,8 @@ public class ToDoEntry {
 	}
 	
 	public ToDoEntry(int id){
-		this.id = id; 
+		this.id = id;
+		this.locations = new HashSet<ToDoLocation>();
 		this.closestDistance = Float.POSITIVE_INFINITY;
 	}
 
@@ -114,7 +115,7 @@ public class ToDoEntry {
 		this.name = name;
 		this.category = AvailableColors.getColorByInt(Integer.parseInt(category));
 		this.locations = new HashSet<ToDoLocation>();
-
+		
 		GregorianCalendar date2 = new GregorianCalendar();
 		date2.setTimeInMillis(Long.parseLong(date));
 		this.date = date2;
@@ -347,8 +348,8 @@ public class ToDoEntry {
 				+ String.valueOf(id), null);
 		
 		Log.d("ToDoEntry", "ListItem with ID " + this.id + " was deleted.");
-		//int medsuccess = deleteConnectedMappings(context);
-		//Log.d("ToDoEntry", "where mappings deleted " + medsuccess);
+		int medsuccess = deleteConnectedMappings(context);
+		Log.d("ToDoEntry", "where mappings deleted " + medsuccess);
 		return success;
 	}
 

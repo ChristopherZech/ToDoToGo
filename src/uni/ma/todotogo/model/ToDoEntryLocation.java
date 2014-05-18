@@ -387,7 +387,7 @@ public class ToDoEntryLocation {
 				);
 		IntentFilter filter = new IntentFilter("uni.ma.todotogo.model.ProximityAlert"); 
 		context.registerReceiver(new ProximityIntentReceiver(this, proximityIntent), filter);
-		Log.d("ToDoEntryLocation", "registered intent for notification");
+		Log.d("ToDoEntryLocation", "registered ProximityIntentReceiver for todo: "+entry.getName()+" | loc: "+location.getName());
 	}
 	
 	/**

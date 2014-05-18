@@ -19,21 +19,21 @@ import uni.ma.todotogo.model.ToDoContract.DBToDoPlacesEntry;
  * 
  */
 public class ToDoDbHelper extends SQLiteOpenHelper {
-	public static final int DATABASE_VERSION = 16;
+	public static final int DATABASE_VERSION = 17;
     public static final String DATABASE_NAME = "ToDoToGo.db";
 	
 	private static final String TEXT_TYPE = " TEXT";
 	private static final String COMMA_SEP = ",";
 	private static final String SQL_CREATE_TODOS =
 		    "CREATE TABLE " + DBToDoEntry.TABLE_NAME + " (" +
-		    DBToDoEntry._ID + " INTEGER PRIMARY KEY," +
+		    DBToDoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 		    DBToDoEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
 		    DBToDoEntry.COLUMN_NAME_CATEGORY + " INTEGER " + COMMA_SEP +
 		    DBToDoEntry.COLUMN_NAME_DATE + " INTEGER " +
 		    " )";
 	private static final String SQL_CREATE_PLACES =
 		    "CREATE TABLE " + DBPlacesEntry.TABLE_NAME + " (" +
-		    DBPlacesEntry._ID + " INTEGER PRIMARY KEY," +
+		    DBPlacesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
 		    DBPlacesEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
 		    DBPlacesEntry.COLUMN_NAME_MARKER + " REAL " + COMMA_SEP +
 		    DBPlacesEntry.COLUMN_NAME_LATITUDE + TEXT_TYPE + COMMA_SEP +
@@ -41,7 +41,7 @@ public class ToDoDbHelper extends SQLiteOpenHelper {
 		    " )";
 	private static final String SQL_CREATE_TODOPLACES =
 		    "CREATE TABLE " + DBToDoPlacesEntry.TABLE_NAME + " (" +
-    		DBToDoPlacesEntry._ID + " INTEGER PRIMARY KEY," +
+    		DBToDoPlacesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
     		DBToDoPlacesEntry.COLUMN_NAME_PLACE_ID + " INTEGER " + COMMA_SEP +
 		    DBToDoPlacesEntry.COLUMN_NAME_TODO_ID + " INTEGER " +
 		    " )";
