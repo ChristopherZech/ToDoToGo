@@ -175,7 +175,6 @@ public class ToDoListActivity extends Activity {
 //					return -1;
 //			}
 //		});
-		adapter.notifyDataSetChanged();
 		adapter.sort(new Comparator<ToDoEntry>() {
 			public int compare(ToDoEntry data1, ToDoEntry data2) {
 				Log.d("ToDoListSort", "Compare to:" + data1.closestDistance
@@ -188,12 +187,12 @@ public class ToDoListActivity extends Activity {
 					return 1;
 			}
 		});
+		adapter.notifyDataSetChanged();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
 		gps = new GPSTracker(getApplicationContext());
 		gps.getLocation();
 
