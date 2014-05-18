@@ -11,6 +11,7 @@ import uni.ma.todotogo.model.AvailableColors;
 import uni.ma.todotogo.model.ToDoEntry;
 import uni.ma.todotogo.model.ToDoEntryLocation;
 import uni.ma.todotogo.model.ToDoLocation;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -100,7 +101,12 @@ public class AddActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_task_layout);
 		locations = 0;
-
+		  // set Action Bar
+ 		ActionBar actionBar = getActionBar();
+ 		actionBar.setHomeButtonEnabled(true);
+ 		actionBar.setDisplayUseLogoEnabled(false);
+ 		actionBar.setDisplayHomeAsUpEnabled(true);
+    
 		this.myEditText = (MultiAutoCompleteTextView) findViewById(R.id.add_text_when);
 
 		this.myCalendar = new GregorianCalendar();

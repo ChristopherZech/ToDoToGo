@@ -119,6 +119,13 @@ public class ToDoListActivity extends Activity {
 			return false;
 
 	}
+	
+	@Override
+	public void onPause() {
+		ProximityIntentReceiver.removeAllReceivers(this);
+	    super.onPause();
+
+	}
 
 	/**
 	 * Creates a HashMap for configuring list items.
