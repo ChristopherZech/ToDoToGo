@@ -40,7 +40,6 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-
 		// get distance threshold for notification from preferences
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -60,7 +59,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 							mappingID + " |You are within " + distToNotify
 									+ "m of " + loc.getName() + "!");
 
-			Log.d("Notification", "added notification with id " + mappingID);
+			Log.d("Notification", "added notification with id " + mappingID+"| size of mapping: "+ToDoEntryLocation.sizeOfMappings(context));
 
 			// int Counter allows you to update the notification later
 			// on (or insures that new notifications are issued

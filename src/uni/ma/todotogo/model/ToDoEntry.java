@@ -307,7 +307,7 @@ public class ToDoEntry {
 	
 	public int deleteConnectedMappings(Context context){
 		setLocationsFromDB(context);
-		int result = 1;
+		int result = 0;
 		for(ToDoLocation location:locations){
 			ToDoEntryLocation buffer = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(this, location, context);
 			ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
@@ -377,8 +377,9 @@ public class ToDoEntry {
 	}
 	
 	public void setLocationsFromDB(Context context){
-		HashSet<ToDoLocation> result = ToDoEntryLocation.getConnectedLocations(this, context); 
-		//Log.d("ToDoEntry","set Locations for "+this.name+" with "+result.toArray()[0].toString());
+		HashSet<ToDoLocation> result = ToDoEntryLocation.getConnectedLocations(this, context); 	
+		Log.d("ToDoEntry","set Locations for "+this.name+" with "+result.size()+" mappings");
+		locations = result;
 		this.setLocations(result);
 	}
 	
