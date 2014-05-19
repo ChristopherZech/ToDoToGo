@@ -243,7 +243,7 @@ public class GPSTracker extends Service implements LocationListener {
 							+ entryLocation.notified);
 
 			if (entryLocation.location.distanceTo(currentLocation) < distToNotify) {
-				if (!entryLocation.notified && ToDoEntryLocation.allEntries.contains(entryLocation)) {
+				if (!entryLocation.getNotified() && ToDoEntryLocation.allEntries.contains(entryLocation)) {
 					long[] pattern = { 500, 500, 500, 500, 500, 500, 500, 500,
 							500 };
 					Uri alarmSound = RingtoneManager
@@ -305,7 +305,7 @@ public class GPSTracker extends Service implements LocationListener {
 							notification);
 				}
 			} else {
-				if (entryLocation.notified) {
+				if (entryLocation.getNotified()) {
 					Log.d("GPSTRACKER", "Notification " + entryLocation.id
 							+ " will be deleted");
 					entryLocation.setNotified(false);
