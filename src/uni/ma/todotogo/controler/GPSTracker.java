@@ -258,7 +258,7 @@ public class GPSTracker extends Service implements LocationListener {
 					}
 
 					Notification notification = new Notification.Builder(context).setSmallIcon(R.drawable.ic_launcher)
-					.setContentText((entryLocation.id + " |You are within "
+					.setContentText(("You are within "
 							+ distToNotify + "m of "
 							+ entryLocation.location.getName()
 							+ "!"))
@@ -275,8 +275,7 @@ public class GPSTracker extends Service implements LocationListener {
 							.setStyle(new NotificationCompat.InboxStyle())
 							.setSmallIcon(R.drawable.ic_launcher)
 							.setContentTitle(entryLocation.entry.getName())
-							.setContentText(
-									entryLocation.id + " |You are within "
+							.setContentText("You are within "
 											+ distToNotify + "m of "
 											+ entryLocation.location.getName()
 											+ "!")
