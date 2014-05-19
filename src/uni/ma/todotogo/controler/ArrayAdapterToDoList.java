@@ -45,8 +45,9 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	    Log.d("ArrayAdapter","Loaded: "+buffer.toString());
 	    // set text of description and distance field
 	    textViewDesc.setText(buffer.name);
-	    if( buffer.closestDistance ==Float.POSITIVE_INFINITY) textViewDist.setText("no location");
-	    else  textViewDist.setText(((int)buffer.closestDistance)+"m");
+//	    if( buffer.closestDistance ==Float.POSITIVE_INFINITY) textViewDist.setText("no location");
+//	    else  textViewDist.setText(((int)buffer.closestDistance)+"m");
+	    textViewDist.setText(formatDistance(buffer.closestDistance));
 	    categoryView.setBackgroundColor(buffer.category.getColor());
 
 	    // set background color of description and distance field
@@ -87,6 +88,14 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 //		return dist;
 //	  }
 //	  
+	  
+	  public String formatDistance(float distance){
+		  if(distance == Float.POSITIVE_INFINITY) return "no location";
+		  else if (distance < 1000){
+			  return (int)distance+"m";
+		  }
+		  else return ((float)(Math.round(distance/100)))/10+"km";
+	  }
 
 
 	  
