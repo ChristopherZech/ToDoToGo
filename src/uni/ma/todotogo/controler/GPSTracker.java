@@ -299,6 +299,7 @@ public class GPSTracker extends Service implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		showSettingsAlert();
 	}
 
 	@Override
