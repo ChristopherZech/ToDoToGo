@@ -229,7 +229,7 @@ public class ToDoListActivity extends Activity {
 
 	public void calcDistance(ArrayList<ToDoEntry> entries) {
 		for (ToDoEntry entry : entries) {
-			entry.getClosestDistanceTo(gps.getLocation(), this);
+			entry.getClosestDistanceTo(gps.currentLocation, this);
 		}
 	}
 	

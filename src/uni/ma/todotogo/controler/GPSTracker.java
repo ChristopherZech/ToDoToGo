@@ -50,7 +50,7 @@ public class GPSTracker extends Service implements LocationListener {
 	Location location = new Location("none"); // location
 	double latitude; // latitude
 	double longitude; // longitude
-
+	public Location currentLocation;
 	// The minimum distance to change Updates in meters
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 10 meters
 
@@ -103,6 +103,7 @@ public class GPSTracker extends Service implements LocationListener {
 						if (location != null) {
 							latitude = location.getLatitude();
 							longitude = location.getLongitude();
+							currentLocation = location;
 						}
 					}
 				}
@@ -223,6 +224,7 @@ public class GPSTracker extends Service implements LocationListener {
 	public void onLocationChanged(Location currentLocation) {
 		Log.d("GPSTRACKER", "onLocationChanged");
 		Context context = mContext;
+		this.currentLocation = currentLocation;
 		SharedPreferences sharedPref = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		int distToNotify = sharedPref.getInt("pref_distance", 100);
