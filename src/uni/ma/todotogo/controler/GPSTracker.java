@@ -305,12 +305,12 @@ public class GPSTracker extends Service implements LocationListener {
 							notification);
 				}
 			} else {
-				if (entryLocation.getNotified()) {
+				//if (entryLocation.getNotified()) {
 					Log.d("GPSTRACKER", "Notification " + entryLocation.id
 							+ " will be deleted");
 					entryLocation.setNotified(false);
-					
-				}
+					mNotificationManager.cancel(entryLocation.id);
+				//}
 			}
 		}
 	}
