@@ -117,7 +117,7 @@ public class GPSTracker extends Service implements LocationListener {
 						if (locationManager != null) {
 							Log.d("GPS", "new pos set");
 							location = locationManager
-									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+									.getLastKnownLocation(LocationManager.GPS_PROVIDER);}
 							if (location != null) {
 								latitude = location.getLatitude();
 								longitude = location.getLongitude();
@@ -125,7 +125,7 @@ public class GPSTracker extends Service implements LocationListener {
 						}
 					}
 				}
-			}
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
