@@ -309,7 +309,7 @@ public class GPSTracker extends Service implements LocationListener {
 					Log.d("GPSTRACKER", "Notification " + entryLocation.id
 							+ " will be deleted");
 					entryLocation.setNotified(false);
-					mNotificationManager.cancel(entryLocation.id);
+					
 				}
 			}
 		}

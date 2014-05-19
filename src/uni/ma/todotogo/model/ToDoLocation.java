@@ -254,7 +254,11 @@ public class ToDoLocation extends Location {
 	public int delete(Context context) {
 		ToDoDbHelper mDbHelper = new ToDoDbHelper(context);
 		SQLiteDatabase db = mDbHelper.getWritableDatabase();
-
+		for (ToDoEntry task : tasks){
+			ToDoEntryLocation buffer = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(task, this, context);
+			//ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
+			buffer.delete(context);
+		}
 		int success = db.delete(DBPlacesEntry.TABLE_NAME, DBPlacesEntry._ID + "="
 				+ String.valueOf(id), null);
 		

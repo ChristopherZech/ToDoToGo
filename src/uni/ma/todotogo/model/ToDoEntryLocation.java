@@ -10,6 +10,7 @@ import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoPlacesEntry;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
@@ -116,6 +117,9 @@ public class ToDoEntryLocation {
 		int success = db.delete(DBToDoPlacesEntry.TABLE_NAME,
 				DBToDoPlacesEntry._ID + "=" + String.valueOf(id), null);
 		// ProximityIntentReceiver.removeReceiverByEntryLocation(this, context);
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(this.id);
 		Log.d("ToDoEntryLocation", "Mapping with ID " + this.id
 				+ " was deleted.");
 		return success;
