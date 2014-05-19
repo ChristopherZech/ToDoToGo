@@ -19,7 +19,6 @@ import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-import uni.ma.todotogo.controler.GPSTracker;
 import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
@@ -311,7 +310,7 @@ public class ToDoEntry {
 		int result = 0;
 		for(ToDoLocation location:locations){
 			ToDoEntryLocation buffer = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(this, location, context);
-			ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
+			//ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
 			result *= buffer.delete(context);
 		}
 		return result;

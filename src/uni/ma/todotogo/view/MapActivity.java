@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import uni.ma.todotogo.controler.GPSTracker;
-import uni.ma.todotogo.model.ProximityIntentReceiver;
+//import uni.ma.todotogo.model.ProximityIntentReceiver;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoEntry;
 import uni.ma.todotogo.model.ToDoEntryLocation;
@@ -93,8 +92,9 @@ public class MapActivity extends Activity implements OnMarkerClickListener,
 				// Instantiated GPSTracker object to get current Position
 				
 				mapView.setMyLocationEnabled(true);
-				GPSTracker gps = new GPSTracker(getApplicationContext());//new GPSTracker(MapActivity.this);
-				Location currentLocation = gps.getLocation();
+//				GPSTracker gps = new GPSTracker(getApplicationContext());//new GPSTracker(MapActivity.this);
+				
+			    Location currentLocation = ToDoListActivity.gps.getLocation();
 				double Lat = currentLocation.getLatitude();
 				double Lng = currentLocation.getLongitude();
 				LatLng position = new LatLng(Lat, Lng);

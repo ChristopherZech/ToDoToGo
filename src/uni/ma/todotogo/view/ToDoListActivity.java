@@ -12,7 +12,7 @@ import java.util.prefs.Preferences;
 
 import uni.ma.todotogo.controler.ArrayAdapterToDoList;
 import uni.ma.todotogo.controler.GPSTracker;
-import uni.ma.todotogo.model.ProximityIntentReceiver;
+//import uni.ma.todotogo.model.ProximityIntentReceiver;
 import uni.ma.todotogo.model.ToDoEntry;
 import uni.ma.todotogo.model.ToDoEntryLocation;
 import uni.ma.todotogo.model.ToDoLocation;
@@ -52,14 +52,17 @@ import android.location.*;
 public class ToDoListActivity extends Activity {
 	private ArrayList<ToDoEntry> toDoList;
 	private ArrayAdapterToDoList adapter;
-	private GPSTracker gps;
+	public static GPSTracker gps;
 
-	// HashSet<Integer> locations;
+	HashSet<Integer> locations;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.d("List View","On Create started");
 		super.onCreate(savedInstanceState);
-		Context context = getApplicationContext();
+		gps = new GPSTracker(this);
+		//gps.getLocation();
+		Context context = this;
 		setContentView(R.layout.todo_list_layout);
 		ActionBar actionBar = getActionBar();
 		// actionBar.setHomeButtonEnabled(true);
@@ -122,7 +125,7 @@ public class ToDoListActivity extends Activity {
 	
 	@Override
 	public void onPause() {
-		ProximityIntentReceiver.removeAllReceivers(this);
+		//ProximityIntentReceiver.removeAllReceivers(this);
 	    super.onPause();
 
 	}
@@ -152,13 +155,14 @@ public class ToDoListActivity extends Activity {
 		// ProximityIntentReceiver.removeAllReceivers(getApplicationContext());
 		toDoList.clear();
 		// iterate over all ToDoEntry
+		ToDoEntryLocation.setAllEntries(this);
 		HashSet<ToDoEntry> entries = ToDoEntry
 				.getAllEntries(getApplicationContext());
 		// List<ToDoEntry> entryList = new ArrayList<ToDoEntry>(entries);
 
 		Iterator<ToDoEntry> iterator = entries.iterator();
-		ProximityIntentReceiver.removeAllReceivers(this);
-		ToDoEntryLocation.startAllReceivers(this);
+		//ProximityIntentReceiver.removeAllReceivers(this);
+		//ToDoEntryLocation.startAllReceivers(this);
 		// for (int i = 0; i<entryList.size();++i){
 		while (iterator.hasNext()) {
 			ToDoEntry currentEntry = iterator.next();
@@ -200,9 +204,7 @@ public class ToDoListActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		gps = new GPSTracker(getApplicationContext());
-		gps.getLocation();
-
+		//gps.getLocation();
 		updateList();
 	}
 
@@ -229,5 +231,9 @@ public class ToDoListActivity extends Activity {
 		for (ToDoEntry entry : entries) {
 			entry.getClosestDistanceTo(gps.getLocation(), this);
 		}
+	}
+	
+	public void onDestroy() {   
+	    super.onDestroy();
 	}
 }

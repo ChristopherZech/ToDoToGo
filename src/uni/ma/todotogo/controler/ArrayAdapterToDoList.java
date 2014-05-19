@@ -19,14 +19,14 @@ import android.widget.TextView;
 public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	  private final Context context;
 	  private final ArrayList<ToDoEntry> values;
-	  private final GPSTracker gp; 
+	  //private final GPSTracker gp; 
 
 	  public ArrayAdapterToDoList(Context context, ArrayList<ToDoEntry> values) {
 	   
 		super(context, R.layout.todo_list_entry_layout, values);
 	    this.context = context;
 	    this.values = values;
-	    gp = new GPSTracker(context);
+	    //gp = new GPSTracker(context);
 	  }
 	  
 
@@ -45,8 +45,8 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	    Log.d("ArrayAdapter","Loaded: "+buffer.toString());
 	    // set text of description and distance field
 	    textViewDesc.setText(buffer.name);
-	    textViewDist.setText(calcDistance(values.get(position)));
-	    categoryView.setBackgroundColor(values.get(position).category.getColor());
+	    textViewDist.setText(buffer.closestDistance+"m");
+	    categoryView.setBackgroundColor(buffer.category.getColor());
 
 	    // set background color of description and distance field
 	    //categoryView.setBackgroundColor((Integer)values.get(position).get("color"));
@@ -54,38 +54,38 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	    return rowView;
 	  }
 	  
-	  public String calcDistance(ToDoEntry entry){
-	  float distFloat = entry.getClosestDistanceTo(gp.getLocation(), getContext());
-		String dist;
-		if(distFloat == Float.POSITIVE_INFINITY) {
-			dist = "no loc";
-		} else {
-			dist =  (int)distFloat + "m";
-
-			// if user is within the chosen distance to the location a
-			// notification is issued
-
-			// get distance to notify from preferences
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-			int distToNotify = sharedPref.getInt("pref_distance", 100);
-
-			
-			/*if (distFloat < distToNotify) {
-				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-						ToDoListActivity.class)
-						.setSmallIcon(R.drawable.ic_launcher)
-						.setContentTitle(entry.getName())
-						.setContentText("You are within " + distFloat + "m!");
-				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				// int Counter allows you to update the notification later
-				// on (or insures that new notifications are issued
-				mNotificationManager.notify(notificationCounter, mBuilder.build());
-				notificationCounter++;
-			}*/
-		}
-		return dist;
-	  }
-	  
+//	  public String calcDistance(ToDoEntry entry){
+//	  float distFloat = entry.getClosestDistanceTo(gp.getLocation(), getContext());
+//		String dist;
+//		if(distFloat == Float.POSITIVE_INFINITY) {
+//			dist = "no loc";
+//		} else {
+//			dist =  (int)distFloat + "m";
+//
+//			// if user is within the chosen distance to the location a
+//			// notification is issued
+//
+//			// get distance to notify from preferences
+//			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+//			int distToNotify = sharedPref.getInt("pref_distance", 100);
+//
+//			
+//			/*if (distFloat < distToNotify) {
+//				NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+//						ToDoListActivity.class)
+//						.setSmallIcon(R.drawable.ic_launcher)
+//						.setContentTitle(entry.getName())
+//						.setContentText("You are within " + distFloat + "m!");
+//				NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//				// int Counter allows you to update the notification later
+//				// on (or insures that new notifications are issued
+//				mNotificationManager.notify(notificationCounter, mBuilder.build());
+//				notificationCounter++;
+//			}*/
+//		}
+//		return dist;
+//	  }
+//	  
 
 
 	  

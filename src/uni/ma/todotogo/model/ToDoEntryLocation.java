@@ -6,7 +6,6 @@ package uni.ma.todotogo.model;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import uni.ma.todotogo.controler.GPSTracker;
 import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
@@ -29,12 +28,19 @@ import android.util.Log;
  */
 public class ToDoEntryLocation {
 
-	Integer id;
-	ToDoEntry entry;
-	ToDoLocation location;
+	public Integer id;
+	public ToDoEntry entry;
+	public ToDoLocation location;
+	public static HashSet<ToDoEntryLocation> allEntries;
+	public boolean notified;
 
 	public ToDoEntryLocation(int id) {
 		this.id = id;
+		notified = false;
+	}
+	
+	public void setNotified(boolean value){
+		this.notified = value;
 	}
 
 	/**
@@ -44,12 +50,15 @@ public class ToDoEntryLocation {
 		this.id = id;
 		this.entry = entry;
 		this.location = location;
+		this.notified = false;
+
 	}
 
 	public ToDoEntryLocation(ToDoEntry entry, ToDoLocation location) {
 		this.entry = entry;
 		this.location = location;
 		this.id = -1;
+		this.notified = false;
 	}
 
 	public static ToDoEntryLocation getToDoEntryLocationFromDB(int id,
@@ -294,7 +303,7 @@ public class ToDoEntryLocation {
 		String[] buffer = { DBToDoPlacesEntry._ID };
 		String selection = createQueryColumns(buffer);
 		String[] selectionArgs = { String.valueOf(idToBeDeleted) };
-		ProximityIntentReceiver.removeReceiverByEntryLocationID(idToBeDeleted, context);
+		//ProximityIntentReceiver.removeReceiverByEntryLocationID(idToBeDeleted, context);
 		return deleteBySelection(context, selection, selectionArgs);
 	}
 
@@ -354,40 +363,45 @@ public class ToDoEntryLocation {
 		return getMappingCursor(context, null, null).getCount();
 	}
 
-	/**
-	 * Registers proximity alerts to all mapped locations.
-	 */
-	public void registerProximityAlert(Context context) {
-		GPSTracker gps = new GPSTracker(context);
-		gps.getLocation();
-		LocationManager locationManager = GPSTracker.getLocationManager();
-
-		// get distance threshold for notification from preferences
-		SharedPreferences sharedPref = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		int distToNotify = sharedPref.getInt("pref_distance", 100);
-
-		Intent intent = new Intent("uni.ma.todotogo.model.ProximityAlert");
-		PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0,
-				intent, 0);
-		locationManager.addProximityAlert(location.getLatitude(), // the latitude
-																// of the
-																// central point
-																// of the alert
-																// region
-				location.getLongitude(), // the longitude of the central point of
-										// the alert region
-				distToNotify, // the radius of the central point of the alert
-								// region, in meters
-				-1, // time for this proximity alert, in milliseconds, or -1 to
-					// indicate no expiration
-				proximityIntent // will be used to generate an Intent to fire
-								// when entry to or exit from the alert region
-								// is detected
-				);
-		IntentFilter filter = new IntentFilter("uni.ma.todotogo.model.ProximityAlert"); 
-		context.registerReceiver(new ProximityIntentReceiver(this, proximityIntent), filter);
-		Log.d("ToDoEntryLocation", "registered ProximityIntentReceiver for todo: "+entry.getName()+" | loc: "+location.getName());
+//	/**
+//	 * Registers proximity alerts to all mapped locations.
+//	 */
+//	public void registerProximityAlert(Context context) {
+//		GPSTracker gps = new GPSTracker(context);
+//		gps.getLocation();
+//		LocationManager locationManager = GPSTracker.getLocationManager();
+//
+//		// get distance threshold for notification from preferences
+//		SharedPreferences sharedPref = PreferenceManager
+//				.getDefaultSharedPreferences(context);
+//		int distToNotify = sharedPref.getInt("pref_distance", 100);
+//
+//		Intent intent = new Intent("uni.ma.todotogo.model.ProximityAlert");
+//		PendingIntent proximityIntent = PendingIntent.getBroadcast(context, 0,
+//				intent, 0);
+//		locationManager.addProximityAlert(location.getLatitude(), // the latitude
+//																// of the
+//																// central point
+//																// of the alert
+//																// region
+//				location.getLongitude(), // the longitude of the central point of
+//										// the alert region
+//				distToNotify, // the radius of the central point of the alert
+//								// region, in meters
+//				-1, // time for this proximity alert, in milliseconds, or -1 to
+//					// indicate no expiration
+//				proximityIntent // will be used to generate an Intent to fire
+//								// when entry to or exit from the alert region
+//								// is detected
+//				);
+//		//IntentFilter filter = new IntentFilter("uni.ma.todotogo.model.ProximityAlert"); 
+//		//context.registerReceiver(new ProximityIntentReceiver(this, proximityIntent), filter);
+//		Log.d("ToDoEntryLocation", "registered ProximityIntentReceiver for todo: "+entry.getName()+" | loc: "+location.getName());
+//	}
+	
+	public static void setAllEntries(Context context){
+		Log.d("ToDoEntryLocation","setAllEntries");
+		allEntries = getAllEntries(context);
 	}
 	
 	/**
@@ -414,11 +428,11 @@ public class ToDoEntryLocation {
 		return allEntries;
 	}
 	
-	public static void startAllReceivers(Context context){
-		HashSet<ToDoEntryLocation> allEntries = getAllEntries(context);
-		for(ToDoEntryLocation entry: allEntries){
-			entry.registerProximityAlert(context);
-		}
-	}
+//	public static void startAllReceivers(Context context){
+//		HashSet<ToDoEntryLocation> allEntries = getAllEntries(context);
+//		for(ToDoEntryLocation entry: allEntries){
+//			entry.registerProximityAlert(context);
+//		}
+//	}
 	
 }

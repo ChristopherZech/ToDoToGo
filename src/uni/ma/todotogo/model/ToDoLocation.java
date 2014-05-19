@@ -270,7 +270,7 @@ public class ToDoLocation extends Location {
 		int result = 1;
 		for(ToDoEntry entry:tasks){
 			ToDoEntryLocation buffer = ToDoEntryLocation.getToDoEntryLocationByEntryLocationFromDB(entry, this, context);
-			ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
+			//ProximityIntentReceiver.removeReceiverByEntryLocation(buffer, context);
 			result *= buffer.delete(context);
 		}
 		return result;
