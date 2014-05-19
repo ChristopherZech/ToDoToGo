@@ -66,6 +66,7 @@ public class GPSTracker extends Service implements LocationListener {
 		notifiedIDs = new HashSet<Integer>();
 		handledIDs = new HashSet<Integer>();
 		ToDoEntryLocation.setAllEntries(context);
+		currentLocation = getLocation();
 		// Log.d("GPSTRACKER","initiated!");
 	}
 
@@ -122,6 +123,7 @@ public class GPSTracker extends Service implements LocationListener {
 							if (location != null) {
 								latitude = location.getLatitude();
 								longitude = location.getLongitude();
+								currentLocation = location;
 							}
 						}
 					}

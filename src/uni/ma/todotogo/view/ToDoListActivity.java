@@ -154,6 +154,7 @@ public class ToDoListActivity extends Activity {
 	public void updateList() {
 		// ProximityIntentReceiver.removeAllReceivers(getApplicationContext());
 		toDoList.clear();
+		Location location = gps.currentLocation;
 		// iterate over all ToDoEntry
 		ToDoEntryLocation.setAllEntries(this);
 		HashSet<ToDoEntry> entries = ToDoEntry
@@ -170,11 +171,12 @@ public class ToDoListActivity extends Activity {
 			currentEntry.setLocationsFromDB(getBaseContext());
 			Log.d("ListActivity", "Object to be displayed: "
 					+ currentEntry.name);
+			currentEntry.getClosestDistanceTo(location, this);
 			// currentEntry.setLocationsFromDB(getBaseContext());
 			// currentEntry.connectWithAllLocations(getApplicationContext());
 			toDoList.add(currentEntry);
 		}
-		calcDistance(toDoList);
+//		calcDistance(toDoList);
 //		Collections.sort(toDoList, new Comparator<ToDoEntry>() {
 //			@Override
 //			public int compare(ToDoEntry data1, ToDoEntry data2) {
