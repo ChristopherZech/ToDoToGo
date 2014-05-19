@@ -401,6 +401,7 @@ public class ToDoEntryLocation {
 	
 	public static void setAllEntries(Context context){
 		Log.d("ToDoEntryLocation","setAllEntries");
+		if(!(allEntries == null))allEntries.clear();
 		allEntries = getAllEntries(context);
 	}
 	
