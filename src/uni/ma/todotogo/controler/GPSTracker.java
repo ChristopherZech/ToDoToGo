@@ -7,7 +7,10 @@ import java.util.HashMap;
 import uni.ma.todotogo.model.ToDoEntryLocation;
 import uni.ma.todotogo.view.R;
 import uni.ma.todotogo.view.R.drawable;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.Notification.InboxStyle;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
@@ -35,7 +38,6 @@ public class GPSTracker extends Service implements LocationListener {
 
 	private HashSet<Integer> notifiedIDs;
 	private HashSet<Integer> handledIDs;
-
 	// flag for GPS status
 	boolean isGPSEnabled = false;
 
@@ -216,6 +218,7 @@ public class GPSTracker extends Service implements LocationListener {
 		alertDialog.show();
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public void onLocationChanged(Location currentLocation) {
 		Log.d("GPSTRACKER", "onLocationChanged");
@@ -237,7 +240,7 @@ public class GPSTracker extends Service implements LocationListener {
 							+ (entryLocation.location
 									.distanceTo(currentLocation) < distToNotify)
 							+ "| Is it already contained?"
-							+ notifiedIDs.contains(entryLocation.id));
+							+ entryLocation.notified);
 
 			if (entryLocation.location.distanceTo(currentLocation) < distToNotify) {
 				if (!entryLocation.notified) {
@@ -253,8 +256,23 @@ public class GPSTracker extends Service implements LocationListener {
 									.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 						}
 					}
+
+					Notification notification = new Notification.Builder(context).setSmallIcon(R.drawable.ic_launcher)
+					.setContentText((entryLocation.id + " |You are within "
+							+ distToNotify + "m of "
+							+ entryLocation.location.getName()
+							+ "!"))
+					.setTicker(entryLocation.id + " |You are within "
+							+ distToNotify + "m of "
+							+ entryLocation.location.getName()
+							+ "!")
+							.setSmallIcon(R.drawable.ic_launcher)
+							.setContentTitle(entryLocation.entry.getName())
+					.build();
+
 					NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
 							context)
+							.setStyle(new NotificationCompat.InboxStyle())
 							.setSmallIcon(R.drawable.ic_launcher)
 							.setContentTitle(entryLocation.entry.getName())
 							.setContentText(
@@ -263,8 +281,10 @@ public class GPSTracker extends Service implements LocationListener {
 											+ entryLocation.location.getName()
 											+ "!")
 							.setLights(Color.BLUE, 500, 500)
-							.setStyle(new NotificationCompat.InboxStyle())
+
 							.setSound(alarmSound);
+					mBuilder.build();
+	
 
 					Log.d("GPSTRACKER",
 							"added notification id: "
@@ -276,15 +296,14 @@ public class GPSTracker extends Service implements LocationListener {
 									+ " | dist: "
 									+ entryLocation.location
 											.distanceTo(getLocation()));
-					
+
 					entryLocation.setNotified(true);
-					
-					Log.d("GPSTRACKER",
-							"Was the notification " + entryLocation.id
-									+ " added?"
-									+ notifiedIDs.contains(entryLocation.id));
+
+					Log.d("GPSTRACKER", "Was the notification "
+							+ entryLocation.id + " added?"
+							+ entryLocation.notified);
 					mNotificationManager.notify(entryLocation.id,
-							mBuilder.build());
+							notification);
 				}
 			} else {
 				if (entryLocation.notified) {
