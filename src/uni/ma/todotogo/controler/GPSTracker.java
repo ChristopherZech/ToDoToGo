@@ -47,7 +47,7 @@ public class GPSTracker extends Service implements LocationListener {
 	// flag for GPS status
 	boolean canGetLocation = false;
 
-	Location location = new Location("none"); // location
+	Location location; // location
 	double latitude; // latitude
 	double longitude; // longitude
 
@@ -90,42 +90,52 @@ public class GPSTracker extends Service implements LocationListener {
 			// no network provider is enabled
 			else {
 				this.canGetLocation = true;
-				// First get location from Network Provider
-				if (isNetworkEnabled) {
-					locationManager.requestLocationUpdates(
-							LocationManager.NETWORK_PROVIDER,
-							MIN_TIME_BW_UPDATES,
-							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-					// Log.d("GPSTRACKER", "Network");
-					if (locationManager != null) {
-						location = locationManager
-								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-						if (location != null) {
-							latitude = location.getLatitude();
-							longitude = location.getLongitude();
-						}
-					}
-				}
+//				 First get location from Network Provider
+//				if (isNetworkEnabled) {
+//					locationManager.requestLocationUpdates(
+//							LocationManager.NETWORK_PROVIDER,
+//							MIN_TIME_BW_UPDATES,
+//							MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+//					// Log.d("GPSTRACKER", "Network");
+//					if (locationManager != null) {
+//						location = locationManager
+//								.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//						if (location != null) {
+//							latitude = location.getLatitude();
+//							longitude = location.getLongitude();
+//						}
+//					}
+//					Log.d("Network", "loc");
+//				}
 				// if GPS Enabled get lat/long using GPS Services
-				if (isGPSEnabled) {
+			if (isGPSEnabled) {
+				
+				Log.d("GPS", "a");
+			
 					if (location == null) {
+						Log.d("GPS", "b");
 						locationManager.requestLocationUpdates(
 								LocationManager.GPS_PROVIDER,
 								MIN_TIME_BW_UPDATES,
 								MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
 						// Log.d("GPSTRACKER", "GPS Enabled");
-						if (locationManager != null) {
+						
+							if (locationManager != null) {
+							Log.d("GPS", "c");
 							Log.d("GPS", "new pos set");
 							location = locationManager
-									.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-							if (location != null) {
+									.getLastKnownLocation(LocationManager.GPS_PROVIDER);}//}
+						if (location != null) {
+								Log.d("GPS", "d");
 								latitude = location.getLatitude();
 								longitude = location.getLongitude();
 							}
 						}
 					}
-				}
 			}
+					
+				
+		
 
 		} catch (Exception e) {
 			e.printStackTrace();

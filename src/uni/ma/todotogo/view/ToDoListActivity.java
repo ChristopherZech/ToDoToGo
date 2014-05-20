@@ -118,6 +118,11 @@ public class ToDoListActivity extends Activity {
 			Intent intentMapview = new Intent(this, MapActivity.class);
 			startActivity(intentMapview);
 			return true;
+			}
+		
+			else if (itemID == R.id.refresh) {
+				updateList();
+				return true;
 		} else
 			return false;
 

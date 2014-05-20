@@ -10,6 +10,8 @@ import uni.ma.todotogo.controler.ToDoDbHelper;
 import uni.ma.todotogo.model.ToDoContract.DBPlacesEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoEntry;
 import uni.ma.todotogo.model.ToDoContract.DBToDoPlacesEntry;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
@@ -118,11 +120,14 @@ public class ToDoEntryLocation {
 		// ProximityIntentReceiver.removeReceiverByEntryLocation(this, context);
 		Log.d("ToDoEntryLocation", "Mapping with ID " + this.id
 				+ " was deleted.");
+		NotificationManager mNotificationManager = (NotificationManager) context
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancel(this.id);
 		return success;
 	}
 
 	/**
-	 * returns a cursor for a query over the location-entry mapping with
+	 * returns a cursor  for a query over the location-entry mapping with
 	 * where=selection and whereargs=selectionargs
 	 * 
 	 * @param context

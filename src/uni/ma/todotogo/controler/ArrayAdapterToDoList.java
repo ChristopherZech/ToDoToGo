@@ -45,7 +45,10 @@ public class ArrayAdapterToDoList extends ArrayAdapter<ToDoEntry> {
 	    Log.d("ArrayAdapter","Loaded: "+buffer.toString());
 	    // set text of description and distance field
 	    textViewDesc.setText(buffer.name);
-	    textViewDist.setText(buffer.closestDistance+"m");
+	    if (buffer.closestDistance<2000000){
+	    	textViewDist.setText((int)buffer.closestDistance+"m");
+	    }
+	    else{textViewDist.setText("no location");}
 	    categoryView.setBackgroundColor(buffer.category.getColor());
 
 	    // set background color of description and distance field
